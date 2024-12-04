@@ -5,7 +5,8 @@ CREATE DATABASE IF NOT EXISTS ccleandb;
 USE ccleandb;
 
 -- Customer Table
-CREATE TABLE customers (
+DROP TABLE IF EXISTS customers;
+CREATE TABLE IF NOT EXISTS customers (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     customer_id VARCHAR(36) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -18,7 +19,8 @@ CREATE TABLE customers (
 );
 
 -- Employee Table
-CREATE TABLE employees (
+DROP TABLE IF EXISTS employees;
+CREATE TABLE IF NOT EXISTS employees (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     employee_id VARCHAR(36) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -31,7 +33,8 @@ CREATE TABLE employees (
 );
 
 -- Admin Table
-CREATE TABLE admins (
+DROP TABLE IF EXISTS admins;
+CREATE TABLE IF NOT EXISTS admins (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     admin_id VARCHAR(36) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -42,7 +45,8 @@ CREATE TABLE admins (
 );
 
 -- Services Table
-CREATE TABLE services (
+DROP TABLE IF EXISTS services;
+CREATE TABLE IF NOT EXISTS services (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     service_id VARCHAR(36) NOT NULL,
     title VARCHAR(100) NOT NULL,
@@ -54,7 +58,8 @@ CREATE TABLE services (
 );
 
 -- Transactions/Orders Table
-CREATE TABLE orders (
+DROP TABLE IF EXISTS orders;
+CREATE TABLE IF NOT EXISTS orders (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     order_id VARCHAR(36) NOT NULL,
     customer_id VARCHAR(36) REFERENCES customers(customer_id),
@@ -65,7 +70,8 @@ CREATE TABLE orders (
 );
 
 -- Order Items (to handle multiple services per order)
-CREATE TABLE order_items (
+DROP TABLE IF EXISTS order_items;
+CREATE TABLE IF NOT EXISTS order_items (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     order_item_id VARCHAR(36) NOT NULL,
     order_id VARCHAR(36) REFERENCES orders(order_id),
@@ -75,7 +81,8 @@ CREATE TABLE order_items (
 );
 
 -- Schedule Table
-CREATE TABLE schedules (
+DROP TABLE IF EXISTS schedules;
+CREATE TABLE IF NOT EXISTS schedules (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     schedule_id VARCHAR(36) NOT NULL,
     employee_id VARCHAR(36) REFERENCES employees(employee_id),

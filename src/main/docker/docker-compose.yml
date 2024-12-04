@@ -10,10 +10,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./main/docker/src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
-      - ./main/docker/src/main/resources/data.sql:/docker-entrypoint-initdb.d/2-data.sql
-      - ./main/docker/init.sql:/docker-entrypoint-initdb.d/0-init.sql
+      - ./data/database:/var/lib/database
+      - ./data/init.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-uuser", "-ppwd", "-h", "localhost"]
       interval: 10s
