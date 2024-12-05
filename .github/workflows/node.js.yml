@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
@@ -25,6 +26,10 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
+      working-directory: ./cclean-frontend
+
+    - name: Debug Installed Modules
+      run: ls -la ./node_modules/fast-glob
       working-directory: ./cclean-frontend
 
     - name: Run lint checks
