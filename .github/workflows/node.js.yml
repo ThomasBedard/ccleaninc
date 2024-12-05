@@ -21,10 +21,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: cclean-frontend/package-lock.json
+        cache-dependency-path: ./cclean-frontend/package-lock.json
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
       working-directory: ./cclean-frontend
 
     - name: Run lint checks
