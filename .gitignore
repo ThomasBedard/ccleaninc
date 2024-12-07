@@ -1,4 +1,8 @@
-HELP.md
+### Node.js ###
+node_modules/
+cclean-frontend/node_modules/
+
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -18,7 +22,7 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -33,5 +37,12 @@ out/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+### Visual Studio Code ###
 .vscode/
+
+### Other ###
+.DS_Store
+*.log
+*.tmp
+*.swp
+*.bak
