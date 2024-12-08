@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Layout from './components/Navbarcss';
 import Home from './pages/Home';
-import Login from './pages/Login';
 import Services from './pages/Services';
+import Appointments from './pages/Appointments';
 import AboutUs from './pages/AboutUs';
 import Contacts from './pages/Contacts';
+import Login from './pages/Login';
 import Register from './pages/Register';
-import Appointments from './pages/Appointments';
 import Schedule from './pages/Schedule'; // Import the Schedule page
+
 
 
 const App = () => {
@@ -29,6 +30,18 @@ const App = () => {
           </Routes>
         </div>
       </div>
+
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/appointments" element={<Appointments />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 };
