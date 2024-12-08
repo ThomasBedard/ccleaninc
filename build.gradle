@@ -81,17 +81,3 @@ test {
         events "passed", "skipped", "failed"
     }
 }
-
-jacoco {
-    toolVersion = "0.8.8" // Specify JaCoCo version
-}
-
-tasks.jacocoTestReport {
-    dependsOn test // Ensure tests run before generating the report
-
-    reports {
-        xml.required.set(true) // Enable XML report (useful for CI tools)
-        html.required.set(true) // Enable HTML report (easier to view)
-        csv.required.set(false) // Disable CSV report (optional)
-    }
-}
