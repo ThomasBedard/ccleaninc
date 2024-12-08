@@ -1,5 +1,5 @@
 # Use Node.js for building and serving
-FROM node:18-alpine as builder
+FROM node:16-alpine as builder
 WORKDIR /app
 COPY ./cclean-frontend .
 RUN npm install
