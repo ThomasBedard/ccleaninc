@@ -16,10 +16,12 @@ VALUES
 (UUID(), 'Admin', 'User', 'admin@example.com', 'admin_password_hash');
 
 -- Insert Services
-INSERT INTO services (service_id, title, description, pricing, category, duration_minutes) 
-VALUES 
-(UUID(), 'Office Cleaning', 'A comprehensive cleaning for offices', 100.00, 'Standard', 60),
-(UUID(), 'Floor Polishing', 'Floor polishing service for offices and homes', 150.00, 'Premium', 90);
+INSERT INTO services (service_id, title, description, pricing, category, duration_minutes)
+VALUES
+    (UUID(), 'Residential Cleaning Service', 'A comprehensive cleaning for houses', 100.00, 'Standard', 60),
+    (UUID(), 'Commercial Cleaning Service', 'A comprehensive cleaning for business', 0.0, 'Premium', 90),
+    (UUID(), 'Post Construction Cleaning', 'A comprehensive cleaning for business', 100.00, 'Standard', 60),
+    (UUID(), 'Detailed Deep Cleaning', 'A comprehensive cleaning for offices', 100.00, 'Standard', 60);
 
 -- Insert Orders (Transactions)
 INSERT INTO orders (order_id, customer_id, employee_id, total_price, status) 

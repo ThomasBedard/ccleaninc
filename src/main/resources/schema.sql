@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS admins (
 -- Services Table
 DROP TABLE IF EXISTS services;
 CREATE TABLE IF NOT EXISTS services (
-                                        id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    service_id VARCHAR(36) NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    service_id VARCHAR(36) NOT NULL UNIQUE,
     title VARCHAR(100) NOT NULL,
     description TEXT,
     pricing DECIMAL(10, 2) NOT NULL,
