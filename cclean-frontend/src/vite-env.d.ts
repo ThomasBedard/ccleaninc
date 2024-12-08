@@ -1,1 +1,1 @@
-/// <reference types="vite/client" />
+git sta/// <reference types="vite/client" />

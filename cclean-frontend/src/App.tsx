@@ -7,6 +7,7 @@ import AboutUs from './pages/AboutUs';
 import Contacts from './pages/Contacts';
 import Register from './pages/Register';
 import Appointments from './pages/Appointments';
+import AdminDashboard from './pages/AdminDashboard';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Routes>
         </div>
       </div>
