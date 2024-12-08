@@ -1,13 +1,16 @@
 package com.ccleaninc.cclean.servicesubdomain.datalayer;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "services")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Service {
 
     @Id
