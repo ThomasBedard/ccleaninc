@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.0'
     id 'io.spring.dependency-management' version '1.1.6'
+    id 'jacoco'
+
 }
 
 group = 'com.ccleaninc'
@@ -36,4 +38,18 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "0.8.8" // Specify JaCoCo version
+}
+
+tasks.jacocoTestReport {
+    dependsOn test // Ensure tests run before generating the report
+
+    reports {
+        xml.required.set(true) // Enable XML report (useful for CI tools)
+        html.required.set(true) // Enable HTML report (easier to view)
+        csv.required.set(false) // Disable CSV report (optional)
+    }
 }
