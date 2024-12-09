@@ -44,3 +44,11 @@ VALUES
          (SELECT service_id FROM services WHERE title = 'Office Cleaning' LIMIT 1),
          (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1), 
          NOW(), NOW() + INTERVAL 1 HOUR, 'SCHEDULED', 'Office 101');
+
+-- Insert Feedback Entries
+INSERT INTO feedback_threads (feedback_id, user_id, stars, content, status) VALUES
+        ('fdbk-uuid-1', 'uuid-acc1', 5, 'Excellent cleaning service! Everything looks spotless.', 'INVISIBLE'),
+        ('fdbk-uuid-2', 'uuid-acc2', 4, 'The cleaning was great, but they arrived a bit late.', 'INVISIBLE'),
+        ('fdbk-uuid-3', 'uuid-acc3', 5, 'Amazing attention to detail! Will definitely hire again.', 'INVISIBLE'),
+        ('fdbk-uuid-4', 'uuid-acc4', 3, 'Good service, but some areas were missed during the cleaning.', 'INVISIBLE'),
+        ('fdbk-uuid-5', 'uuid-acc5', 4, 'Friendly staff and efficient cleaning, but the pricing is slightly high.', 'INVISIBLE');

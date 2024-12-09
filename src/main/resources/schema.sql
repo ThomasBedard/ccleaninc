@@ -87,3 +87,14 @@ CREATE TABLE IF NOT EXISTS schedules (
     status VARCHAR(50) DEFAULT 'SCHEDULED',
     location VARCHAR(255)
     );
+
+-- Feedback Table
+DROP TABLE IF EXISTS feedback_threads;
+CREATE TABLE IF NOT EXISTS feedback_threads(
+                                               id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                               feedback_id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NOT NULL,
+    stars INTEGER NOT NULL,
+    content VARCHAR(120) NOT NULL,
+    status VARCHAR(50)
+    );
