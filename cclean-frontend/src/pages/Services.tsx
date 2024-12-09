@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '../api/axios';
-import axios from 'axios'; // Keep only what is needed
+import axios from 'axios';
+import './Services.css'; 
 
 interface Service {
   serviceId: string;
@@ -38,7 +39,7 @@ const Services = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="services-container">
         <p>Loading...</p>
       </div>
     );
@@ -46,33 +47,39 @@ const Services = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-red-500">{error}</p>
+      <div className="services-container">
+        <p className="error-message">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
-      <h1 className="text-3xl font-bold mb-6">Services</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="services-page">
+      <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
+      <div className="services-grid">
         {services.map((service) => (
-          <div
-            key={service.serviceId}
-            className="bg-white shadow-md rounded-md p-6 hover:shadow-lg"
-          >
-            <h2 className="text-xl font-semibold mb-2">{service.title}</h2>
-            <p className="text-gray-700 mb-4">{service.description}</p>
-            <p className="text-gray-800 font-medium">
-              Pricing: ${service.pricing.toFixed(2)}
-            </p>
-            <p className={`text-sm mt-2 ${service.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
-              {service.isAvailable ? 'Available' : 'Not Available'}
-            </p>
-            <p className="text-gray-600 text-sm">Category: {service.category}</p>
-            <p className="text-gray-600 text-sm">
-              Duration: {service.durationMinutes} minutes
-            </p>
+          <div key={service.serviceId} className="service-card">
+            <div className="service-image">
+              {/* Placeholder for images */}
+              <img
+                src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
+                alt={service.title}
+              />
+            </div>
+            <div className="service-details">
+              <h2 className="service-title">{service.title}</h2>
+              <p className="service-description">{service.description}</p>
+              <p className="service-price">
+                {service.pricing > 0 ? `$${service.pricing.toFixed(2)}` : 'Contact for pricing'}
+              </p>
+              <span
+                className={`service-availability ${
+                  service.isAvailable ? 'available' : 'unavailable'
+                }`}
+              >
+                {service.isAvailable ? 'Available' : 'Not Available'}
+              </span>
+            </div>
           </div>
         ))}
       </div>

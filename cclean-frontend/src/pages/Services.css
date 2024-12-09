@@ -1,0 +1,95 @@
+/* Page Container */
+.services-page {
+    padding: 2rem;
+    background-color: #f7f9fc; /* Light background color */
+    min-height: 100vh;
+  }
+  
+  .services-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  /* Grid Layout for Services */
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+  
+  /* Service Card */
+  .service-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Service Image */
+  .service-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Service Details */
+  .service-details {
+    padding: 1rem;
+  }
+  
+  .service-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #1a202c; /* Dark gray */
+  }
+  
+  .service-description {
+    font-size: 0.875rem;
+    color: #4a5568; /* Medium gray */
+    margin-bottom: 0.75rem;
+  }
+  
+  .service-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2d3748; /* Darker gray */
+    margin-bottom: 1rem;
+  }
+  
+  /* Availability Badge */
+  .service-availability {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .service-availability.available {
+    background-color: #d4f5d9;
+    color: #2d7a2e;
+  }
+  
+  .service-availability.unavailable {
+    background-color: #fde2e2;
+    color: #b21f1f;
+  }
+  
+  /* Error Message */
+  .error-message {
+    color: red;
+    text-align: center;
+  }
+  
