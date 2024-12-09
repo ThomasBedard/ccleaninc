@@ -7,6 +7,7 @@ import AboutUs from './pages/AboutUs';
 import Contacts from './pages/Contacts';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Schedule from './pages/Schedule'; // Import the Schedule page
 
 
 const App = () => {
@@ -21,6 +22,8 @@ const App = () => {
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/schedule" element={<Schedule />} /> {/* Add this line */}
+
         </Routes>
       </Layout>
     </Router>
@@ -28,3 +31,4 @@ const App = () => {
 };
 
 export default App;
+
