@@ -26,6 +26,9 @@ const Navbar = ({ children }: NavbarProps) => {
           <Link to="/schedule" className="navbar-link">
             Schedule
           </Link>
+          <Link to="/employees" className="navbar-link">
+            Employees
+          </Link>
           <Link to="/about-us" className="navbar-link">
             About Us
           </Link>
