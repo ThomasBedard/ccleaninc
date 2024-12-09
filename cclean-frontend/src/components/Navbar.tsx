@@ -25,8 +25,8 @@ const Navbar = () => {
         <Link to="/contacts" className="hover:text-blue-500">
           Contacts
         </Link>
-        <Link to="/admin-dashboard" className="hover:text-blue-500">
-          Admin Dashboard
+        <Link to="/employees" className="hover:text-blue-500">
+          Employees
         </Link>
       </div>
 
