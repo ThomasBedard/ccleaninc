@@ -14,4 +14,5 @@ public class EmployeeRequestModel {
     private String email;
     private String phoneNumber;
     private String role;
+    private Boolean isActive;
 }
