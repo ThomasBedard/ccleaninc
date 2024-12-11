@@ -11,11 +11,13 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP
     );
+-- Added an index to customer_id for foreign key references
+CREATE INDEX idx_customer_id ON customers (customer_id);    
 
 -- Employee Table
 DROP TABLE IF EXISTS employees;
 CREATE TABLE IF NOT EXISTS employees (
-                                         id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     employee_id VARCHAR(36) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
@@ -51,29 +53,6 @@ CREATE TABLE IF NOT EXISTS services (
     duration_minutes INT
     );
 
--- Transactions/Orders Table
-DROP TABLE IF EXISTS orders;
-CREATE TABLE IF NOT EXISTS orders (
-                                      id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    order_id VARCHAR(36) NOT NULL,
-    customer_id VARCHAR(36) REFERENCES customers(customer_id),
-    employee_id VARCHAR(36) REFERENCES employees(employee_id),
-    total_price DECIMAL(10, 2),
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'PENDING'
-    );
-
--- Order Items (to handle multiple services per order)
-DROP TABLE IF EXISTS order_items;
-CREATE TABLE IF NOT EXISTS order_items (
-                                           id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    order_item_id VARCHAR(36) NOT NULL,
-    order_id VARCHAR(36) REFERENCES orders(order_id),
-    service_id VARCHAR(36) REFERENCES services(service_id),
-    quantity INT DEFAULT 1,
-    item_price DECIMAL(10, 2)
-    );
-
 -- Schedule Table
 DROP TABLE IF EXISTS schedules;
 CREATE TABLE IF NOT EXISTS schedules (
@@ -98,3 +77,18 @@ CREATE TABLE IF NOT EXISTS feedback_threads(
     content VARCHAR(120) NOT NULL,
     status VARCHAR(50)
     );
+
+-- Drop existing appointments table
+DROP TABLE IF EXISTS appointments;
+-- Create Appointments Table
+CREATE TABLE IF NOT EXISTS appointments (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    appointment_id VARCHAR(36) NOT NULL UNIQUE,
+    customer_id VARCHAR(36),
+    scheduled_date DATE NOT NULL,
+    scheduled_time TIME NOT NULL,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    notes TEXT,
+    service_ids JSON NOT NULL, -- JSON array to store multiple service IDs
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+);
