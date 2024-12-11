@@ -1,6 +1,7 @@
 package com.ccleaninc.cclean.servicesubdomain.presentationlayer;
 
 import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -136,6 +137,53 @@ public class ServiceControllerUnitTest {
 
         // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void searchServiceByTitle_serviceFound_shouldReturnOkWithServices() {
+        // Arrange
+        String title = "Test Service";
+        List<ServiceResponseModel> mockServices = List.of(
+                new ServiceResponseModel(1,"7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 1", "Description 1", BigDecimal.valueOf(100.00), true, "Category 1", 60),
+                new ServiceResponseModel(2, "7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 2", "Description 2", BigDecimal.valueOf(200.00), false, "Category 2", 30)
+        );
+        when(serviceService.searchServiceByServiceTitle(title)).thenReturn(mockServices);
+
+        // Act
+        ResponseEntity<List<ServiceResponseModel>> response = serviceController.searchServiceByTitle(title);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(2, response.getBody().size());
+        assertEquals(mockServices, response.getBody());
+    }
+
+    @Test
+    void searchServiceByTitle_serviceNotFound_shouldReturnNotFound() {
+        // Arrange
+        String title = "Test Service";
+        when(serviceService.searchServiceByServiceTitle(title)).thenThrow(new NotFoundException("Service not found"));
+
+        // Act
+        ResponseEntity<List<ServiceResponseModel>> response = serviceController.searchServiceByTitle(title);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void searchServiceByTitle_invalidInput_shouldReturnBadRequest() {
+        // Arrange
+        String title = "";
+        doThrow(new InvalidInputException("Service title cannot be null or empty."))
+                .when(serviceService).searchServiceByServiceTitle(title);
+
+        // Act
+        ResponseEntity<List<ServiceResponseModel>> response = serviceController.searchServiceByTitle(title);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
 }

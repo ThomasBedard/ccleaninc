@@ -17,36 +17,70 @@ const Services = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>(''); // State for search term
+
+  // Fetch all services function
+  const fetchAllServices = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axiosInstance.get<Service[]>('/services');
+      setServices(response.data);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Failed to fetch services. Please try again later.');
+      } else {
+        setError('An unexpected error occurred.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await axiosInstance.get<Service[]>('/services');
-        setServices(response.data);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || 'Failed to fetch services. Please try again later.');
-        } else {
-          setError('An unexpected error occurred.');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchServices();
+    fetchAllServices();
   }, []);
+
+  // Automatically fetch all services when search box is cleared
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      fetchAllServices();
+    }
+  }, [searchTerm]);
+
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) {
+      alert('Please enter a service title to search.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axiosInstance.get<Service[]>(`/services/search?title=${searchTerm}`);
+      setServices(response.data);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'No services found for the given title.');
+      } else {
+        setError('An unexpected error occurred.');
+      }
+      setServices([]); // Clear the list if no results
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (serviceId: string) => {
     if (!serviceId || serviceId.length !== 36) {
       alert('Invalid Service ID. Please try again.');
       return;
     }
-  
+
     const confirmDelete = window.confirm(
       'Are you sure you want to delete this service? This action cannot be undone.'
     );
-  
+
     if (confirmDelete) {
       try {
         console.log("Attempting to delete service with ID:", serviceId);
@@ -62,8 +96,6 @@ const Services = () => {
       }
     }
   };
-  
-  
 
   if (loading) {
     return (
@@ -84,6 +116,18 @@ const Services = () => {
   return (
     <div className="services-page">
       <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
+      
+      {/* Search Box */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search services by title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
+
       <div className="services-grid">
         {services.map((service) => (
           <div key={service.serviceId} className="service-card">

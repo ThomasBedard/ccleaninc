@@ -44,6 +44,20 @@ public class ServiceServiceImpl implements ServiceService {
 
     }
 
+    @Override
+    public List<ServiceResponseModel> searchServiceByServiceTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new InvalidInputException("Service title cannot be null or empty.");
+        }
+
+        var services = serviceRepository.findByTitleContainingIgnoreCase(title);
+        if (services.isEmpty()) {
+            throw new NotFoundException("No services found with title: " + title);
+        }
+
+        return serviceResponseMapper.entityToResponseModelList(services);
+    }
+
 
     }
 

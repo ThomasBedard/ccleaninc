@@ -5,6 +5,7 @@ import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceRepository;
 import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceResponseMapper;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -136,6 +137,43 @@ public class ServiceServiceUnitTest {
     void deleteServiceByServiceId_invalidServiceId_shouldThrowInvalidInputException() {
         // Act & Assert
         assertThrows(InvalidInputException.class, () -> serviceService.deleteServiceByServiceId("invalid"));
+    }
+
+    @Test
+    void searchServiceByServiceTitle_ShouldSucceed() {
+        // Arrange
+        String title = "Test Service";
+        when(serviceRepository.findByTitleContainingIgnoreCase(title)).thenReturn(List.of(service));
+        when(serviceResponseMapper.entityToResponseModelList(List.of(service))).thenReturn(List.of(serviceResponseModel));
+
+        // Act
+        List<ServiceResponseModel> response = serviceService.searchServiceByServiceTitle(title);
+
+        // Assert
+        assertEquals(1, response.size());
+        assertEquals(serviceResponseModel.getId(), response.get(0).getId());
+        assertEquals(serviceResponseModel.getTitle(), response.get(0).getTitle());
+        assertEquals(serviceResponseModel.getDescription(), response.get(0).getDescription());
+        assertEquals(serviceResponseModel.getPricing(), response.get(0).getPricing());
+        assertEquals(serviceResponseModel.getCategory(), response.get(0).getCategory());
+        assertEquals(serviceResponseModel.getDurationMinutes(), response.get(0).getDurationMinutes());
+        assertTrue(response.get(0).getIsAvailable());
+    }
+
+    @Test
+    void searchServiceByServiceTitle_emptyTitle_shouldThrowInvalidInputException() {
+        // Act & Assert
+        assertThrows(InvalidInputException.class, () -> serviceService.searchServiceByServiceTitle(""));
+    }
+
+    @Test
+    void searchServiceByServiceTitle_noServicesFound_shouldThrowNotFoundException() {
+        // Arrange
+        String title = "Test Service";
+        when(serviceRepository.findByTitleContainingIgnoreCase(title)).thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> serviceService.searchServiceByServiceTitle(title));
     }
 
 

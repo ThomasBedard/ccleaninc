@@ -13,6 +13,9 @@ public interface ServiceService {
 
     void deleteServiceByServiceId(String serviceId);
 
+    List<ServiceResponseModel> searchServiceByServiceTitle(String title);
+
+
 
 
 

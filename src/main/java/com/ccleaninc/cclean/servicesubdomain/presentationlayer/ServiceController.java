@@ -1,6 +1,7 @@
 package com.ccleaninc.cclean.servicesubdomain.presentationlayer;
 
 import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,5 +48,19 @@ public class ServiceController {
             }
 
         }
+
+    @GetMapping("/services/search")
+    public ResponseEntity<List<ServiceResponseModel>> searchServiceByTitle(@RequestParam String title) {
+        try {
+            List<ServiceResponseModel> services = serviceService.searchServiceByServiceTitle(title);
+            return ResponseEntity.ok().body(services);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+
     }
 
