@@ -4,6 +4,7 @@ import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceRepository;
 import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceResponseMapper;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -91,6 +92,52 @@ public class ServiceServiceUnitTest {
         // Assert
         assertTrue(response.isEmpty());
     }
+
+    @Test
+    void getServiceByServiceId_ShouldSucceed() {
+        // Arrange
+        when(serviceRepository.findServiceByServiceIdentifier_ServiceId("7cb4e475-b787-11ef-94fe-0242ac1a0006")).thenReturn(service);
+        when(serviceResponseMapper.entityToResponseModel(service)).thenReturn(serviceResponseModel);
+
+        // Act
+        ServiceResponseModel response = serviceService.getServiceByServiceId("7cb4e475-b787-11ef-94fe-0242ac1a0006");
+
+        // Assert
+        assertEquals(serviceResponseModel.getId(), response.getId());
+        assertEquals(serviceResponseModel.getServiceId(), response.getServiceId());
+        assertEquals(serviceResponseModel.getTitle(), response.getTitle());
+        assertEquals(serviceResponseModel.getDescription(), response.getDescription());
+        assertEquals(serviceResponseModel.getPricing(), response.getPricing());
+        assertEquals(serviceResponseModel.getCategory(), response.getCategory());
+        assertEquals(serviceResponseModel.getDurationMinutes(), response.getDurationMinutes());
+        assertTrue(response.getIsAvailable());
+    }
+
+    @Test
+    void getServiceByServiceId_invalidServiceId_shouldThrowInvalidInputException() {
+        // Act & Assert
+        assertThrows(InvalidInputException.class, () -> serviceService.getServiceByServiceId("invalid"));
+    }
+
+    @Test
+    void deleteServiceByServiceId_ShouldSucceed() {
+        // Arrange
+        String validServiceId = "123e4567-e89b-12d3-a456-426614174000";
+        when(serviceRepository.findServiceByServiceIdentifier_ServiceId(validServiceId)).thenReturn(service);
+
+        // Act
+        serviceService.deleteServiceByServiceId(validServiceId);
+
+        // Assert
+        // No exception should be thrown
+    }
+
+    @Test
+    void deleteServiceByServiceId_invalidServiceId_shouldThrowInvalidInputException() {
+        // Act & Assert
+        assertThrows(InvalidInputException.class, () -> serviceService.deleteServiceByServiceId("invalid"));
+    }
+
 
 
 }

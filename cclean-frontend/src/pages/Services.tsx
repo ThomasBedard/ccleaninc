@@ -37,6 +37,34 @@ const Services = () => {
     fetchServices();
   }, []);
 
+  const handleDelete = async (serviceId: string) => {
+    if (!serviceId || serviceId.length !== 36) {
+      alert('Invalid Service ID. Please try again.');
+      return;
+    }
+  
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this service? This action cannot be undone.'
+    );
+  
+    if (confirmDelete) {
+      try {
+        console.log("Attempting to delete service with ID:", serviceId);
+        await axiosInstance.delete(`/services/${serviceId}`);
+        setServices((prevServices) => prevServices.filter(service => service.serviceId !== serviceId));
+        alert('Service deleted successfully!');
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          alert(err.response?.data?.message || 'Failed to delete the service. Please try again later.');
+        } else {
+          alert('An unexpected error occurred while deleting the service.');
+        }
+      }
+    }
+  };
+  
+  
+
   if (loading) {
     return (
       <div className="services-container">
@@ -79,6 +107,12 @@ const Services = () => {
               >
                 {service.isAvailable ? 'Available' : 'Not Available'}
               </span>
+              <button
+                className="delete-button"
+                onClick={() => handleDelete(service.serviceId)}
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}

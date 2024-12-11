@@ -1,6 +1,7 @@
 package com.ccleaninc.cclean.servicesubdomain.presentationlayer;
 
 import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,7 @@ public class ServiceControllerUnitTest {
     void setUp() {
         serviceResponseModel = ServiceResponseModel.builder()
                 .id(1)
+                .serviceId("7cb4e475-b787-11ef-94fe-0242ac1a0003")
                 .title("Test Service")
                 .description("Test Description")
                 .pricing(new BigDecimal(100))
@@ -66,8 +69,8 @@ public class ServiceControllerUnitTest {
     void getAllServices_servicesFound_shouldReturnOkWithServices() {
         // Arrange
         List<ServiceResponseModel> mockServices = List.of(
-                new ServiceResponseModel(1, "Service 1", "Description 1", BigDecimal.valueOf(100.00), true, "Category 1", 60),
-                new ServiceResponseModel(2, "Service 2", "Description 2", BigDecimal.valueOf(200.00), false, "Category 2", 30)
+                new ServiceResponseModel(1,"7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 1", "Description 1", BigDecimal.valueOf(100.00), true, "Category 1", 60),
+                new ServiceResponseModel(2, "7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 2", "Description 2", BigDecimal.valueOf(200.00), false, "Category 2", 30)
         );
         when(serviceService.getAllServices()).thenReturn(mockServices);
 
@@ -79,6 +82,60 @@ public class ServiceControllerUnitTest {
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
         assertEquals(mockServices, response.getBody());
+    }
+
+    @Test
+    void getServiceByServiceId_serviceFound_shouldReturnOkWithService() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        when(serviceService.getServiceByServiceId(serviceId)).thenReturn(serviceResponseModel);
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.getServiceByServiceId(serviceId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(serviceResponseModel, response.getBody());
+    }
+
+    @Test
+    void getServiceByServiceId_serviceNotFound_shouldReturnNotFound() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        when(serviceService.getServiceByServiceId(serviceId)).thenThrow(new NotFoundException("Service not found"));
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.getServiceByServiceId(serviceId);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteServiceByServiceId_serviceFound_shouldReturnOk() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+
+        // Act
+        ResponseEntity<Void> response = serviceController.deleteServiceByServiceId(serviceId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void deleteServiceByServiceId_serviceNotFound_shouldReturnNotFound() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        doThrow(new NotFoundException("Service not found"))
+                .when(serviceService).deleteServiceByServiceId(serviceId);
+
+        // Act
+        ResponseEntity<Void> response = serviceController.deleteServiceByServiceId(serviceId);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
 }
