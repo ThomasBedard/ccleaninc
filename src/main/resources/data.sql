@@ -23,20 +23,6 @@ VALUES
     (UUID(), 'Post Construction Cleaning', 'A comprehensive cleaning for business', 100.00, 'Standard', 60),
     (UUID(), 'Detailed Deep Cleaning', 'A comprehensive cleaning for offices', 100.00, 'Standard', 60);
 
--- Insert Orders (Transactions)
-INSERT INTO orders (order_id, customer_id, employee_id, total_price, status) 
-VALUES 
-(UUID(), (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1), 
-         (SELECT employee_id FROM employees WHERE first_name = 'Alice' LIMIT 1), 250.00, 'PENDING');
-
--- Insert Order Items (Multiple services for a single order)
-INSERT INTO order_items (order_item_id, order_id, service_id, quantity, item_price)
-VALUES 
-(UUID(), (SELECT order_id FROM orders WHERE customer_id = (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1) LIMIT 1),
-         (SELECT service_id FROM services WHERE title = 'Office Cleaning' LIMIT 1), 1, 100.00),
-(UUID(), (SELECT order_id FROM orders WHERE customer_id = (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1) LIMIT 1),
-         (SELECT service_id FROM services WHERE title = 'Floor Polishing' LIMIT 1), 1, 150.00);
-
 -- Insert Schedule Entries
 INSERT INTO schedules (schedule_id, employee_id, service_id, customer_id, start_time, end_time, status, location)
 VALUES 
@@ -52,3 +38,126 @@ INSERT INTO feedback_threads (feedback_id, user_id, stars, content, status) VALU
         ('fdbk-uuid-3', 'uuid-acc3', 5, 'Amazing attention to detail! Will definitely hire again.', 'INVISIBLE'),
         ('fdbk-uuid-4', 'uuid-acc4', 3, 'Good service, but some areas were missed during the cleaning.', 'INVISIBLE'),
         ('fdbk-uuid-5', 'uuid-acc5', 4, 'Friendly staff and efficient cleaning, but the pricing is slightly high.', 'INVISIBLE');
+
+-- Insert Sample Appointments
+INSERT INTO appointments (
+    appointment_id,
+    customer_id, 
+    scheduled_date, 
+    scheduled_time, 
+    status, 
+    notes, 
+    service_ids
+) VALUES 
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    '2024-02-15',
+    '09:00:00',
+    'pending',
+    'Please use eco-friendly cleaning products',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1),
+        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    '2024-02-16',
+    '14:00:00',
+    'confirmed',
+    'Cleaning after office renovation',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    '2024-02-17',
+    '10:30:00',
+    'pending',
+    'Deep clean entire apartment',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    '2024-02-18',
+    '11:00:00',
+    'pending',
+    'Post-construction cleaning',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    '2024-02-20',
+    '13:00:00',
+    'confirmed',
+    'Regular bi-weekly cleaning',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    '2024-02-22',
+    '08:00:00',
+    'pending',
+    'Morning cleaning before office opens',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    '2024-02-24',
+    '15:00:00',
+    'pending',
+    'Preparing for guests, need extra thorough cleaning',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    '2024-02-26',
+    '16:00:00',
+    'confirmed',
+    'Final cleaning after major renovation',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    '2024-02-28',
+    '10:00:00',
+    'pending',
+    'Standard monthly cleaning',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
+    )
+),
+(
+    UUID(),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    '2024-03-01',
+    '17:00:00',
+    'pending',
+    'After-hours deep clean of conference rooms',
+    JSON_ARRAY(
+        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
+    )
+);
+       
