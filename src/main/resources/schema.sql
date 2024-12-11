@@ -1,18 +1,18 @@
--- Customer Table
-DROP TABLE IF EXISTS customers;
+-- Customers table
+DROP TABLE IF EXISTS customers; 
+
 CREATE TABLE IF NOT EXISTS customers (
-                                         id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    customer_id VARCHAR(36) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone_number VARCHAR(20),
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_login TIMESTAMP
-    );
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY, -- Primary key for internal use
+    customer_id VARCHAR(36) NOT NULL UNIQUE,            -- External reference for API and foreign keys
+    first_name VARCHAR(50),                      -- Optional first name
+    last_name VARCHAR(50),                       -- Optional last name
+    company_name VARCHAR(100),                   -- Optional company name
+    email VARCHAR(100) UNIQUE NOT NULL,          -- Common email field
+    phone_number VARCHAR(20) NOT NULL                    -- Common phone number field
+);
+
 -- Added an index to customer_id for foreign key references
-CREATE INDEX idx_customer_id ON customers (customer_id);    
+CREATE INDEX idx_customer_id ON customers (customer_id);
 
 -- Employee Table
 DROP TABLE IF EXISTS employees;
