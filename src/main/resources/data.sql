@@ -1,8 +1,21 @@
 -- Insert Customers
-INSERT INTO customers (customer_id, first_name, last_name, email, phone_number, password_hash) 
-VALUES 
-(UUID(), 'John', 'Doe', 'john.doe@example.com', '123-456-7890', 'hashed_password_1'),
-(UUID(), 'Jane', 'Smith', 'jane.smith@example.com', '123-456-7891', 'hashed_password_2');
+INSERT INTO customers (
+    customer_id, first_name, last_name, company_name, email, phone_number
+) VALUES
+-- Residential Customers
+(UUID(), 'Jean', 'Tremblay', NULL, 'jean.tremblay@mail.com', '514-555-0101'),
+(UUID(), 'Marie', 'Dubois', NULL, 'marie.dubois@mail.com', '514-555-0202'),
+(UUID(), 'Paul', 'Lavoie', NULL, 'paul.lavoie@mail.com', '514-555-0303'),
+(UUID(), 'Sophie', 'Girard', NULL, 'sophie.girard@mail.com', '514-555-0404'),
+(UUID(), 'Lucas', 'Fortin', NULL, 'lucas.fortin@mail.com', '514-555-0505'),
+
+-- Industrial Customers
+(UUID(), NULL, NULL, 'Bouchard Logistics Inc.', 'contact@bouchardlogistics.com', '514-555-0606'),
+(UUID(), NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0707'),
+(UUID(), NULL, NULL, 'Montreal Digital Solutions', 'sales@montrealdigital.com', '514-555-0808'),
+(UUID(), NULL, NULL, 'EcoClean Co.', 'support@ecoclean.ca', '514-555-0909'),
+(UUID(), 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
+
 
 -- Insert Employees
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, password_hash, is_active, role) 
