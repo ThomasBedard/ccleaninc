@@ -4,8 +4,16 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseMo
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
+
 public interface ServiceService {
 
     List<ServiceResponseModel> getAllServices();
+
+    ServiceResponseModel getServiceByServiceId(String serviceId);
+
+    void deleteServiceByServiceId(String serviceId);
+
+
+
+
 }

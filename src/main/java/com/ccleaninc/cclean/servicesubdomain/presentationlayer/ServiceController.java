@@ -5,10 +5,7 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,13 +18,34 @@ public class ServiceController {
     private final ServiceService serviceService;
 
 
-
     @GetMapping("/services")
     public ResponseEntity<List<ServiceResponseModel>> getAllServices() {
         List<ServiceResponseModel> services = serviceService.getAllServices();
-        if(services == null || services.isEmpty()) {
+        if (services == null || services.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok().body(services);
     }
-}
+
+    @GetMapping("/services/{serviceId}")
+    public ResponseEntity<ServiceResponseModel> getServiceByServiceId(@PathVariable String serviceId) {
+        try {
+            ServiceResponseModel service = serviceService.getServiceByServiceId(serviceId);
+            return ResponseEntity.ok().body(service);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+        @DeleteMapping("/services/{serviceId}")
+        public ResponseEntity<Void> deleteServiceByServiceId (@PathVariable String serviceId){
+            try {
+                serviceService.deleteServiceByServiceId(serviceId);
+                return ResponseEntity.ok().build();
+            } catch (NotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+        }
+    }
+
