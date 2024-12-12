@@ -18,6 +18,8 @@ public interface ServiceService {
 
     ServiceResponseModel addService (ServiceRequestModel serviceRequestModel);
 
+    ServiceResponseModel updateService (String serviceId, ServiceRequestModel serviceRequestModel);
+
 
 
 

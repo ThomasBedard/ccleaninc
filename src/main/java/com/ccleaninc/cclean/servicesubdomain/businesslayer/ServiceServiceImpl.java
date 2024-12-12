@@ -78,6 +78,23 @@ public class ServiceServiceImpl implements ServiceService {
         return serviceResponseMapper.entityToResponseModel(savedService);
     }
 
+    @Override
+    public ServiceResponseModel updateService(String serviceId, ServiceRequestModel serviceRequestModel) {
+        com.ccleaninc.cclean.servicesubdomain.datalayer.Service service = serviceRepository.findServiceByServiceIdentifier_ServiceId(serviceId);
+        if (service == null) {
+            throw new NotFoundException("Service not found with ID: " + serviceId);
+        }
+
+        service.setTitle(serviceRequestModel.getTitle());
+        service.setDescription(serviceRequestModel.getDescription());
+        service.setPricing(serviceRequestModel.getPricing());
+        service.setCategory(serviceRequestModel.getCategory());
+        service.setDurationMinutes(serviceRequestModel.getDurationMinutes());
+
+        com.ccleaninc.cclean.servicesubdomain.datalayer.Service savedService = serviceRepository.save(service);
+        return serviceResponseMapper.entityToResponseModel(savedService);
+    }
+
 
 }
 
