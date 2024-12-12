@@ -38,16 +38,16 @@ public class ServiceController {
         }
     }
 
-        @DeleteMapping("/services/{serviceId}")
-        public ResponseEntity<Void> deleteServiceByServiceId (@PathVariable String serviceId){
-            try {
-                serviceService.deleteServiceByServiceId(serviceId);
-                return ResponseEntity.ok().build();
-            } catch (NotFoundException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
-
+    @DeleteMapping("/services/{serviceId}")
+    public ResponseEntity<Void> deleteServiceByServiceId(@PathVariable String serviceId) {
+        try {
+            serviceService.deleteServiceByServiceId(serviceId);
+            return ResponseEntity.ok().build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
+    }
 
     @GetMapping("/services/search")
     public ResponseEntity<List<ServiceResponseModel>> searchServiceByTitle(@RequestParam String title) {
@@ -64,13 +64,25 @@ public class ServiceController {
     @PostMapping("/services")
     public ResponseEntity<ServiceResponseModel> addService(@RequestBody ServiceRequestModel serviceRequestModel) {
 
-            ServiceResponseModel service = serviceService.addService(serviceRequestModel);
-            if (service != null) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(service);
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
+        ServiceResponseModel service = serviceService.addService(serviceRequestModel);
+        if (service != null) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(service);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PutMapping("/services/{serviceId}")
+    public ResponseEntity<ServiceResponseModel> updateService(@PathVariable String serviceId, @RequestBody ServiceRequestModel serviceRequestModel) {
+        try {
+            ServiceResponseModel service = serviceService.updateService(serviceId, serviceRequestModel);
+            return ResponseEntity.ok().body(service);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+}
 
 
