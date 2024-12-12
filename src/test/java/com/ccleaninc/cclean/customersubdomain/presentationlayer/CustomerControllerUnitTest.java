@@ -9,6 +9,7 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -33,6 +34,7 @@ public class CustomerControllerUnitTest {
     private CustomerController customerController;
 
     private CustomerResponseModel customerResponseModel;
+    private CustomerRequestModel customerRequestModel;
 
     @BeforeEach
     void setUp() {
@@ -71,6 +73,143 @@ public class CustomerControllerUnitTest {
 
     // Assert
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void getCustomerByCustomerId_ShouldReturnCustomer() {
+        // Arrange
+        String customerId = "1234-5678-9101-1121";
+        when(customerService.getCustomerByCustomerId(customerId)).thenReturn(customerResponseModel);
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.getCustomerByCustomerId(customerId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(customerResponseModel, response.getBody());
+    }
+
+    @Test
+    void getCustomerByCustomerId_CustomerNotFound_ShouldReturnNotFound() {
+        // Arrange
+        String customerId = "invalid-id";
+        when(customerService.getCustomerByCustomerId(customerId)).thenThrow(new NotFoundException("Customer not found"));
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.getCustomerByCustomerId(customerId);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void addCustomer_ShouldCreateCustomer() {
+        // Arrange
+        when(customerService.addCustomer(customerRequestModel)).thenReturn(customerResponseModel);
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.addCustomer(customerRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(customerResponseModel, response.getBody());
+    }
+
+    @Test
+    void addCustomer_InvalidInput_ShouldReturnBadRequest() {
+        // Arrange
+        when(customerService.addCustomer(customerRequestModel)).thenThrow(new InvalidInputException("Invalid input"));
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.addCustomer(customerRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    void updateCustomer_ShouldUpdateCustomer() {
+        // Arrange
+        String customerId = "1234-5678-9101-1121";
+        when(customerService.updateCustomer(customerId, customerRequestModel)).thenReturn(customerResponseModel);
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.updateCustomer(customerId, customerRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(customerResponseModel, response.getBody());
+    }
+
+    @Test
+    void updateCustomer_CustomerNotFound_ShouldReturnNotFound() {
+        // Arrange
+        String customerId = "invalid-id";
+        when(customerService.updateCustomer(customerId, customerRequestModel)).thenThrow(new NotFoundException("Customer not found"));
+
+        // Act
+        ResponseEntity<CustomerResponseModel> response = customerController.updateCustomer(customerId, customerRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteCustomer_ShouldDeleteCustomer() {
+        // Arrange
+        String customerId = "1234-5678-9101-1121";
+
+        // Act
+        ResponseEntity<Void> response = customerController.deleteCustomer(customerId);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void deleteCustomer_CustomerNotFound_ShouldReturnNotFound() {
+    // Arrange
+    String customerId = "invalid-id";
+    doThrow(new NotFoundException("Customer not found"))
+            .when(customerService).deleteCustomerByCustomerId(customerId);
+
+    // Act
+    ResponseEntity<Void> response = customerController.deleteCustomer(customerId);
+
+    // Assert
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void searchCustomers_ShouldReturnCustomers() {
+        // Arrange
+        String searchTerm = "John";
+        when(customerService.searchCustomers(searchTerm)).thenReturn(List.of(customerResponseModel));
+
+        // Act
+        ResponseEntity<List<CustomerResponseModel>> response = customerController.searchCustomers(searchTerm);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(customerResponseModel, response.getBody().get(0));
+    }
+
+    @Test
+    void searchCustomers_NoCustomersFound_ShouldReturnNotFound() {
+        // Arrange
+        String searchTerm = "Nonexistent";
+        when(customerService.searchCustomers(searchTerm)).thenReturn(Collections.emptyList());
+
+        // Act
+        ResponseEntity<List<CustomerResponseModel>> response = customerController.searchCustomers(searchTerm);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
 

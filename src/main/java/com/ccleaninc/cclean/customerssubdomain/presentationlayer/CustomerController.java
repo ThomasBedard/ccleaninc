@@ -28,4 +28,62 @@ public class CustomerController {
         }
         return ResponseEntity.ok().body(customers);
     }
+
+    // Get a customer by customer ID
+    @GetMapping("/{customerId}")
+    public ResponseEntity<CustomerResponseModel> getCustomerByCustomerId(@PathVariable String customerId) {
+        try {
+            CustomerResponseModel customer = customerService.getCustomerByCustomerId(customerId);
+            return ResponseEntity.ok(customer);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    // Add a new customer
+    @PostMapping
+    public ResponseEntity<CustomerResponseModel> addCustomer(@RequestBody CustomerRequestModel customerRequestModel) {
+        try {
+            CustomerResponseModel newCustomer = customerService.addCustomer(customerRequestModel);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newCustomer);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // Update an existing customer
+    @PutMapping("/{customerId}")
+    public ResponseEntity<CustomerResponseModel> updateCustomer(
+            @PathVariable String customerId,
+            @RequestBody CustomerRequestModel customerRequestModel) {
+        try {
+            CustomerResponseModel updatedCustomer = customerService.updateCustomer(customerId, customerRequestModel);
+            return ResponseEntity.ok(updatedCustomer);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // Delete a customer by customer ID
+    @DeleteMapping("/{customerId}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId) {
+        try {
+            customerService.deleteCustomerByCustomerId(customerId);
+            return ResponseEntity.ok().build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    // Search customers by name or company
+    @GetMapping("/search")
+    public ResponseEntity<List<CustomerResponseModel>> searchCustomers(@RequestParam String searchTerm) {
+        List<CustomerResponseModel> customers = customerService.searchCustomers(searchTerm);
+        if (customers == null || customers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(customers);
+    }
 }
