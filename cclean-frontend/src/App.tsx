@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Schedule from './pages/Schedule'; 
 import Employees from './pages/Employees';
 import AdminDashboard from './pages/AdminDashboard';
+import FormAddService from './pages/FormAddService';
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/schedule" element={<Schedule />} />
+          <Route path="/add-service" element={<FormAddService />} />
         </Routes>
       </Layout>
     </Router>

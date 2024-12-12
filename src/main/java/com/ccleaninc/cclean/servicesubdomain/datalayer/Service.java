@@ -39,4 +39,13 @@ public class Service {
     @Column(name = "duration_minutes")
     private Integer durationMinutes;
 
+    public Service(String title, String description, BigDecimal pricing, Boolean isAvailable, String category, Integer durationMinutes) {
+        this.serviceIdentifier = new ServiceIdentifier();
+        this.title = title;
+        this.description = description;
+        this.pricing = pricing;
+        this.isAvailable = isAvailable;
+        this.category = category;
+        this.durationMinutes = durationMinutes;
+    }
 }

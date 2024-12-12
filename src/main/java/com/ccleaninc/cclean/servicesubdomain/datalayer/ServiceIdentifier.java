@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 
+@Setter
 @Getter
 @Embeddable
 @Data
@@ -17,7 +18,4 @@ public class ServiceIdentifier {
         this.serviceId = java.util.UUID.randomUUID().toString();
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
 }

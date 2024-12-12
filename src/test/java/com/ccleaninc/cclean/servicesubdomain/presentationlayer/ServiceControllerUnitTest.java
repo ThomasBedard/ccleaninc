@@ -186,4 +186,44 @@ public class ServiceControllerUnitTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    @Test
+    void addService_serviceAdded_shouldReturnCreatedWithService() {
+        // Arrange
+        serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+        when(serviceService.addService(serviceRequestModel)).thenReturn(serviceResponseModel);
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.addService(serviceRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(serviceResponseModel, response.getBody());
+    }
+
+    @Test
+    void addService_serviceNotAdded_shouldReturnBadRequest() {
+        // Arrange
+        serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+        when(serviceService.addService(serviceRequestModel)).thenReturn(null);
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.addService(serviceRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 }

@@ -1,76 +1,111 @@
 /* Navbar Container */
 .navbar {
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* Brand Logo */
-  .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #1a202c; /* Tailwind's gray-900 */
-  }
-  
-  /* Navigation Links Container */
+  background-color: #ffffff; /* Clean white background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slightly deeper shadow for prominence */
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Poppins', sans-serif; /* Modern, professional font */
+  position: sticky; /* Navbar stays at the top while scrolling */
+  top: 0;
+  z-index: 1000;
+}
+
+/* Brand Logo */
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #2c3e50; /* Dark gray-blue for a premium feel */
+  text-transform: uppercase;
+  letter-spacing: 1px; /* Subtle spacing for a modern look */
+}
+
+/* Navigation Links Container */
+.navbar-links {
+  display: none;
+  gap: 2rem; /* Spacious gap for better layout */
+  font-weight: 500;
+}
+
+.navbar-links a {
+  color: #34495e; /* Balanced dark gray */
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 0.5rem 1rem; /* Padding for clickable area */
+  border-radius: 8px; /* Rounded corners for hover effect */
+  transition: all 0.3s ease;
+}
+
+/* Hover Effect for Links */
+.navbar-links a:hover {
+  background-color: #2ecc71; /* Vibrant green background */
+  color: #ffffff; /* White text on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+/* Buttons Section */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-button {
+  font-weight: 500;
+  color: #34495e; /* Balanced dark gray */
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar-button:hover {
+  color: #2ecc71; /* Vibrant green on hover */
+  transform: scale(1.05); /* Subtle zoom effect */
+}
+
+/* Register Button */
+.navbar-register {
+  border: 2px solid #2ecc71; /* Vibrant green border */
+  padding: 0.5rem 1rem;
+  border-radius: 8px; /* Rounded corners */
+  color: #2ecc71; /* Matching green text */
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.navbar-register:hover {
+  background-color: #2ecc71; /* Green background on hover */
+  color: #ffffff; /* White text on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
   .navbar-links {
-    display: none;
-    gap: 1.5rem;
-    font-weight: 500;
-    color: #2d3748; /* Tailwind's gray-800 */
-  }
-  
-  .navbar-links a {
-    transition: color 0.3s ease;
-    text-decoration: none;
-  }
-  
-  .navbar-links a:hover {
-    color: #4299e1; /* Tailwind's blue-500 */
-  }
-  
-  /* Buttons Section */
-  .navbar-actions {
     display: flex;
-    align-items: center;
-    gap: 1rem;
   }
-  
-  .navbar-button {
-    font-weight: 500;
-    color: #4a5568; /* Tailwind's gray-600 */
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .navbar-button:hover {
-    color: #4299e1; /* Tailwind's blue-500 */
-  }
-  
-  .navbar-register {
-    border: 1px solid #e2e8f0; /* Tailwind's gray-300 */
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem; /* Tailwind's rounded-md */
-    color: #4a5568; /* Tailwind's gray-600 */
-    background: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .navbar-register:hover {
-    border-color: #4299e1; /* Tailwind's blue-500 */
-    color: #4299e1; /* Tailwind's blue-500 */
-  }
-  
-  /* Responsive Design */
-  @media (min-width: 768px) {
-    .navbar-links {
-      display: flex;
-    }
-  }
-  
+}
+
+/* Responsive Burger Menu Icon for Mobile */
+.navbar-burger {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+}
+
+.navbar-burger div {
+  width: 25px;
+  height: 3px;
+  background-color: #34495e;
+  transition: all 0.3s ease;
+}
+
+.navbar-burger:hover div {
+  background-color: #2ecc71;
+}

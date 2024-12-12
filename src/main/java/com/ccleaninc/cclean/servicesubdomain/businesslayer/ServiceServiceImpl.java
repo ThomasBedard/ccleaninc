@@ -1,13 +1,16 @@
 package com.ccleaninc.cclean.servicesubdomain.businesslayer;
 
+import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceRepository;
 import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceRequestMapper;
 import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceResponseMapper;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 @Service
 public class ServiceServiceImpl implements ServiceService {
@@ -58,8 +61,26 @@ public class ServiceServiceImpl implements ServiceService {
         return serviceResponseMapper.entityToResponseModelList(services);
     }
 
+    @Override
+    public ServiceResponseModel addService(ServiceRequestModel serviceRequestModel) {
+        if (serviceRequestModel == null) {
+            throw new InvalidInputException("Service request model cannot be null.");
+        }
+        com.ccleaninc.cclean.servicesubdomain.datalayer.Service service = new com.ccleaninc.cclean.servicesubdomain.datalayer.Service();
+        service.setServiceIdentifier(new ServiceIdentifier());
+        service.setTitle(serviceRequestModel.getTitle());
+        service.setDescription(serviceRequestModel.getDescription());
+        service.setPricing(serviceRequestModel.getPricing());
+        service.setCategory(serviceRequestModel.getCategory());
+        service.setDurationMinutes(serviceRequestModel.getDurationMinutes());
 
+        com.ccleaninc.cclean.servicesubdomain.datalayer.Service savedService = serviceRepository.save(service);
+        return serviceResponseMapper.entityToResponseModel(savedService);
     }
+
+
+}
+
 
 
 
