@@ -117,59 +117,71 @@ const Services = () => {
 
   return (
     <div className="services-page">
-      <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
-      
-      {/* Search Box */}
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search services by title..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
+  <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
+  
+  {/* Search Box */}
+  <div className="search-bar">
+    <input
+      type="text"
+      placeholder="Search services by title..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+    <button onClick={handleSearch}>Search</button>
+  </div>
 
-      <div className="services-grid">
-        {services.map((service) => (
-          <div key={service.serviceId} className="service-card">
-            <div className="service-image">
-              <img
-                src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
-                alt={service.title}
-              />
-            </div>
-            <div className="service-details">
-              <h2 className="service-title">{service.title}</h2>
-              <p className="service-description">{service.description}</p>
-              <p className="service-price">
-                {service.pricing > 0 ? `$${service.pricing.toFixed(2)}` : 'Contact for pricing'}
-              </p>
-              <span
-                className={`service-availability ${
-                  service.isAvailable ? 'available' : 'unavailable'
-                }`}
-              >
-                {service.isAvailable ? 'Available' : 'Not Available'}
-              </span>
-              <button
-                className="delete-button"
-                onClick={() => handleDelete(service.serviceId)}
-              >
-                Delete
-              </button>
-            </div>
+  {/* Services Grid */}
+  <div className="services-grid">
+    {services.length > 0 ? (
+      services.map((service) => (
+        <div key={service.serviceId} className="service-card">
+          <div className="service-image">
+            <img
+              src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
+              alt={service.title}
+            />
           </div>
-        ))}
-      </div>
+          <div className="service-details">
+            <h2 className="service-title">{service.title}</h2>
+            <p className="service-description">{service.description}</p>
+            <p className="service-price">
+              {service.pricing > 0 ? `$${service.pricing.toFixed(2)}` : 'Contact for pricing'}
+            </p>
+            <span
+              className={`service-availability ${
+                service.isAvailable ? 'available' : 'unavailable'
+              }`}
+            >
+              {service.isAvailable ? 'Available' : 'Not Available'}
+            </span>
+            <button
+              className="delete-button"
+              onClick={() => handleDelete(service.serviceId)}
+            >
+              Delete
+            </button>
+            <button
+              className="edit-button"
+              onClick={() => navigate(`/edit-service/${service.serviceId}`)}
+            >
+              Edit Service
+            </button>
+          </div>
+        </div>
+      ))
+    ) : (
+      <p className="no-services-message">No services found. Try another search.</p>
+    )}
+  </div>
 
-      <button
-        className="add-service-button"
-        onClick={() => navigate('/add-service')}
-      >
-        Add Service
-      </button>
-    </div>
+  <button
+    className="add-service-button"
+    onClick={() => navigate('/add-service')}
+  >
+    Add Service
+  </button>
+</div>
+
   );
 };
 

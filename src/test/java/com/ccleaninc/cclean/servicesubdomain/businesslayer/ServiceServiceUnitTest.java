@@ -223,6 +223,54 @@ public class ServiceServiceUnitTest {
         assertThrows(InvalidInputException.class, () -> serviceService.addService(null));
     }
 
+    @Test
+    void updateService_ShouldSucceed() {
+        // Arrange
+        String serviceId = "123e4567-e89b-12d3-a456-426614174000";
+        ServiceRequestModel serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+
+        Service expectedService = Service.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .isAvailable(true) // Match the default value
+                .serviceIdentifier(new ServiceIdentifier())
+                .build();
+
+        when(serviceRepository.findServiceByServiceIdentifier_ServiceId(serviceId)).thenReturn(service);
+        when(serviceRepository.save(any(Service.class))).thenReturn(expectedService);
+        when(serviceResponseMapper.entityToResponseModel(expectedService)).thenReturn(serviceResponseModel);
+
+        // Act
+        ServiceResponseModel response = serviceService.updateService(serviceId, serviceRequestModel);
+
+        // Assert
+        assertEquals(serviceResponseModel.getId(), response.getId());
+        assertEquals(serviceResponseModel.getTitle(), response.getTitle());
+        assertEquals(serviceResponseModel.getDescription(), response.getDescription());
+        assertEquals(serviceResponseModel.getPricing(), response.getPricing());
+        assertEquals(serviceResponseModel.getCategory(), response.getCategory());
+        assertEquals(serviceResponseModel.getDurationMinutes(), response.getDurationMinutes());
+        assertTrue(response.getIsAvailable());
+    }
+
+    @Test
+    void updateService_invalidServiceId_shouldThrowNotFoundException() {
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> serviceService.updateService("invalid", null));
+    }
+
+
+
+
 
 
 

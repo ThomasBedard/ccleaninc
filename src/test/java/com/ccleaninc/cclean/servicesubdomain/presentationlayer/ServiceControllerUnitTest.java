@@ -226,4 +226,67 @@ public class ServiceControllerUnitTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    @Test
+    void updateService_serviceUpdated_shouldReturnOkWithService() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+        when(serviceService.updateService(serviceId, serviceRequestModel)).thenReturn(serviceResponseModel);
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.updateService(serviceId, serviceRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(serviceResponseModel, response.getBody());
+    }
+
+    @Test
+    void updateService_serviceNotFound_shouldReturnNotFound() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+        when(serviceService.updateService(serviceId, serviceRequestModel)).thenThrow(new NotFoundException("Service not found"));
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.updateService(serviceId, serviceRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void updateService_invalidInput_shouldReturnBadRequest() {
+        // Arrange
+        String serviceId = "12345678-1234-1234-1234-123456789012";
+        serviceRequestModel = ServiceRequestModel.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .build();
+        doThrow(new InvalidInputException("Service request model cannot be null."))
+                .when(serviceService).updateService(serviceId, serviceRequestModel);
+
+        // Act
+        ResponseEntity<ServiceResponseModel> response = serviceController.updateService(serviceId, serviceRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 }
