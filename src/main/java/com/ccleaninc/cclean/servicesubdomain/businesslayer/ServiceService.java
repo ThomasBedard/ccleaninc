@@ -1,5 +1,6 @@
 package com.ccleaninc.cclean.servicesubdomain.businesslayer;
 
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ public interface ServiceService {
     void deleteServiceByServiceId(String serviceId);
 
     List<ServiceResponseModel> searchServiceByServiceTitle(String title);
+
+    ServiceResponseModel addService (ServiceRequestModel serviceRequestModel);
 
 
 

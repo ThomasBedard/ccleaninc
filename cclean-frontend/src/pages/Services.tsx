@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '../api/axios';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './Services.css'; 
 
 interface Service {
@@ -18,6 +19,7 @@ const Services = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(''); // State for search term
+  const navigate = useNavigate();
 
   // Fetch all services function
   const fetchAllServices = async () => {
@@ -132,7 +134,6 @@ const Services = () => {
         {services.map((service) => (
           <div key={service.serviceId} className="service-card">
             <div className="service-image">
-              {/* Placeholder for images */}
               <img
                 src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
                 alt={service.title}
@@ -161,6 +162,13 @@ const Services = () => {
           </div>
         ))}
       </div>
+
+      <button
+        className="add-service-button"
+        onClick={() => navigate('/add-service')}
+      >
+        Add Service
+      </button>
     </div>
   );
 };

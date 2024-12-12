@@ -61,6 +61,16 @@ public class ServiceController {
         }
     }
 
+    @PostMapping("/services")
+    public ResponseEntity<ServiceResponseModel> addService(@RequestBody ServiceRequestModel serviceRequestModel) {
 
+            ServiceResponseModel service = serviceService.addService(serviceRequestModel);
+            if (service != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(service);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+        }
     }
+
 
