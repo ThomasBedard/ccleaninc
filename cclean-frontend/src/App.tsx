@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Schedule from './pages/Schedule'; 
 import Employees from './pages/Employees';
+import AdminDashboard from './pages/AdminDashboard';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/employees" element={<Employees />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/schedule" element={<Schedule />} />
