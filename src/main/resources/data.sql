@@ -8,14 +8,13 @@ INSERT INTO customers (
 (UUID(), 'Paul', 'Lavoie', NULL, 'paul.lavoie@mail.com', '514-555-0303'),
 (UUID(), 'Sophie', 'Girard', NULL, 'sophie.girard@mail.com', '514-555-0404'),
 (UUID(), 'Lucas', 'Fortin', NULL, 'lucas.fortin@mail.com', '514-555-0505'),
+(UUID(), 'John', 'Doe', NULL, 'john.doe@mail.com', '514-555-0606'),
+(UUID(), 'Jane', 'Smith', NULL, 'jane.smith@mail.com', '514-555-0707'),
 
 -- Industrial Customers
-(UUID(), NULL, NULL, 'Bouchard Logistics Inc.', 'contact@bouchardlogistics.com', '514-555-0606'),
-(UUID(), NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0707'),
-(UUID(), NULL, NULL, 'Montreal Digital Solutions', 'sales@montrealdigital.com', '514-555-0808'),
-(UUID(), NULL, NULL, 'EcoClean Co.', 'support@ecoclean.ca', '514-555-0909'),
+(UUID(), NULL, NULL, 'Bouchard Logistics Inc.', 'contact@bouchardlogistics.com', '514-555-0808'),
+(UUID(), NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0909'),
 (UUID(), 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
-
 
 -- Insert Employees
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, password_hash, is_active, role) 
@@ -52,7 +51,7 @@ INSERT INTO feedback_threads (feedback_id, user_id, stars, content, status) VALU
         ('fdbk-uuid-4', 'uuid-acc4', 3, 'Good service, but some areas were missed during the cleaning.', 'INVISIBLE'),
         ('fdbk-uuid-5', 'uuid-acc5', 4, 'Friendly staff and efficient cleaning, but the pricing is slightly high.', 'INVISIBLE');
 
--- Insert Sample Appointments
+-- Insert Appointments
 INSERT INTO appointments (
     appointment_id,
     customer_id, 
@@ -64,7 +63,7 @@ INSERT INTO appointments (
 ) VALUES 
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jean' LIMIT 1),
     '2024-02-15',
     '09:00:00',
     'pending',
@@ -76,101 +75,100 @@ INSERT INTO appointments (
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Marie' LIMIT 1),
     '2024-02-16',
     '14:00:00',
     'confirmed',
-    'Cleaning after office renovation',
+    'Cleaning after a party.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Paul' LIMIT 1),
     '2024-02-17',
     '10:30:00',
     'pending',
-    'Deep clean entire apartment',
+    'Deep clean entire apartment.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Sophie' LIMIT 1),
     '2024-02-18',
     '11:00:00',
     'pending',
-    'Post-construction cleaning',
+    'Post-construction cleaning.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Lucas' LIMIT 1),
     '2024-02-20',
     '13:00:00',
     'confirmed',
-    'Regular bi-weekly cleaning',
+    'Regular bi-weekly cleaning.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
     '2024-02-22',
     '08:00:00',
     'pending',
-    'Morning cleaning before office opens',
+    'Morning cleaning before office opens.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
     '2024-02-24',
     '15:00:00',
     'pending',
-    'Preparing for guests, need extra thorough cleaning',
+    'Preparing for guests, need extra thorough cleaning.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE company_name = 'Bouchard Logistics Inc.' LIMIT 1),
     '2024-02-26',
     '16:00:00',
     'confirmed',
-    'Final cleaning after major renovation',
+    'Final cleaning after major renovation.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE company_name = 'Lebeau Glass Experts' LIMIT 1),
     '2024-02-28',
     '10:00:00',
     'pending',
-    'Standard monthly cleaning',
+    'Standard monthly cleaning.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
     )
 ),
 (
     UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
+    (SELECT customer_id FROM customers WHERE company_name = 'Roy & Partners Consulting' LIMIT 1),
     '2024-03-01',
     '17:00:00',
     'pending',
-    'After-hours deep clean of conference rooms',
+    'After-hours deep clean of conference rooms.',
     JSON_ARRAY(
         (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
     )
 );
-       
