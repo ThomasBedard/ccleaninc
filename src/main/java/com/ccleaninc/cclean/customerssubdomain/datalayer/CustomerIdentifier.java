@@ -20,5 +20,4 @@ public class CustomerIdentifier {
     public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
-    
 }
