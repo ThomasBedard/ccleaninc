@@ -29,6 +29,9 @@ const Navbar = ({ children }: NavbarProps) => {
           <Link to="/employees" className="navbar-link">
             Employees
           </Link>
+          <Link to="/admin-dashboard" className="navbar-link">
+            Admin Dashboard
+          </Link>
           <Link to="/about-us" className="navbar-link">
             About Us
           </Link>
