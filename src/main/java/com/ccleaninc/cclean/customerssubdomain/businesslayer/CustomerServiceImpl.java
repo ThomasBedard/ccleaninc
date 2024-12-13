@@ -7,6 +7,7 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ccleaninc.cclean.customerssubdomain.datalayer.Customer;
+import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerIdentifier;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
 import com.ccleaninc.cclean.customerssubdomain.datamapperlayer.CustomerRequestMapper;
 import com.ccleaninc.cclean.customerssubdomain.datamapperlayer.CustomerResponseMapper;
@@ -52,11 +53,25 @@ public class CustomerServiceImpl implements CustomerService{
         customerRepository.delete(customer);
     }
 
+    // @Override
+    // public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
+    //     Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
+    //     return customerResponseMapper.entityToResponseModel(customerRepository.save(customer));
+    // }
+
     @Override
-    public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
-        Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
-        return customerResponseMapper.entityToResponseModel(customerRepository.save(customer));
-    }
+public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
+    Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
+
+    // Explicitly initialize the CustomerIdentifier
+    customer.setCustomerIdentifier(new CustomerIdentifier());
+
+    Customer savedCustomer = customerRepository.save(customer);
+
+    // Map the saved entity back to the response model
+    return customerResponseMapper.entityToResponseModel(savedCustomer);
+}
+
 
     @Override
     public CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel) {

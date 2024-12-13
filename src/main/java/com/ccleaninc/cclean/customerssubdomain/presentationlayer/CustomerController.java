@@ -13,14 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/customers")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class CustomerController {
     
     private final CustomerService customerService;
 
-    @GetMapping("/customers")
+    @GetMapping
     public ResponseEntity<List<CustomerResponseModel>> getAllCustomers() {
         List<CustomerResponseModel> customers = customerService.getAllCustomers();
         if (customers == null || customers.isEmpty()) {
