@@ -10,11 +10,9 @@ import java.util.List;
 public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     Feedback findFeedbackByFeedbackIdentifier_FeedbackId(String feedbackId);
 
-    List<Feedback> findAllFeedbackByUserIdAndStatus(String userId, Status status);
 
     List<Feedback> findAllFeedbacksByFeedbackIdentifier_FeedbackIdStartingWith(String feedbackId);
 
     List<Feedback> findAllFeedbacksByStatus(State status);
 
-    List<Feedback> findAllFeedbacksByUserIdStartingWith(String userId);
-}
+    List<Feedback> findAllFeedbacksByCustomerIdStartingWith(String customerId);}

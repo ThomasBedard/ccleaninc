@@ -1,14 +1,12 @@
 import React from 'react';
-// import Sidebar from '../components/dashboards/Sidebar';
 import Employees from '../../pages/Employees';
 import CustomersList from '../customers/CustomersList';
+import AdminFeedbackList from './AdminFeedbackList';
 import './AdminDashboard.css';
 
 const AdminDashboard: React.FC = () => {
   return (
     <div className="admin-dashboard">
-      {/* Sidebar can be uncommented and styled if needed */}
-      {/* <Sidebar /> */}
       <div className="main-content">
         <h1 className="dashboard-title">Admin Dashboard</h1>
         
@@ -22,6 +20,12 @@ const AdminDashboard: React.FC = () => {
         <section className="customers-section">
           <h2>Customers</h2>
           <CustomersList />
+        </section>
+        
+        {/* Feedback Section */}
+        <section className="feedback-section">
+          <h2>Feedback</h2>
+          <AdminFeedbackList />
         </section>
       </div>
     </div>

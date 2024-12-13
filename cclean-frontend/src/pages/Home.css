@@ -2,176 +2,193 @@
 
 /* Background gradient similar to your friend's services page */
 .home-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e6f7ff, #b3d9ff);
-    position: relative;
-    font-family: sans-serif;
-  }
-  
-  /* Header Section */
-  .home-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 4rem 2rem;
-    position: relative;
-  }
-  
-  .home-header-content {
-    max-width: 600px;
-    z-index: 10;
-  }
-  
-  .home-title {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .home-description {
-    margin-top: 1.5rem;
-    font-size: 1.125rem;
-    line-height: 1.5;
-    color: #555;
-  }
-  
-  .home-learn-more-button {
-    margin-top: 1.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  }
-  
-  .home-learn-more-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Image container */
-  .home-image-container {
-    position: absolute;
-    top: 4rem;
-    right: 2rem;
-    width: 50%;
-    max-width: 500px;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .home-image-container img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    transition: transform 0.5s ease;
-  }
-  
-  .home-image-container img:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Feedback Section */
-  .feedback-section {
-    padding: 2rem;
-  }
-  
-  .feedback-section-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    text-align: center;
-    color: #333;
-  }
-  
-  .loading-text,
-  .error-text {
-    text-align: center;
-    color: #333;
-  }
-  
-  .error-text {
-    color: red;
-  }
-  
-  /* Feedback grid */
-  .feedback-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  /* Feedback card */
-  .feedback-card {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 1rem;
-    transition: box-shadow 0.2s ease;
-  }
-  
-  .feedback-card:hover {
-    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-  }
-  
-  .feedback-content {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #333;
-  }
-  
-  .feedback-rating,
-  .feedback-user,
-  .feedback-status {
-    font-size: 0.875rem;
-    color: #666;
-    margin-bottom: 0.5rem;
-  }
-  
-  .feedback-status.visible {
-    color: #2d7a2e; /* green for visible */
-  }
-  
-  .feedback-status.invisible {
-    color: #b21f1f; /* red for invisible */
-  }
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e6f7ff, #b3d9ff);
+  position: relative;
+  font-family: sans-serif;
+}
 
-  @media (max-width: 768px) {
-    .home-image-container {
-      position: static;
-      width: 100%;
-      margin-top: 2rem;
-      display: flex;
-      justify-content: center;
-    }
-  }
-  .star-rating-container {
+/* Header Section */
+.home-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 2rem;
+  position: relative;
+}
+
+.home-header-content {
+  max-width: 600px;
+  z-index: 10;
+}
+
+.home-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.home-description {
+  margin-top: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.home-learn-more-button {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.home-learn-more-button:hover {
+  background-color: #0056b3;
+}
+
+/* Image container */
+.home-image-container {
+  position: absolute;
+  top: 4rem;
+  right: 2rem;
+  width: 50%;
+  max-width: 500px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.home-image-container img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.5s ease;
+}
+
+.home-image-container img:hover {
+  transform: scale(1.05);
+}
+
+/* Feedback Section */
+.feedback-section {
+  padding: 2rem;
+}
+
+.feedback-section-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #333;
+}
+
+.home-submit-feedback-button {
+  display: block;
+  margin: 0 auto 2rem auto;
+  padding: 0.75rem 1.5rem;
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  text-align: center;
+}
+
+.home-submit-feedback-button:hover {
+  background-color: #218838;
+}
+
+.loading-text,
+.error-text {
+  text-align: center;
+  color: #333;
+}
+
+.error-text {
+  color: red;
+}
+
+/* Feedback grid */
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Feedback card */
+.feedback-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.feedback-card:hover {
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+}
+
+.feedback-content {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.feedback-rating,
+.feedback-user,
+.feedback-status {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-status.visible {
+  color: #2d7a2e; /* green for visible */
+}
+
+.feedback-status.invisible {
+  color: #b21f1f; /* red for invisible */
+}
+
+@media (max-width: 768px) {
+  .home-image-container {
+    position: static;
+    width: 100%;
+    margin-top: 2rem;
     display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
+    justify-content: center;
   }
-  
-  .star-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .star {
-    font-size: 1.25rem;
-    color: #ccc;
-    margin-right: 4px;
-  }
-  
-  .star.filled {
-    color: #f4c430; /* Gold color for filled stars */
-  }
-  
-  .rating-text {
-    margin-left: 8px;
-    font-size: 0.875rem;
-    color: #666;
-  }
-  
+}
+.star-rating-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.star-container {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  font-size: 1.25rem;
+  color: #ccc;
+  margin-right: 4px;
+}
+
+.star.filled {
+  color: #f4c430; /* Gold color for filled stars */
+}
+
+.rating-text {
+  margin-left: 8px;
+  font-size: 0.875rem;
+  color: #666;
+}

@@ -4,36 +4,57 @@ import axiosInstance from '../api/axios';
 import './Home.css';
 
 interface Feedback {
-  feedback_id: string;
+  feedbackId: string;
+  customerId: string;
   content: string;
-  user_id: string;
   stars: number;
   status: string;
 }
 
+interface Customer {
+  customerId: string;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  email: string;
+  phoneNumber: string;
+}
+
 const Home = () => {
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
+  const [customerMap, setCustomerMap] = useState<Record<string, Customer>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchFeedbacks = async () => {
-      try {
-        const response = await axiosInstance.get<Feedback[]>('/feedbacks');
-        setFeedbacks(response.data);
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Failed to fetch feedbacks. Please try again later.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await axiosInstance.get<Feedback[]>('/feedbacks?status=VISIBLE');
+      const feedbackData = response.data;
+      setFeedbacks(feedbackData);
 
+      // Fetch customer details for each unique customerId
+      const uniqueCustomerIds = Array.from(new Set(feedbackData.map(f => f.customerId)));
+      const customerPromises = uniqueCustomerIds.map(id => axiosInstance.get<Customer>(`/customers/${id}`));
+
+      const customerResponses = await Promise.all(customerPromises);
+      const customerInfo: Record<string, Customer> = {};
+      customerResponses.forEach(c => {
+        customerInfo[c.data.customerId] = c.data;
+      });
+      setCustomerMap(customerInfo);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch feedbacks. Please try again later.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchFeedbacks();
   }, []);
 
@@ -47,6 +68,17 @@ const Home = () => {
       );
     }
     return <div className="star-container">{stars}</div>;
+  };
+
+  const getCustomerName = (customerId: string): string => {
+    const customer = customerMap[customerId];
+    if (!customer) return customerId;
+    if (customer.firstName && customer.lastName) {
+      return `${customer.firstName} ${customer.lastName}`;
+    } else if (customer.companyName) {
+      return customer.companyName;
+    }
+    return customerId;
   };
 
   return (
@@ -76,6 +108,12 @@ const Home = () => {
 
       <section className="feedback-section">
         <h2 className="feedback-section-title">Customer Feedbacks</h2>
+        <button
+          onClick={() => navigate('/submit-feedback')}
+          className="home-submit-feedback-button"
+        >
+          Submit Feedback
+        </button>
         {loading ? (
           <p className="loading-text">Loading feedbacks...</p>
         ) : error ? (
@@ -83,20 +121,14 @@ const Home = () => {
         ) : feedbacks.length > 0 ? (
           <div className="feedback-grid">
             {feedbacks.map((feedback) => (
-              <div key={feedback.feedback_id} className="feedback-card">
+              <div key={feedback.feedbackId} className="feedback-card">
                 <p className="feedback-content">"{feedback.content}"</p>
                 <div className="star-rating-container">
                   {renderStars(feedback.stars)}
                   <span className="rating-text">{feedback.stars}/5</span>
                 </div>
-                <p className="feedback-user">User ID: {feedback.user_id}</p>
-                <p
-                  className={`feedback-status ${
-                    feedback.status === 'VISIBLE' ? 'visible' : 'invisible'
-                  }`}
-                >
-                  Status: {feedback.status}
-                </p>
+                <p className="feedback-user">Customer: {getCustomerName(feedback.customerId)}</p>
+                {/* Removed status display for homepage */}
               </div>
             ))}
           </div>
