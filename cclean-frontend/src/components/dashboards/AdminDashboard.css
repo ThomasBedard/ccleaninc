@@ -1,68 +1,27 @@
-/* .admin-dashboard {
+   .tab-navigation {
     display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #f4f4f4;
-    min-height: 100vh;
-  }
-  
-  .dashboard-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-  
-  .employees-section, .customers-section {
-    margin-bottom: 30px;
-  }
-  
-  h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-  
-  .main-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-  }
-   */
-
-
-   .admin-dashboard-container {
-    padding: 20px;
-  }
-  
-  .tabs-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ccc;
+    justify-content: center; 
+    margin-bottom: 20px; 
   }
   
   .tab-button {
-    padding: 10px 20px;
-    font-size: 16px;
     background-color: transparent;
     border: none;
-    border-bottom: 2px solid transparent;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    outline: none;
-    transition: all 0.3s ease;
-  }
-  
-  .tab-button:hover {
+    margin: 0 10px; 
     color: #007bff;
+    transition: color 0.2s, border-bottom 0.2s;
   }
   
   .tab-button.active {
-    border-bottom: 2px solid #007bff;
-    color: #007bff;
-    font-weight: bold;
+    color: #000; 
+    border-bottom: 2px solid #007bff; 
   }
   
-  .tab-content {
-    margin-top: 20px;
+  .tab-button:hover {
+    color: #0056b3; 
   }
   

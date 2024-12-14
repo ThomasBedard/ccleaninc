@@ -1,53 +1,33 @@
-// import React from 'react';
-// // import Sidebar from '../components/dashboards/Sidebar';
-// import Employees from '../../pages/Employees';
-// import CustomersList from '../customers/CustomersList';
-// import './AdminDashboard.css';
-
-// const AdminDashboard: React.FC = () => {
-//   return (
-//     <div className="admin-dashboard">
-//       {/* Sidebar can be uncommented and styled if needed */}
-//       {/* <Sidebar /> */}
-//       <div className="main-content">
-//         <h1 className="dashboard-title">Admin Dashboard</h1>
-        
-//         {/* Employees Section */}
-//         <section className="employees-section">
-//           <h2>Employees</h2>
-//           <Employees />
-//         </section>
-
-//         {/* Customers Section */}
-//         <section className="customers-section">
-//           <h2>Customers</h2>
-//           <CustomersList />
-//         </section>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AdminDashboard;
-
-
 import React, { useState } from 'react';
-
-
-import './AdminDashboard.css'; 
+import './AdminDashboard.css';
 import Employees from '../../pages/Employees';
-import Services from '../../pages/Services';
 import CustomersList from '../customers/CustomersList';
+import Services from '../../pages/Services';
+import AdminFeedbackList from './AdminFeedbackList';
+
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('employees'); // Default active tab
+  const [activeTab, setActiveTab] = useState<string>('employees');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'employees':
+        return <Employees />;
+      case 'customers':
+        return <CustomersList />;
+      case 'services':
+        return <Services />;
+      case 'feedbacks':
+        return <AdminFeedbackList />;
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="admin-dashboard-container">
+    <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
-
-      {/* Tabs */}
-      <div className="tabs-container">
+      <div className="tab-navigation">
         <button
           className={`tab-button ${activeTab === 'employees' ? 'active' : ''}`}
           onClick={() => setActiveTab('employees')}
@@ -66,14 +46,14 @@ const AdminDashboard: React.FC = () => {
         >
           Services
         </button>
+        <button
+          className={`tab-button ${activeTab === 'feedbacks' ? 'active' : ''}`}
+          onClick={() => setActiveTab('feedbacks')}
+        >
+          Feedbacks
+        </button>
       </div>
-
-      {/* Tab Content */}
-      <div className="tab-content">
-        {activeTab === 'employees' && <Employees />}
-        {activeTab === 'customers' && <CustomersList />}
-        {activeTab === 'services' && <Services />}
-      </div>
+      {renderContent()}
     </div>
   );
 };
