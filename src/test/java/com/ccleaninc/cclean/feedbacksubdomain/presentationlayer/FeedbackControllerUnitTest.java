@@ -30,7 +30,7 @@ public class FeedbackControllerUnitTest {
     void setUp() {
         feedbackResponseModel = feedbackResponseModel.builder()
                 .feedbackId("1")
-                .userId("Test Feedback")
+                .customerId("Test Feedback")
                 .stars(4)
                 .content("Test Description")
                 .status(State.INVISIBLE)
@@ -45,7 +45,6 @@ public class FeedbackControllerUnitTest {
         assertEquals(feedbackResponseModel, feedbacks.get(0));
     }
 
-
     @Test
     void addFeedbackReturnsCreatedFeedback() {
         when(feedbackService.addFeedback(feedbackRequestModel)).thenReturn(feedbackResponseModel);
@@ -54,12 +53,11 @@ public class FeedbackControllerUnitTest {
         assertEquals(feedbackResponseModel, response.getBody());
     }
 
-
     @Test
     void updateFeedbackStateReturnsUpdatedFeedback() {
         when(feedbackService.updateFeedbackState("1", "PUBLISHED")).thenReturn(feedbackResponseModel);
-        FeedbackResponseModel feedback = feedbackController.updateFeedbackState("1", "PUBLISHED");
-        assertEquals(feedbackResponseModel, feedback);
+        ResponseEntity<FeedbackResponseModel> response = feedbackController.updateFeedbackState("1", "PUBLISHED");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(feedbackResponseModel, response.getBody());
     }
-
 }

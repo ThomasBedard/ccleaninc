@@ -6,10 +6,10 @@ import lombok.Builder;
 import lombok.Value;
 @Value
 @Builder
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 public class FeedbackResponseModel {
     String feedbackId;
-    String userId;
+    String customerId; // renamed from userId
     Integer stars;
     String content;
     State status;
