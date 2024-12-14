@@ -12,8 +12,9 @@ import Employees from './pages/Employees';
 import AdminDashboard from './components/dashboards/AdminDashboard';
 import FormAddService from './pages/FormAddService';
 import FormEditService from './pages/FormEditService';
-import CreateCustomer from '../src/components/customers/CreateCustomer';
-import EditCustomer from '../src/components/customers/EditCustomer';
+import CreateCustomer from './components/customers/CreateCustomer';
+import EditCustomer from './components/customers/EditCustomer';
+import SubmitFeedback from './pages/SubmitFeedback';
 
 const App = () => {
   return (
@@ -34,7 +35,7 @@ const App = () => {
           <Route path="/edit-service/:serviceId" element={<FormEditService />} /> 
           <Route path="/add-customer" element={<CreateCustomer />} />
           <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
-
+          <Route path="/submit-feedback" element={<SubmitFeedback />} />
         </Routes>
       </Layout>
     </Router>

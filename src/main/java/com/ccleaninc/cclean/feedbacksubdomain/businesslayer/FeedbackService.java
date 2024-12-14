@@ -6,7 +6,7 @@ import com.ccleaninc.cclean.feedbacksubdomain.presentationlayer.FeedbackResponse
 
 import java.util.List;
 public interface FeedbackService {
-    List<FeedbackResponseModel> getAllFeedback(String feedbackId, String userid, String status);
+    List<FeedbackResponseModel> getAllFeedback(String feedbackId, String customerid, String status);
     FeedbackResponseModel getFeedbackByFeedbackId(String feedbackId);
     FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel);
     FeedbackResponseModel updateFeedbackState(String status, String feedbackId);

@@ -14,7 +14,7 @@ public class Feedback {
 
     @Embedded
     private FeedbackIdentifier feedbackIdentifier;
-    private String userId;
+    private String customerId;
     private Integer stars;
     private String content;
 
@@ -25,9 +25,9 @@ public class Feedback {
         this.feedbackIdentifier = new FeedbackIdentifier();
     }
 
-    public Feedback( String userId, Integer stars, String content, State status) {
+    public Feedback( String customerId, Integer stars, String content, State status) {
         this.feedbackIdentifier = new FeedbackIdentifier();
-        this.userId = userId;
+        this.customerId = customerId;
         this.stars = stars;
         this.content = content;
         this.status = status;

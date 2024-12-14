@@ -10,12 +10,14 @@ import org.mapstruct.Named;
 public interface FeedbackRequestMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "feedbackIdentifier", expression = "java(createFeedbackIdentifier())")
-    @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "customerId", source = "customerId")
     @Mapping(target = "stars", source = "stars")
     @Mapping(target = "content", source = "content")
     @Mapping(target = "status", source = "status")
     Feedback requestModelToEntity(FeedbackRequestModel feedbackRequestModel);
+
     default FeedbackIdentifier createFeedbackIdentifier() {
         return new FeedbackIdentifier();
     }
 }
+

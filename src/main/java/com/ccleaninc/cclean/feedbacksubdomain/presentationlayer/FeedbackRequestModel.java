@@ -8,7 +8,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class FeedbackRequestModel {
-    String userId;
+    String customerId; // renamed from userId
     Integer stars;
     String content;
     State status;
