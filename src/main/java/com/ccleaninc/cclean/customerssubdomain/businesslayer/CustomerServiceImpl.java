@@ -60,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService{
     // }
 
     @Override
-public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
+    public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
     Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
 
     // Explicitly initialize the CustomerIdentifier

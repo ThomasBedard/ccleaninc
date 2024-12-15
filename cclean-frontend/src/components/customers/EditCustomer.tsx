@@ -27,7 +27,6 @@ const EditCustomer: React.FC = () => {
         alert('Failed to fetch customer details.');
       }
     };
-
     fetchCustomer();
   }, [customerId]);
 
@@ -57,26 +56,16 @@ const EditCustomer: React.FC = () => {
           handleEditCustomer();
         }}
       >
-        <label>
-          First Name:
-          <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-        </label>
-        <label>
-          Last Name:
-          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-        </label>
-        <label>
-          Email:
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </label>
-        <label>
-          Phone Number:
-          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
-        </label>
-        <label>
-          Company Name:
-          <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
-        </label>
+        <label>First Name:</label>
+        <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+        <label>Last Name:</label>
+        <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+        <label>Email:</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <label>Phone Number:</label>
+        <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required />
+        <label>Company Name:</label>
+        <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
         <button type="submit" className="submit-button">Save Changes</button>
       </form>
     </div>
@@ -84,3 +73,4 @@ const EditCustomer: React.FC = () => {
 };
 
 export default EditCustomer;
+
