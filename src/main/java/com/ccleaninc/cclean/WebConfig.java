@@ -1,4 +1,4 @@
-package com.ccleaninc.cclean.schedulessubdomain.config;
+package com.ccleaninc.cclean;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

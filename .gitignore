@@ -46,3 +46,9 @@ out/
 *.tmp
 *.swp
 *.bak
+
+# Ignore environment files
+.env.local
+
+# Ignore application.properties
+application.properties

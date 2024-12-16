@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import axiosInstance from '../api/axios';
+import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
 interface Employee {
@@ -16,25 +16,26 @@ const Employees = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axiosInstance.get<Employee[]>('/employees');
+        const token = await getAccessTokenSilently();
+        const response = await axios.get("http://localhost:8080/api/v1/employees", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         setEmployees(response.data);
       } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || 'Failed to fetch employees. Please try again later.');
-        } else {
-          setError('An unexpected error occurred.');
-        }
+        setError('Failed to fetch employees: ' + err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchEmployees();
-  }, []);
+  }, [getAccessTokenSilently]);
 
   if (loading) {
     return (
