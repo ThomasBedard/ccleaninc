@@ -3,18 +3,18 @@ INSERT INTO customers (
     customer_id, first_name, last_name, company_name, email, phone_number
 ) VALUES
 -- Residential Customers
-(UUID(), 'Jean', 'Tremblay', NULL, 'jean.tremblay@mail.com', '514-555-0101'),
-(UUID(), 'Marie', 'Dubois', NULL, 'marie.dubois@mail.com', '514-555-0202'),
-(UUID(), 'Paul', 'Lavoie', NULL, 'paul.lavoie@mail.com', '514-555-0303'),
-(UUID(), 'Sophie', 'Girard', NULL, 'sophie.girard@mail.com', '514-555-0404'),
-(UUID(), 'Lucas', 'Fortin', NULL, 'lucas.fortin@mail.com', '514-555-0505'),
-(UUID(), 'John', 'Doe', NULL, 'john.doe@mail.com', '514-555-0606'),
-(UUID(), 'Jane', 'Smith', NULL, 'jane.smith@mail.com', '514-555-0707'),
+('c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'Jean', 'Tremblay', NULL, 'jean.tremblay@mail.com', '514-555-0101'),
+('d3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'Marie', 'Dubois', NULL, 'marie.dubois@mail.com', '514-555-0202'),
+('e4f5g6h7-c8d9-11ec-82a8-0242ac130003', 'Paul', 'Lavoie', NULL, 'paul.lavoie@mail.com', '514-555-0303'),
+('f5g6h7i8-d9e0-11ec-82a8-0242ac130003', 'Sophie', 'Girard', NULL, 'sophie.girard@mail.com', '514-555-0404'),
+('g6h7i8j9-e0f1-11ec-82a8-0242ac130003', 'Lucas', 'Fortin', NULL, 'lucas.fortin@mail.com', '514-555-0505'),
+('h7i8j9k0-f1g2-11ec-82a8-0242ac130003', 'John', 'Doe', NULL, 'john.doe@mail.com', '514-555-0606'),
+('i8j9k0l1-g2h3-11ec-82a8-0242ac130003', 'Jane', 'Smith', NULL, 'jane.smith@mail.com', '514-555-0707'),
 
 -- Industrial Customers
-(UUID(), NULL, NULL, 'Bouchard Logistics Inc.', 'contact@bouchardlogistics.com', '514-555-0808'),
-(UUID(), NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0909'),
-(UUID(), 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
+('j9k0l1m2-h3i4-11ec-82a8-0242ac130003', NULL, NULL, 'Bouchard Logistics Inc.', 'contact@bouchardlogistics.com', '514-555-0808'),
+('k0l1m2n3-i4j5-11ec-82a8-0242ac130003', NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0909'),
+('l1m2n3o4-j5k6-11ec-82a8-0242ac130003', 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
 
 -- Insert Employees
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, password_hash, is_active, role) 
@@ -52,124 +52,13 @@ VALUES
 ('fdbk-uuid-4', (SELECT customer_id FROM customers WHERE first_name = 'Sophie' AND last_name = 'Girard' LIMIT 1), 3, 'Good service, but some areas were missed during the cleaning.', 'INVISIBLE'),
 ('fdbk-uuid-5', (SELECT customer_id FROM customers WHERE first_name = 'Lucas' AND last_name = 'Fortin' LIMIT 1), 4, 'Friendly staff and efficient cleaning, but the pricing is slightly high.', 'VISIBLE');
 
--- Insert Appointments
-INSERT INTO appointments (
-    appointment_id,
-    customer_id, 
-    scheduled_date, 
-    scheduled_time, 
-    status, 
-    notes, 
-    service_ids
-) VALUES 
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jean' LIMIT 1),
-    '2024-02-15',
-    '09:00:00',
-    'pending',
-    'Please use eco-friendly cleaning products',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1),
-        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Marie' LIMIT 1),
-    '2024-02-16',
-    '14:00:00',
-    'confirmed',
-    'Cleaning after a party.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Paul' LIMIT 1),
-    '2024-02-17',
-    '10:30:00',
-    'pending',
-    'Deep clean entire apartment.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Sophie' LIMIT 1),
-    '2024-02-18',
-    '11:00:00',
-    'pending',
-    'Post-construction cleaning.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Lucas' LIMIT 1),
-    '2024-02-20',
-    '13:00:00',
-    'confirmed',
-    'Regular bi-weekly cleaning.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'John' LIMIT 1),
-    '2024-02-22',
-    '08:00:00',
-    'pending',
-    'Morning cleaning before office opens.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE first_name = 'Jane' LIMIT 1),
-    '2024-02-24',
-    '15:00:00',
-    'pending',
-    'Preparing for guests, need extra thorough cleaning.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Detailed Deep Cleaning' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE company_name = 'Bouchard Logistics Inc.' LIMIT 1),
-    '2024-02-26',
-    '16:00:00',
-    'confirmed',
-    'Final cleaning after major renovation.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Post Construction Cleaning' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE company_name = 'Lebeau Glass Experts' LIMIT 1),
-    '2024-02-28',
-    '10:00:00',
-    'pending',
-    'Standard monthly cleaning.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Residential Cleaning Service' LIMIT 1)
-    )
-),
-(
-    UUID(),
-    (SELECT customer_id FROM customers WHERE company_name = 'Roy & Partners Consulting' LIMIT 1),
-    '2024-03-01',
-    '17:00:00',
-    'pending',
-    'After-hours deep clean of conference rooms.',
-    JSON_ARRAY(
-        (SELECT service_id FROM services WHERE title = 'Commercial Cleaning Service' LIMIT 1)
-    )
-);
+
+-- Insert 6 rows into the appointments table
+INSERT INTO appointments (appointment_id, customer_id, scheduled_date, status, services, comments) VALUES
+('a1b2c3d4-e5f6-11ec-82a8-0242ac130003', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', '2025-01-15 10:30:00', 'pending', 'Residential Cleaning Service', 'Customer prefers morning appointments'),
+('b2c3d4e5-f6a7-11ec-82a8-0242ac130003', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', '2025-01-16 15:00:00', 'confirmed', 'Commercial Cleaning Service', 'Customer requested specific stylist'),
+('c3d4e5f6-a7b8-11ec-82a8-0242ac130003', 'e4f5g6h7-c8d9-11ec-82a8-0242ac130003', '2025-01-17 09:00:00', 'completed', 'Post Construction Cleaning', 'Customer was very satisfied'),
+('d4e5f6g7-b8c9-11ec-82a8-0242ac130003', 'f5g6h7i8-d9e0-11ec-82a8-0242ac130003', '2025-01-18 14:00:00', 'cancelled', 'Detailed Deep Cleaning', 'Cancelled due to customer illness'),
+('e5f6g7h8-c9d0-11ec-82a8-0242ac130003', 'g6h7i8j9-e0f1-11ec-82a8-0242ac130003', '2025-01-19 11:00:00', 'pending', 'Detailed Deep Cleaning', 'Requested vegan-friendly products'),
+('f6g7h8i9-d0e1-11ec-82a8-0242ac130003', 'h7i8j9k0-f1g2-11ec-82a8-0242ac130003', '2025-01-20 13:00:00', 'confirmed', 'Detailed Deep Cleaning', 'Customer requested express service');
+
