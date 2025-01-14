@@ -17,8 +17,8 @@ CREATE INDEX idx_customer_id ON customers (customer_id);
 -- Employee Table
 DROP TABLE IF EXISTS employees;
 CREATE TABLE IF NOT EXISTS employees (
-    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    employee_id VARCHAR(36) NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(36) NOT NULL UNIQUE,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
