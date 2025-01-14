@@ -95,10 +95,8 @@ CREATE TABLE IF NOT EXISTS appointments (
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
     appointment_id VARCHAR(36) NOT NULL UNIQUE,
     customer_id VARCHAR(36),
-    scheduled_date DATE NOT NULL,
-    scheduled_time TIME NOT NULL,
-    status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
-    notes TEXT,
-    service_ids JSON NOT NULL, -- JSON array to store multiple service IDs
-    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+    scheduled_date DATETIME,
+    status VARCHAR(36),
+    services VARCHAR(255),
+    comments VARCHAR(255)
 );

@@ -1,0 +1,93 @@
+/* Page Container */
+.appointments-page {
+  padding: 2rem;
+  background: linear-gradient(135deg, #e6f7ff, #b3d9ff); /* Same as services.css */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Page Title */
+.appointments-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #2c3e50; /* Darker gray for better contrast */
+}
+
+/* Appointments Table */
+.appointments-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 1000px; /* Wider table for better visibility */
+  margin: 0 auto;
+  background-color: white;
+  border-radius: 10px; /* Rounded corners */
+  overflow: hidden; /* Clip overflowing corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+}
+
+/* Table Header */
+.appointments-table th {
+  background-color: #007bff; /* Stylish blue background */
+  color: white; /* White text for contrast */
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 1rem; /* Increased padding for a cleaner look */
+  text-align: left;
+}
+
+/* Table Cells */
+.appointments-table td {
+  padding: 1rem;
+  color: #34495e; /* Darker gray for better text readability */
+  text-align: left;
+  border-bottom: 1px solid #ddd; /* Light gray border for separation */
+}
+
+/* Alternating Row Colors */
+.appointments-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Light gray for even rows */
+}
+
+.appointments-table tr:nth-child(odd) {
+  background-color: #ffffff; /* White for odd rows */
+}
+
+/* Row Hover Effect */
+.appointments-table tr:hover {
+  background-color: #e3f2fd; /* Light blue on hover */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* No Border for Last Row */
+.appointments-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table Footer (if applicable) */
+.appointments-table tfoot td {
+  background-color: #007bff; /* Blue footer for consistency */
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Error and Loading Messages */
+.error-message,
+.loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #e74c3c; /* Stylish red for errors */
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* Smooth Transitions */
+.appointments-table th,
+.appointments-table td {
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions for interactivity */
+}
