@@ -1,46 +1,54 @@
-// package com.ccleaninc.cclean.appointmentssubdomain.datalayer;
+package com.ccleaninc.cclean.appointmentssubdomain.datalayer;
 
-// import java.time.LocalDate;
-// import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-// import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-// import jakarta.persistence.*;
-// import lombok.*;
+@Entity
+@Table(name = "appointments")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Appointment {
 
-// @Entity
-// @Table(name = "appointments")
-// @Data
-// @Builder
-// @AllArgsConstructor
-// @NoArgsConstructor
-// public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-//     @Id
-//     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     private Integer id;
+    @Embedded
+    private AppointmentIdentifier appointmentIdentifier;
 
-//     @Embedded
-//     private AppointmentIdentifier appointmentIdentifier;
+    @Column(name = "customer_id")
+    private String customerId;
 
-//      @ManyToOne
-//     @JoinColumn(name = "customer_id", referencedColumnName = "customer_id", nullable = true, foreignKey = @ForeignKey(name = "FK_customer_appointments"))
-//     private Customer customer;
+    @Column(name = "scheduled_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
+    LocalDateTime appointmentDate;
 
-//     @Column(name = "scheduled_date", nullable = false)
-//     private LocalDate scheduledDate;
 
-//     @Column(name = "scheduled_time", nullable = false)
-//     private LocalTime scheduledTime;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
-//     @Enumerated(EnumType.STRING)
-//     @Column(name = "status", nullable = false)
-//     private AppointmentStatus status = AppointmentStatus.PENDING;
+    private String services;
 
-//     @Column(name = "notes", columnDefinition = "TEXT")
-//     private String notes;
+    private String comments;
 
-//     @Column(name = "service_ids", columnDefinition = "JSON", nullable = false)
-//     private String serviceIds; // Store JSON array as a String
-    
-// }
+
+    public Appointment(String customerId, LocalDateTime appointmentDate, Status status, String comments) {
+        this.appointmentIdentifier = new AppointmentIdentifier();
+        this.customerId = customerId;
+        this.appointmentDate = appointmentDate;
+        this.status = status;
+        this.comments = comments;
+    }
+
+
+}

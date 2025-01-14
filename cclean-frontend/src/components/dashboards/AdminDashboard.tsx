@@ -4,7 +4,7 @@ import Employees from '../../pages/Employees';
 import CustomersList from '../customers/CustomersList';
 import Services from '../../pages/Services';
 import AdminFeedbackList from './AdminFeedbackList';
-
+import Appointments from '../../pages/Appointments'; // Import your Appointments component
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('employees');
@@ -19,6 +19,8 @@ const AdminDashboard: React.FC = () => {
         return <Services />;
       case 'feedbacks':
         return <AdminFeedbackList />;
+      case 'appointments': // Add the "Appointments" tab logic
+        return <Appointments />;
       default:
         return null;
     }
@@ -51,6 +53,12 @@ const AdminDashboard: React.FC = () => {
           onClick={() => setActiveTab('feedbacks')}
         >
           Feedbacks
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'appointments' ? 'active' : ''}`}
+          onClick={() => setActiveTab('appointments')}
+        >
+          Appointments
         </button>
       </div>
       {renderContent()}
