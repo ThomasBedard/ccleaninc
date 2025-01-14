@@ -5,6 +5,7 @@ import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
 import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
@@ -35,6 +36,16 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+=======
+import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceController;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +55,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+<<<<<<< HEAD
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,11 +72,21 @@ import static org.junit.jupiter.api.Assertions.*;
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 =======
 import static org.mockito.Mockito.doThrow;
+<<<<<<< HEAD
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
+=======
+=======
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentControllerUnitTest {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -73,6 +95,11 @@ public class AppointmentControllerUnitTest {
 =======
 
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+
+=======
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
     @Mock
     private AppointmentService appointmentService;
 
@@ -80,12 +107,18 @@ public class AppointmentControllerUnitTest {
     private AppointmentController appointmentController;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+
+=======
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
     private AppointmentResponseModel appointmentResponseModel;
     private AppointmentRequestModel appointmentRequestModel;
 
@@ -94,8 +127,11 @@ public class AppointmentControllerUnitTest {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
 
         // A typical response model you expect back
         appointmentResponseModel = AppointmentResponseModel.builder()
@@ -106,11 +142,16 @@ public class AppointmentControllerUnitTest {
         appointmentResponseModel = AppointmentResponseModel.builder()
                 .id(1)
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .customerId("1")
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+                .customerId("1")
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -118,18 +159,26 @@ public class AppointmentControllerUnitTest {
                 .build();
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
 
         // A typical request model you send in
         appointmentRequestModel = AppointmentRequestModel.builder()
 =======
         appointmentRequestModel = AppointmentRequestModel.builder()
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .customerId("1")
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+                .customerId("1")
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -143,6 +192,9 @@ public class AppointmentControllerUnitTest {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
         ResponseEntity<List<AppointmentResponseModel>> response =
                 appointmentController.getAllAppointments();
 
@@ -152,6 +204,7 @@ public class AppointmentControllerUnitTest {
         ResponseEntity<List<AppointmentResponseModel>> response = appointmentController.getAllAppointments();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+<<<<<<< HEAD
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
         ResponseEntity<List<AppointmentResponseModel>> response =
@@ -160,6 +213,9 @@ public class AppointmentControllerUnitTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
         assertEquals(1, response.getBody().size());
         assertEquals(appointmentResponseModel, response.getBody().get(0));
     }
@@ -170,6 +226,9 @@ public class AppointmentControllerUnitTest {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
         ResponseEntity<List<AppointmentResponseModel>> response =
                 appointmentController.getAllAppointments();
 
@@ -566,5 +625,14 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+<<<<<<< HEAD
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
+=======
+=======
+        ResponseEntity<List<AppointmentResponseModel>> response = appointmentController.getAllAppointments();
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
 }

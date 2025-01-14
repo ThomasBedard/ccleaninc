@@ -2,11 +2,17 @@ package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+=======
+=======
+
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Appointment;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.AppointmentRepository;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
@@ -14,6 +20,9 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentRes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 <<<<<<< HEAD
@@ -29,6 +38,7 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestMod
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
@@ -40,6 +50,12 @@ import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+
+=======
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,9 +66,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
 import java.io.ByteArrayOutputStream;
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 import java.math.BigDecimal;
@@ -84,6 +103,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 
+=======
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+>>>>>>> e32976c (Added the code for the implementation)
 @ExtendWith(MockitoExtension.class)
 public class AppointmentServiceUnitTest {
 
@@ -102,8 +130,11 @@ public class AppointmentServiceUnitTest {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
 
     @BeforeEach
     void setUp() {
@@ -113,6 +144,7 @@ public class AppointmentServiceUnitTest {
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
     @BeforeEach
+<<<<<<< HEAD
     void setUp() {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointment = Appointment.builder()
@@ -123,6 +155,14 @@ public class AppointmentServiceUnitTest {
 =======
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+     void setUp() {
+        LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
+        appointment = Appointment.builder()
+                .id(1)
+                .customerId("1")
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -133,6 +173,7 @@ public class AppointmentServiceUnitTest {
                 .id(1)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
                 .customerId("1")
@@ -140,6 +181,12 @@ public class AppointmentServiceUnitTest {
 =======
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+=======
+                .customerId("1")
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -151,6 +198,9 @@ public class AppointmentServiceUnitTest {
     void GetAllAppointments_shouldSucceed() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
         when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
 
@@ -158,6 +208,7 @@ public class AppointmentServiceUnitTest {
 
 =======
         // Arrange
+<<<<<<< HEAD
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
@@ -170,6 +221,17 @@ public class AppointmentServiceUnitTest {
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+=======
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
+
+
+        // Act
+        List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
+
+        // Assert
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
         assertEquals(1, appointments.size());
         assertEquals(appointmentResponseModel.getId(), appointments.get(0).getId());
         assertEquals(appointmentResponseModel.getCustomerId(), appointments.get(0).getCustomerId());
@@ -179,17 +241,26 @@ public class AppointmentServiceUnitTest {
         assertEquals(appointmentResponseModel.getStatus(), appointments.get(0).getStatus());
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+=======
+=======
+
+>>>>>>> e32976c (Added the code for the implementation)
+>>>>>>> 301d0c0 (Added the code for the implementation)
     }
 
     @Test
     void GetAllAppointments_shouldReturnEmptyList() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 301d0c0 (Added the code for the implementation)
         when(appointmentRepository.findAll()).thenReturn(List.of());
         when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
 
@@ -570,6 +641,18 @@ public class AppointmentServiceUnitTest {
         });
         assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
     }
+=======
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+        when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
+
+        // Act
+        List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
+
+        // Assert
+        assertTrue(appointments.isEmpty());
+    }
+>>>>>>> e32976c (Added the code for the implementation)
 
 
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
