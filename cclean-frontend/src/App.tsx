@@ -21,6 +21,7 @@ import CalendarTestPage from "./pages/CalendarTestPage";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import Profile from "./components/Profile";
+import CalendarTestPage from "./pages/CalendarTestPage";
 
 const App = () => {
   return (
