@@ -24,7 +24,7 @@ VALUES
 
 
 -- Insert Employees
-INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role) 
+INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role)
 VALUES 
 (UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
 (UUID(), 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');

@@ -1,9 +1,14 @@
 package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a2bb356 (Added the code for the implementation)
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Appointment;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.AppointmentRepository;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
 import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentResponseMapper;
+<<<<<<< HEAD
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 <<<<<<< HEAD
@@ -15,6 +20,9 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestMod
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+>>>>>>> a2bb356 (Added the code for the implementation)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +30,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+>>>>>>> a2bb356 (Added the code for the implementation)
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentServiceUnitTest {
@@ -52,6 +69,7 @@ public class AppointmentServiceUnitTest {
 
     private AppointmentResponseModel appointmentResponseModel;
 
+<<<<<<< HEAD
 
     @BeforeEach
     void setUp() {
@@ -59,6 +77,14 @@ public class AppointmentServiceUnitTest {
         appointment = Appointment.builder()
                 .id(1)
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+=======
+    @BeforeEach
+     void setUp() {
+        LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
+        appointment = Appointment.builder()
+                .id(1)
+                .customerId("1")
+>>>>>>> a2bb356 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -67,7 +93,11 @@ public class AppointmentServiceUnitTest {
 
         appointmentResponseModel = AppointmentResponseModel.builder()
                 .id(1)
+<<<<<<< HEAD
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+=======
+                .customerId("1")
+>>>>>>> a2bb356 (Added the code for the implementation)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -77,11 +107,23 @@ public class AppointmentServiceUnitTest {
 
     @Test
     void GetAllAppointments_shouldSucceed() {
+<<<<<<< HEAD
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
         when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
 
         List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
 
+=======
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
+
+
+        // Act
+        List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
+
+        // Assert
+>>>>>>> a2bb356 (Added the code for the implementation)
         assertEquals(1, appointments.size());
         assertEquals(appointmentResponseModel.getId(), appointments.get(0).getId());
         assertEquals(appointmentResponseModel.getCustomerId(), appointments.get(0).getCustomerId());
@@ -89,10 +131,15 @@ public class AppointmentServiceUnitTest {
         assertEquals(appointmentResponseModel.getServices(), appointments.get(0).getServices());
         assertEquals(appointmentResponseModel.getComments(), appointments.get(0).getComments());
         assertEquals(appointmentResponseModel.getStatus(), appointments.get(0).getStatus());
+<<<<<<< HEAD
+=======
+
+>>>>>>> a2bb356 (Added the code for the implementation)
     }
 
     @Test
     void GetAllAppointments_shouldReturnEmptyList() {
+<<<<<<< HEAD
         when(appointmentRepository.findAll()).thenReturn(List.of());
         when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
 
@@ -310,4 +357,18 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
+=======
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+        when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
+
+        // Act
+        List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
+
+        // Assert
+        assertTrue(appointments.isEmpty());
+    }
+
+
+>>>>>>> a2bb356 (Added the code for the implementation)
 }
