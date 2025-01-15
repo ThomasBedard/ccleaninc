@@ -17,7 +17,7 @@ public class Employee {
     private Integer id;
 
     @Embedded
-    private EmployeeIdentifier EmployeeIdentifier;
+    private EmployeeIdentifier employeeIdentifier;
 
     @Column(name = "first_name")
     private String firstName;

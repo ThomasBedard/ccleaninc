@@ -12,7 +12,7 @@ public interface EmployeeRequestMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "employeeIdentifier", ignore = true)
-    @Mapping(target = "isActive", source = "isActive")
+    // @Mapping(target = "isActive", source = "isActive")
     Employee employeeModelToEntity(EmployeeRequestModel employeeRequestModel);
 
     // @Mapping(target = "isActive", source = "isActive")
