@@ -16,6 +16,9 @@ import CreateCustomer from './components/customers/CreateCustomer';
 import EditCustomer from './components/customers/EditCustomer';
 import SubmitFeedback from './pages/SubmitFeedback';
 import CalendarTestPage from './pages/CalendarTestPage';
+import SelectDate from './pages/SelectDatePage';
+import SelectTime from './pages/SelectTimePage';
+import ConfirmBooking from './pages/ConfirmBookingPage';
 
 const App = () => {
   return (
@@ -38,6 +41,9 @@ const App = () => {
           <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
           <Route path="/submit-feedback" element={<SubmitFeedback />} />
           <Route path="/calendar-test" element={<CalendarTestPage />} />
+          <Route path="/select-date" element={<SelectDate />} />
+          <Route path="/select-time" element={<SelectTime />} />
+          <Route path="/confirm-booking" element={<ConfirmBooking />} />
         </Routes>
       </Layout>
     </Router>
