@@ -34,7 +34,7 @@ public class EmployeeControllerUnitTest {
     @BeforeEach
     void setUp() {
         employeeResponseModel = EmployeeResponseModel.builder()
-                .id("1")
+                .employeeId("1")
                 .firstName("Bill")
                 .lastName("Burr")
                 .email("bill@gmail.com")
@@ -76,7 +76,7 @@ public class EmployeeControllerUnitTest {
         // Arrange
         List<EmployeeResponseModel> mockEmployees = List.of(
                 EmployeeResponseModel.builder()
-                        .id("1")
+                        .employeeId("1")
                         .firstName("Employee 1")
                         .lastName("Doe")
                         .email("employee1@example.com")
@@ -85,7 +85,7 @@ public class EmployeeControllerUnitTest {
                         .isActive(true)
                         .build(),
                 EmployeeResponseModel.builder()
-                        .id("2")
+                        .employeeId("2")
                         .firstName("Employee 2")
                         .lastName("Smith")
                         .email("employee2@example.com")
