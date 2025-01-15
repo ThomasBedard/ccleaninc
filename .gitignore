@@ -46,3 +46,11 @@ out/
 *.tmp
 *.swp
 *.bak
+
+### env ###
+.env
+
+### frontend env ###
+../cclean-frontend/.env
+../cclean-frontend/.env.test
+../cclean-frontend/.env.production
