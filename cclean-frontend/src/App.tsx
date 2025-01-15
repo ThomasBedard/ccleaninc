@@ -23,6 +23,16 @@ import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
 
 const App = () => {
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div className="page-layout">
+        <PageLoader />
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <PageLayout>
