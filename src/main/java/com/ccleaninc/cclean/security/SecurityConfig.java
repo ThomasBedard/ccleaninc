@@ -22,8 +22,12 @@ public class SecurityConfig {
     public SecurityFilterChain httpSecurity(final HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authz -> authz
+<<<<<<< HEAD
                         //.requestMatchers("/api/v1/feedbacks").hasAuthority("employee")
                         // Catch-all for other URLs
+=======
+                        .requestMatchers("/api/messages/protected", "/api/messages/admin").authenticated()
+>>>>>>> b1435d6 (auth part 1 not working bc of Auth0ProviderWithNavigate)
                         .anyRequest().permitAll())
                 .cors(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2
