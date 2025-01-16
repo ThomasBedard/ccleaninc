@@ -3,6 +3,8 @@ import { PageLayout } from "./components/page-layout";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
 import Appointments from "./pages/Appointments";
+import AppointmentsAddForm from "./pages/AppointmentsAddForm";
+import AppointmentsEditForm from "./pages/AppointmentsEditForm";
 import AboutUs from "./pages/AboutUs";
 import Contacts from "./pages/Contacts";
 import Schedule from "./pages/Schedule";
@@ -28,6 +30,11 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/appointments" element={<Appointments />} />
+          <Route path="/appointments/add" element={<AppointmentsAddForm />} />
+          <Route
+            path="/appointments/edit/:appointmentId"
+            element={<AppointmentsEditForm />}
+          />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contacts" element={<Contacts />} />
           {/* Employee routes */}

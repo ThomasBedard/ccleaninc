@@ -1,0 +1,95 @@
+.appointments-add-form {
+    max-width: 600px;
+    margin: 50px auto; /* Centered with balanced vertical spacing */
+    padding: 30px 40px; /* Extra padding for a spacious feel */
+    background-color: #ffffff; /* Clean white background */
+    border: 1px solid #e6e6e6; 
+    border-radius: 16px; 
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); 
+    font-family: 'Roboto', sans-serif; 
+}
+
+.appointments-add-form h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50; 
+}
+
+.appointments-add-form input,
+.appointments-add-form textarea,
+.appointments-add-form select {
+    width: 100%;
+    padding: 15px; /* Comfortable padding for better readability */
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Neutral gray for consistency */
+    border-radius: 8px; /* Soft rounded corners */
+    font-size: 1rem;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Subtle inset shadow */
+}
+
+.appointments-add-form input:focus,
+.appointments-add-form textarea:focus,
+.appointments-add-form select:focus {
+    border-color: #3498db; /* Blue focus for interactivity */
+    background-color: #ffffff; /* Brighten background */
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Glow effect */
+}
+
+.appointments-add-form textarea {
+    height: 120px; /* Larger height for better usability */
+    resize: none; /* Prevent resizing */
+}
+
+.appointments-add-form select {
+    height: 50px; /* Adjust height for dropdowns */
+}
+
+.appointments-add-form button {
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745; /* Vibrant green for the primary action */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px; /* Rounded corners for harmony with inputs */
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Button shadow for depth */
+}
+
+.appointments-add-form button:hover {
+    background-color: #28a745; /* Slightly darker green for hover */
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.appointments-add-form button:active {
+    background-color: #1e8449; /* Even darker green for click */
+    transform: translateY(0); /* Reset lift */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow */
+}
+
+.appointments-add-form .form-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #95a5a6; /* Subtle gray for footer text */
+}
+
+.appointments-add-form .form-footer a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.appointments-add-form .form-footer a:hover {
+    color: #1e6f9f; /* Darker blue on hover */
+}

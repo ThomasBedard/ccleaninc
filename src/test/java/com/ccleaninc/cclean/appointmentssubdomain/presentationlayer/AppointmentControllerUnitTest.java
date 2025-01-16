@@ -6,7 +6,11 @@ import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceController;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+<<<<<<< HEAD
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+=======
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +41,13 @@ public class AppointmentControllerUnitTest {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointmentResponseModel = AppointmentResponseModel.builder()
                 .id(1)
-                .customerId("1")
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
                 .status(Status.pending)
                 .build();
         appointmentRequestModel = AppointmentRequestModel.builder()
-                .customerId("1")
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -73,23 +76,76 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+<<<<<<< HEAD
     void createAppointment_ShouldSucceed() {
         when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
 
         ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+=======
+    void getAppointmentByAppointmentId_ShouldSucceed() {
+        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void getAppointmentByAppointmentId_AppointmentNotFound_ShouldReturnNotFound() {
+        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenThrow(new NotFoundException("Appointment with ID a1b2c3d4-e5f6-11ec-82a8-0242ac130000 was not found."));
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void addAppointment_ShouldSucceed() {
+        when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.addAppointment(appointmentRequestModel);
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(appointmentResponseModel, response.getBody());
     }
 
     @Test
+<<<<<<< HEAD
     void createAppointment_InvalidInput_ShouldReturnBadRequest() {
         when(appointmentService.createAppointment(appointmentRequestModel))
                 .thenThrow(new InvalidInputException("Invalid input"));
 
         ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+=======
+    void addAppointment_AppointmentNotAdded_ShouldReturnBadRequest() {
+        when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.addAppointment(appointmentRequestModel);
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+<<<<<<< HEAD
+=======
+    @Test
+    void updateAppointment_ShouldSucceed() {
+        when(appointmentService.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000", appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000", appointmentRequestModel);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void deleteAppointmentByAppointmentId_ShouldSucceed() {
+        ResponseEntity<Void> response = appointmentController.deleteAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 }
