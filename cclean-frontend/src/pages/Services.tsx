@@ -19,6 +19,10 @@ const Services = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(''); // State for search term
+
+  // NEW: track selected services in an array of serviceIds
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([]);
+
   const navigate = useNavigate();
 
   // Fetch all services function
@@ -87,7 +91,9 @@ const Services = () => {
       try {
         console.log("Attempting to delete service with ID:", serviceId);
         await axiosInstance.delete(`/services/${serviceId}`);
-        setServices((prevServices) => prevServices.filter(service => service.serviceId !== serviceId));
+        setServices((prevServices) =>
+          prevServices.filter((service) => service.serviceId !== serviceId)
+        );
         alert('Service deleted successfully!');
       } catch (err) {
         if (axios.isAxiosError(err)) {
@@ -99,6 +105,20 @@ const Services = () => {
     }
   };
 
+  // NEW: handle checkbox toggling for multiple service selection
+  const handleSelectService = (serviceId: string) => {
+    setSelectedServiceIds((prevSelected) => {
+      if (prevSelected.includes(serviceId)) {
+        // If it's already selected, remove it
+        return prevSelected.filter((id) => id !== serviceId);
+      } else {
+        // Otherwise, add it
+        return [...prevSelected, serviceId];
+      }
+    });
+  };
+
+  // If data is still loading
   if (loading) {
     return (
       <div className="services-container">
@@ -107,6 +127,7 @@ const Services = () => {
     );
   }
 
+  // If there's an error
   if (error) {
     return (
       <div className="services-container">
@@ -117,71 +138,97 @@ const Services = () => {
 
   return (
     <div className="services-page">
-  <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
-  
-  {/* Search Box */}
-  <div className="search-bar">
-    <input
-      type="text"
-      placeholder="Search services by title..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-    />
-    <button onClick={handleSearch}>Search</button>
-  </div>
+      <h1 className="services-title">Residential and Commercial Cleaning Services</h1>
+      
+      {/* Search Box */}
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search services by title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
 
-  {/* Services Grid */}
-  <div className="services-grid">
-    {services.length > 0 ? (
-      services.map((service) => (
-        <div key={service.serviceId} className="service-card">
-          <div className="service-image">
-            <img
-              src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
-              alt={service.title}
-            />
-          </div>
-          <div className="service-details">
-            <h2 className="service-title">{service.title}</h2>
-            <p className="service-description">{service.description}</p>
-            <p className="service-price">
-              {service.pricing > 0 ? `$${service.pricing.toFixed(2)}` : 'Contact for pricing'}
-            </p>
-            <span
-              className={`service-availability ${
-                service.isAvailable ? 'available' : 'unavailable'
-              }`}
-            >
-              {service.isAvailable ? 'Available' : 'Not Available'}
-            </span>
-            <button
-              className="delete-button"
-              onClick={() => handleDelete(service.serviceId)}
-            >
-              Delete
-            </button>
-            <button
-              className="edit-button"
-              onClick={() => navigate(`/edit-service/${service.serviceId}`)}
-            >
-              Edit Service
-            </button>
-          </div>
-        </div>
-      ))
-    ) : (
-      <p className="no-services-message">No services found. Try another search.</p>
-    )}
-  </div>
+      {/* Services Grid */}
+      <div className="services-grid">
+        {services.length > 0 ? (
+          services.map((service) => (
+            <div key={service.serviceId} className="service-card">
+              <div className="service-image">
+                <img
+                  src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
+                  alt={service.title}
+                />
+              </div>
+              <div className="service-details">
+                <h2 className="service-title">{service.title}</h2>
+                <p className="service-description">{service.description}</p>
+                <p className="service-price">
+                  {service.pricing > 0 ? `$${service.pricing.toFixed(2)}` : 'Contact for pricing'}
+                </p>
+                <span
+                  className={`service-availability ${
+                    service.isAvailable ? 'available' : 'unavailable'
+                  }`}
+                >
+                  {service.isAvailable ? 'Available' : 'Not Available'}
+                </span>
 
-  <button
-    className="add-service-button"
-    onClick={() => navigate('/add-service')}
-  >
-    Add Service
-  </button>
-</div>
+                {/* Checkbox to select this service */}
+                <div style={{ marginTop: '10px' }}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={selectedServiceIds.includes(service.serviceId)}
+                      onChange={() => handleSelectService(service.serviceId)}
+                    />
+                    {' '}Select
+                  </label>
+                </div>
 
+                {/* Existing buttons */}
+                <button
+                  className="delete-button"
+                  onClick={() => handleDelete(service.serviceId)}
+                >
+                  Delete
+                </button>
+                <button
+                  className="edit-button"
+                  onClick={() => navigate(`/edit-service/${service.serviceId}`)}
+                >
+                  Edit Service
+                </button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="no-services-message">No services found. Try another search.</p>
+        )}
+      </div>
+
+      <button
+        className="add-service-button"
+        onClick={() => navigate('/add-service')}
+      >
+        Add Service
+      </button>
+
+      {/* NEW: Button to continue to next step, passing the selected IDs */}
+      {selectedServiceIds.length > 0 && (
+        <button
+          style={{ marginTop: '20px' }}
+          onClick={() => {
+            // Navigate to your next step (calendar/time page), passing selected IDs
+            navigate('/calendar-select', { state: { selectedServiceIds } });
+          }}
+        >
+          Continue with Selected Services
+        </button>
+      )}
+    </div>
   );
 };
 

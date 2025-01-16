@@ -6,9 +6,15 @@ interface Appointment {
   appointmentId?: string;
   customerId?: string;
   appointmentDate?: string;
-  services?: string;
+  services?: string;      // e.g. "id1,id2,id3" or "Residential Cleaning Service"
+  serviceTitles?: string; // We'll add this property after we fetch names
   status?: string;
   comments?: string;
+}
+
+// Add a helper for checking UUID format
+function isUuidFormat(str: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 }
 
 const Appointments = () => {
@@ -16,12 +22,50 @@ const Appointments = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all appointments, then transform service IDs -> service titles
   const fetchAllAppointments = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await axiosInstance.get<Appointment[]>('/appointments');
-      setAppointments(response.data);
+      const fetchedAppointments = response.data;
+
+      // Transform each appointment's 'services' from IDs to titles
+      const updatedAppointments = await Promise.all(
+        fetchedAppointments.map(async (apt) => {
+          if (!apt.services) {
+            return { ...apt, serviceTitles: '' };
+          }
+
+          // Example: "id1,id2" or "Residential Cleaning Service"
+          const serviceTokens = apt.services.split(',');
+          const titles: string[] = [];
+
+          for (const token of serviceTokens) {
+            const trimmedToken = token.trim();
+            
+            if (isUuidFormat(trimmedToken)) {
+              // It's a valid UUID, so fetch from the /services endpoint
+              try {
+                const serviceRes = await axiosInstance.get(`/services/${trimmedToken}`);
+                // If successful, push the service's title
+                titles.push(serviceRes.data.title || 'Unknown Service');
+              } catch {
+                // If we fail to fetch by ID, treat it as unknown
+                titles.push('Unknown Service');
+              }
+            } else {
+              // It's NOT a UUID, so treat it as a literal service name
+              titles.push(trimmedToken);
+            }
+          }
+
+          // Join them into a single string for display
+          return { ...apt, serviceTitles: titles.join(', ') };
+        })
+      );
+
+      setAppointments(updatedAppointments);
     } catch (err) {
       setError(
         err instanceof Error
@@ -35,6 +79,7 @@ const Appointments = () => {
 
   useEffect(() => {
     fetchAllAppointments();
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {
@@ -65,7 +110,7 @@ const Appointments = () => {
               <td>{appointment.appointmentId || 'N/A'}</td>
               <td>{appointment.customerId || 'N/A'}</td>
               <td>{appointment.appointmentDate || 'N/A'}</td>
-              <td>{appointment.services || 'N/A'}</td>
+              <td>{appointment.serviceTitles || 'N/A'}</td>
               <td>{appointment.status || 'N/A'}</td>
               <td>{appointment.comments || 'N/A'}</td>
             </tr>
