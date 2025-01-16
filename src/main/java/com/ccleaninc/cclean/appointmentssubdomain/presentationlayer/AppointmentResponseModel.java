@@ -1,13 +1,10 @@
 package com.ccleaninc.cclean.appointmentssubdomain.presentationlayer;
 
-import com.ccleaninc.cclean.appointmentssubdomain.businesslayer.AppointmentService;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 

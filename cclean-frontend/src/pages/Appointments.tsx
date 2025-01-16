@@ -164,6 +164,7 @@ const Appointments = () => {
   };
   useEffect(() => {
     fetchAllAppointments();
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {

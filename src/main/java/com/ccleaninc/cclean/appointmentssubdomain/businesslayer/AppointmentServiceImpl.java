@@ -41,6 +41,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentResponseModel> getAllAppointments() {
         return appointmentResponseMapper.entityToResponseModelList(appointmentRepository.findAll());
+
+
     }
 
 

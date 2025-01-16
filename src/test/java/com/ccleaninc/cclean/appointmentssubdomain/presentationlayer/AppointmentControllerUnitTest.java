@@ -44,8 +44,15 @@ import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceController;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+<<<<<<< HEAD
 >>>>>>> e32976c (Added the code for the implementation)
+<<<<<<< HEAD
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -633,6 +640,33 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+<<<<<<< HEAD
 >>>>>>> e32976c (Added the code for the implementation)
+<<<<<<< HEAD
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+
+    @Test
+    void createAppointment_ShouldSucceed() {
+        when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void createAppointment_InvalidInput_ShouldReturnBadRequest() {
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 }

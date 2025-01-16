@@ -3,6 +3,7 @@ package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> a2bb356 (Added the code for the implementation)
@@ -13,6 +14,13 @@ package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 
 >>>>>>> e32976c (Added the code for the implementation)
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+
+>>>>>>> e32976c (Added the code for the implementation)
+=======
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Appointment;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.AppointmentRepository;
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
@@ -21,8 +29,11 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentRes
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 <<<<<<< HEAD
@@ -55,7 +66,15 @@ import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 =======
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 >>>>>>> e32976c (Added the code for the implementation)
+<<<<<<< HEAD
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -107,9 +126,8 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 >>>>>>> e32976c (Added the code for the implementation)
 @ExtendWith(MockitoExtension.class)
@@ -145,6 +163,7 @@ public class AppointmentServiceUnitTest {
 =======
     @BeforeEach
 <<<<<<< HEAD
+<<<<<<< HEAD
     void setUp() {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointment = Appointment.builder()
@@ -157,6 +176,9 @@ public class AppointmentServiceUnitTest {
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
      void setUp() {
+=======
+    void setUp() {
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointment = Appointment.builder()
                 .id(1)
@@ -199,8 +221,11 @@ public class AppointmentServiceUnitTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
         when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
 
@@ -208,6 +233,7 @@ public class AppointmentServiceUnitTest {
 
 =======
         // Arrange
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
@@ -222,16 +248,24 @@ public class AppointmentServiceUnitTest {
 =======
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 =======
+=======
+=======
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
         when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
 
-
-        // Act
         List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
 
+<<<<<<< HEAD
         // Assert
 >>>>>>> e32976c (Added the code for the implementation)
+<<<<<<< HEAD
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
         assertEquals(1, appointments.size());
         assertEquals(appointmentResponseModel.getId(), appointments.get(0).getId());
         assertEquals(appointmentResponseModel.getCustomerId(), appointments.get(0).getCustomerId());
@@ -242,6 +276,7 @@ public class AppointmentServiceUnitTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> a2bb356 (Added the code for the implementation)
@@ -252,6 +287,13 @@ public class AppointmentServiceUnitTest {
 
 >>>>>>> e32976c (Added the code for the implementation)
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+
+>>>>>>> e32976c (Added the code for the implementation)
+=======
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
     }
 
     @Test
@@ -259,8 +301,11 @@ public class AppointmentServiceUnitTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
         when(appointmentRepository.findAll()).thenReturn(List.of());
         when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
 
@@ -643,17 +688,72 @@ public class AppointmentServiceUnitTest {
     }
 =======
         // Arrange
+=======
+>>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
         when(appointmentRepository.findAll()).thenReturn(List.of());
         when(appointmentResponseMapper.entityToResponseModelList(List.of())).thenReturn(List.of());
 
-        // Act
         List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
 
-        // Assert
         assertTrue(appointments.isEmpty());
     }
 >>>>>>> e32976c (Added the code for the implementation)
 
+    @Test
+    void CreateAppointment_shouldSucceed() {
+        AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
+                .customerId("1")
+                .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
+                .services("services")
+                .comments("comments")
+                .status(Status.pending)
+                .build();
 
+<<<<<<< HEAD
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
+=======
+        when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
+        when(appointmentResponseMapper.entityToResponseModel(any(Appointment.class))).thenReturn(appointmentResponseModel);
+
+        AppointmentResponseModel response = appointmentService.createAppointment(requestModel);
+
+        assertNotNull(response);
+        assertEquals(appointmentResponseModel.getId(), response.getId());
+        assertEquals(appointmentResponseModel.getCustomerId(), response.getCustomerId());
+    }
+
+    @Test
+    void CreateAppointment_shouldThrowInvalidInputException_whenCustomerIdIsNull() {
+        AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
+                .customerId(null)
+                .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
+                .services("services")
+                .comments("comments")
+                .status(Status.pending)
+                .build();
+
+        InvalidInputException exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.createAppointment(requestModel);
+        });
+
+        assertEquals("Customer ID is required.", exception.getMessage());
+    }
+
+    @Test
+    void CreateAppointment_shouldThrowInvalidInputException_whenAppointmentDateIsNull() {
+        AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
+                .customerId("1")
+                .appointmentDate(null)
+                .services("services")
+                .comments("comments")
+                .status(Status.pending)
+                .build();
+
+        InvalidInputException exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.createAppointment(requestModel);
+        });
+
+        assertEquals("Appointment date/time is required.", exception.getMessage());
+    }
+>>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
 }
