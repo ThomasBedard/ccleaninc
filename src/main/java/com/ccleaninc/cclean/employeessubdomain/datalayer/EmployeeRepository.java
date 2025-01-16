@@ -11,21 +11,6 @@ import com.ccleaninc.cclean.employeessubdomain.datalayer.Employee;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
-    //     // Find employee by employee identifier
-    // Optional<Employee> findByEmployeeIdentifier_EmployeeId(String employeeId);
-
-    // // Search by email (unique)
-    // Employee findByEmail(String email);
-
-    // // Search by phone number
-    // List<Employee> findByPhoneNumberContaining(String phoneNumber);
-
-    // // Search by first name or last name.
-    // @Query("SELECT e FROM Employee e WHERE " +
-    //        "LOWER(e.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-    //        "LOWER(e.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
-    // List<Employee> searchByName(@Param("searchTerm") String searchTerm);
-
         // 1. Find employee by employee identifier
         Optional<Employee> findByEmployeeIdentifier_EmployeeId(String employeeId);
 

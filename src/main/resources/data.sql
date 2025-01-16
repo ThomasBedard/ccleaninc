@@ -17,10 +17,10 @@ INSERT INTO customers (
 ('l1m2n3o4-j5k6-11ec-82a8-0242ac130003', 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
 
 -- Insert Employees
-INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, password_hash, is_active, role) 
+INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role) 
 VALUES 
-(UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', 'hashed_password_3', TRUE, 'cleaner'),
-(UUID(), 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', 'hashed_password_4', TRUE, 'supervisor');
+(UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
+(UUID(), 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');
 
 -- Insert Admins
 INSERT INTO admins (admin_id, first_name, last_name, email, password_hash) 

@@ -11,10 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface EmployeeResponseMapper {
 
-    // List<EmployeeResponseModel> entityToResponseModelList(List<Employee> employees);
-
-    // Map from a single Employee entity to an EmployeeResponseModel
-    // We extract the 'employeeId' from the embedded EmployeeIdentifier
     @Mapping(expression = "java(employee.getEmployeeIdentifier().getEmployeeId())", target = "employeeId")
     EmployeeResponseModel entityToResponseModel(Employee employee);
 

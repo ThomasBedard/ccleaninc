@@ -1,6 +1,5 @@
 package com.ccleaninc.cclean.employeessubdomain.presentationlayer;
 
-import com.ccleaninc.cclean.employeessubdomain.presentationlayer.EmployeeResponseModel;
 import com.ccleaninc.cclean.employeessubdomain.businesslayer.EmployeeService;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
@@ -13,32 +12,31 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/employees")
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-
-
-    @GetMapping("/employees")
+    // Get all employees
+    @GetMapping
     public ResponseEntity<List<EmployeeResponseModel>> getAllEmployees() {
         List<EmployeeResponseModel> employees = employeeService.getAllEmployees();
-        if(employees == null || employees.isEmpty()) {
+        if (employees == null || employees.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.ok().body(employees);
+        return ResponseEntity.ok(employees);
     }
 
-        // Get a employee by employee ID
+    // Get an employee by employee ID
     @GetMapping("/{employeeId}")
     public ResponseEntity<EmployeeResponseModel> getEmployeeByEmployeeId(@PathVariable String employeeId) {
         try {
             EmployeeResponseModel employee = employeeService.getEmployeeByEmployeeId(employeeId);
             return ResponseEntity.ok(employee);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -49,7 +47,7 @@ public class EmployeeController {
             EmployeeResponseModel newEmployee = employeeService.addEmployee(employeeRequestModel);
             return ResponseEntity.status(HttpStatus.CREATED).body(newEmployee);
         } catch (InvalidInputException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
@@ -62,24 +60,24 @@ public class EmployeeController {
             EmployeeResponseModel updatedEmployee = employeeService.updateEmployee(employeeId, employeeRequestModel);
             return ResponseEntity.ok(updatedEmployee);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         } catch (InvalidInputException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
-    // Delete a employee by employee ID
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String employeeId) {
         try {
             employeeService.deleteEmployeeByEmployeeId(employeeId);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build(); // Returns 204 No Content
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Returns 404 if not found
         }
     }
+    
 
-    // Search employees 
+    // Search employees by term
     @GetMapping("/search")
     public ResponseEntity<List<EmployeeResponseModel>> searchEmployees(@RequestParam String searchTerm) {
         List<EmployeeResponseModel> employees = employeeService.searchEmployees(searchTerm);

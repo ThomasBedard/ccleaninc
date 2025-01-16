@@ -17,4 +17,3 @@ public class EmployeeResponseModel {
     private String role;
     private Boolean isActive;
 }
-

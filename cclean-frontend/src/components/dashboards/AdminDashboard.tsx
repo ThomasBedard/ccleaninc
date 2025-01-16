@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AdminDashboard.css';
-import Employees from '../../pages/Employees';
+import EmployeesList from '../employees/EmployeesList';
 import CustomersList from '../customers/CustomersList';
 import Services from '../../pages/Services';
 import AdminFeedbackList from './AdminFeedbackList';
@@ -12,7 +12,7 @@ const AdminDashboard: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'employees':
-        return <Employees />;
+        return <EmployeesList/>;
       case 'customers':
         return <CustomersList />;
       case 'services':

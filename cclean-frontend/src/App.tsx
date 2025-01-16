@@ -8,7 +8,9 @@ import Contacts from './pages/Contacts';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Schedule from './pages/Schedule'; 
-import Employees from './pages/Employees';
+import EmployeesList from './components/employees/EmployeesList';
+import CreateEmployee from './components/employees/CreateEmployee';
+import EditEmployee from './components/employees/EditEmployee';
 import AdminDashboard from './components/dashboards/AdminDashboard';
 import FormAddService from './pages/FormAddService';
 import FormEditService from './pages/FormEditService';
@@ -27,7 +29,10 @@ const App = () => {
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contacts" element={<Contacts />} />
-          <Route path="/employees" element={<Employees />} />
+          {/* Employee routes */}
+          <Route path="/employees" element={<EmployeesList />} />
+          <Route path="/add-employee" element={<CreateEmployee />} />
+          <Route path="/edit-employee/:employeeId" element={<EditEmployee />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
