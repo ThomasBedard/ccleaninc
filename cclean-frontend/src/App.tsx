@@ -15,6 +15,8 @@ import EditCustomer from "./components/customers/EditCustomer";
 import SubmitFeedback from "./pages/SubmitFeedback";
 import Profile from "./components/Profile";
 import CalendarTestPage from "./pages/CalendarTestPage";
+import SelectDateTimePage from "./pages/SelectDateTimePage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const App = () => {
   return (
@@ -39,6 +41,8 @@ const App = () => {
           <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
           <Route path="/submit-feedback" element={<SubmitFeedback />} />
           <Route path="/calendar-test" element={<CalendarTestPage />} />
+          <Route path="/calendar-select" element={<SelectDateTimePage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
       </PageLayout>
     </BrowserRouter>

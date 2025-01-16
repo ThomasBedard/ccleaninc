@@ -6,6 +6,7 @@ import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceController;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,4 +71,25 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+
+    @Test
+    void createAppointment_ShouldSucceed() {
+        when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void createAppointment_InvalidInput_ShouldReturnBadRequest() {
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
 }
