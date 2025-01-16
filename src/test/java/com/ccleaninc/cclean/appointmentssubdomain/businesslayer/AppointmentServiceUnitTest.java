@@ -13,16 +13,22 @@ import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
 import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentResponseMapper;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 <<<<<<< HEAD
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 =======
+=======
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
+import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+<<<<<<< HEAD
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
@@ -32,6 +38,8 @@ import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentR
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+=======
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +48,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,6 +71,7 @@ import java.util.List;
 <<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
@@ -84,6 +96,9 @@ public class AppointmentServiceUnitTest {
     private AppointmentResponseModel appointmentResponseModel;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
     @BeforeEach
     void setUp() {
@@ -97,8 +112,12 @@ public class AppointmentServiceUnitTest {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointment = Appointment.builder()
                 .id(1)
+<<<<<<< HEAD
                 .customerId("1")
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -108,10 +127,14 @@ public class AppointmentServiceUnitTest {
         appointmentResponseModel = AppointmentResponseModel.builder()
                 .id(1)
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
                 .customerId("1")
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -324,6 +347,10 @@ public class AppointmentServiceUnitTest {
             assertEquals("Appointment request model cannot be null.", e.getMessage());
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
 
     /*@Test
