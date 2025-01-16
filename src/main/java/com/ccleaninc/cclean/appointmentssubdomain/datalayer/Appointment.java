@@ -25,6 +25,9 @@ public class Appointment {
     @Embedded
     private AppointmentIdentifier appointmentIdentifier;
 
+    private String customerFirstName;
+    private String customerLastName;
+
     @Column(name = "customer_id")
     private String customerId;
 

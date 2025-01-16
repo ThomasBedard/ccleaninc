@@ -85,6 +85,8 @@ DROP TABLE IF EXISTS appointments;
 CREATE TABLE IF NOT EXISTS appointments (
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
     appointment_id VARCHAR(36) NOT NULL UNIQUE,
+    customer_first_name VARCHAR(50),
+    customer_last_name VARCHAR(50),
     customer_id VARCHAR(36),
     scheduled_date DATETIME,
     status VARCHAR(36),

@@ -1,6 +1,7 @@
 package com.ccleaninc.cclean.appointmentssubdomain.datalayer;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
 @Embeddable
 public class AppointmentIdentifier {
