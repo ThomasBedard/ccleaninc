@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { PageLayout } from "./components/page-layout";
 import Home from "./pages/Home";
@@ -21,6 +22,28 @@ import CalendarTestPage from "./pages/CalendarTestPage";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import Profile from "./components/Profile";
+=======
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Navbar';
+import Home from './pages/Home';
+import Services from './pages/Services';
+import Appointments from './pages/Appointments';
+import AboutUs from './pages/AboutUs';
+import Contacts from './pages/Contacts';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Schedule from './pages/Schedule'; 
+import Employees from './pages/Employees';
+import AdminDashboard from './components/dashboards/AdminDashboard';
+import FormAddService from './pages/FormAddService';
+import FormEditService from './pages/FormEditService';
+import CreateCustomer from './components/customers/CreateCustomer';
+import EditCustomer from './components/customers/EditCustomer';
+import SubmitFeedback from './pages/SubmitFeedback';
+import CalendarTestPage from './pages/CalendarTestPage';
+import SelectDateTimePage from './pages/SelectDateTimePage';
+import CheckoutPage from './pages/CheckoutPage';
+>>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 
 const App = () => {
   return (

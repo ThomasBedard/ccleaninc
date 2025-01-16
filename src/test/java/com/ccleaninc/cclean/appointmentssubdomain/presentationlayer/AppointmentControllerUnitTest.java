@@ -12,6 +12,7 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestMod
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 =======
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
@@ -22,6 +23,9 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+>>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -263,5 +267,29 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
+<<<<<<< HEAD
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+
+    @Test
+    void createAppointment_ShouldSucceed() {
+        when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void createAppointment_InvalidInput_ShouldReturnBadRequest() {
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+>>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 }

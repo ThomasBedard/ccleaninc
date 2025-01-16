@@ -86,7 +86,11 @@ const CheckoutPage: React.FC = () => {
         status: 'pending'
       };
 
+<<<<<<< HEAD
       const response = await axiosInstance.post('/appointments/with-customerid', payload);
+=======
+      const response = await axiosInstance.post('/appointments', payload);
+>>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
       if (response.status === 201) {
         setSuccessMessage(`Appointment created successfully! Appointment ID: ${response.data.appointmentId}`);
       } else {
