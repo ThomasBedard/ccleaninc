@@ -15,6 +15,7 @@ import FormEditService from './pages/FormEditService';
 import CreateCustomer from './components/customers/CreateCustomer';
 import EditCustomer from './components/customers/EditCustomer';
 import SubmitFeedback from './pages/SubmitFeedback';
+import CalendarTestPage from './pages/CalendarTestPage';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/add-customer" element={<CreateCustomer />} />
           <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
           <Route path="/submit-feedback" element={<SubmitFeedback />} />
+          <Route path="/calendar-test" element={<CalendarTestPage />} />
         </Routes>
       </Layout>
     </Router>
