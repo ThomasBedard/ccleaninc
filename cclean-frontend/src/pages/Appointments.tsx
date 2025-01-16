@@ -230,6 +230,15 @@ const Appointments = () => {
                   Delete
                 </button>
               </td>
+
+              <td>{appointment.appointmentId || "N/A"}</td>
+              <td>{appointment.customerId || "N/A"}</td>
+              <td>{appointment.customerFirstName || "N/A"}</td>
+              <td>{appointment.customerLastName || "N/A"}</td>
+              <td>{appointment.appointmentDate || "N/A"}</td>
+              <td>{appointment.serviceTitles || "N/A"}</td>
+              <td>{appointment.status || "N/A"}</td>
+              <td>{appointment.comments || "N/A"}</td>
             </tr>
           ))}
         </tbody>

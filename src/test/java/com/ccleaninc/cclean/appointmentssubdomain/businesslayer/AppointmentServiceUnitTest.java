@@ -72,9 +72,23 @@ import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentR
 =======
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+<<<<<<< HEAD
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+<<<<<<< HEAD
 >>>>>>> 6ccb850 (feat(CCICC-15): Implement multiple service selection flow)
+<<<<<<< HEAD
 >>>>>>> 759f0aa (feat(CCICC-15): Implement multiple service selection flow)
+=======
+=======
+=======
+import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
+import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
+import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,11 +100,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
 =======
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
 import java.io.ByteArrayOutputStream;
 >>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 import java.math.BigDecimal;
@@ -123,11 +140,21 @@ import static org.mockito.Mockito.*;
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 
 =======
+=======
+import java.math.BigDecimal;
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
 import java.time.LocalDateTime;
 import java.util.List;
 
+<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+=======
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+>>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
 >>>>>>> e32976c (Added the code for the implementation)
 @ExtendWith(MockitoExtension.class)
@@ -149,10 +176,13 @@ public class AppointmentServiceUnitTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
 
     @BeforeEach
     void setUp() {
@@ -161,6 +191,9 @@ public class AppointmentServiceUnitTest {
                 .id(1)
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
+=======
+
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
     @BeforeEach
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -168,6 +201,7 @@ public class AppointmentServiceUnitTest {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
         appointment = Appointment.builder()
                 .id(1)
+<<<<<<< HEAD
 <<<<<<< HEAD
                 .customerId("1")
 >>>>>>> a2bb356 (Added the code for the implementation)
@@ -185,6 +219,13 @@ public class AppointmentServiceUnitTest {
                 .customerId("1")
 >>>>>>> e32976c (Added the code for the implementation)
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+                .customerId("1")
+>>>>>>> e32976c (Added the code for the implementation)
+=======
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -196,6 +237,7 @@ public class AppointmentServiceUnitTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
                 .customerId("1")
@@ -204,11 +246,19 @@ public class AppointmentServiceUnitTest {
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
+=======
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
                 .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
 =======
                 .customerId("1")
 >>>>>>> e32976c (Added the code for the implementation)
+<<<<<<< HEAD
 >>>>>>> 301d0c0 (Added the code for the implementation)
+=======
+=======
+                .customerId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
+>>>>>>> 9821ce9 (Implemented the CRUD operations for Appointments)
                 .appointmentDate(appointmentDate)
                 .services("services")
                 .comments("comments")
@@ -473,6 +523,7 @@ public class AppointmentServiceUnitTest {
 
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
+<<<<<<< HEAD
 
     /*@Test
     void CreateAppointment_shouldSucceed() {
@@ -698,6 +749,8 @@ public class AppointmentServiceUnitTest {
         assertTrue(appointments.isEmpty());
     }
 >>>>>>> e32976c (Added the code for the implementation)
+=======
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
 
     @Test
     void CreateAppointment_shouldSucceed() {

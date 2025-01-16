@@ -62,6 +62,9 @@ VALUES
 
 -- Insert 6 rows into the appointments table
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
 INSERT INTO appointments (appointment_id, customer_first_name, customer_last_name, customer_id, scheduled_date, status, services, comments) VALUES
 ('a1b2c3d4-e5f6-11ec-82a8-0242ac130003', 'Jean', 'Tremblay', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', '2025-01-15 10:30:00', 'pending', 'Residential Cleaning Service', 'Customer prefers morning appointments'),
 ('b2c3d4e5-f6a7-11ec-82a8-0242ac130003', 'Marie', 'Dubois', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', '2025-01-16 15:00:00', 'pending', 'Commercial Cleaning Service', 'Customer requested specific stylist'),
@@ -69,6 +72,7 @@ INSERT INTO appointments (appointment_id, customer_first_name, customer_last_nam
 ('d4e5f6g7-b8c9-11ec-82a8-0242ac130003', 'Sophie', 'Girard', 'f5g6h7i8-d9e0-11ec-82a8-0242ac130003', '2025-01-18 14:00:00', 'pending', 'Detailed Deep Cleaning', 'Cancelled due to customer illness'),
 ('e5f6g7h8-c9d0-11ec-82a8-0242ac130003', 'Lucas', 'Fortin', 'g6h7i8j9-e0f1-11ec-82a8-0242ac130003', '2025-01-19 11:00:00', 'pending', 'Detailed Deep Cleaning', 'Requested vegan-friendly products'),
 ('f6g7h8i9-d0e1-11ec-82a8-0242ac130003', 'John', 'Doe', 'h7i8j9k0-f1g2-11ec-82a8-0242ac130003', '2025-01-20 13:00:00', 'pending', 'Detailed Deep Cleaning', 'Customer requested express service');
+<<<<<<< HEAD
 =======
 INSERT INTO appointments (appointment_id, customer_id, scheduled_date, status, services, comments) VALUES
 ('a1b2c3d4-e5f6-11ec-82a8-0242ac130003', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', '2025-01-15 10:30:00', 'pending', 'Residential Cleaning Service', 'Customer prefers morning appointments'),
@@ -79,3 +83,5 @@ INSERT INTO appointments (appointment_id, customer_id, scheduled_date, status, s
 ('f6g7h8i9-d0e1-11ec-82a8-0242ac130003', 'h7i8j9k0-f1g2-11ec-82a8-0242ac130003', '2025-01-20 13:00:00', 'confirmed', 'Detailed Deep Cleaning', 'Customer requested express service');
 
 >>>>>>> e32976c (Added the code for the implementation)
+=======
+>>>>>>> 869ead5 (Implemented the CRUD operations for Appointments)
