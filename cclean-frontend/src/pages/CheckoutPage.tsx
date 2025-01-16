@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import axiosInstance from '../api/axios';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import axiosInstance from "../api/axios";
 
 interface Service {
   serviceId: string;
@@ -18,10 +18,10 @@ const CheckoutPage: React.FC = () => {
   };
 
   const [services, setServices] = useState<Service[]>([]);
-  const [customerId, setCustomerId] = useState('');
-  const [comments, setComments] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [customerId, setCustomerId] = useState("");
+  const [comments, setComments] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -35,7 +35,7 @@ const CheckoutPage: React.FC = () => {
         }
         setServices(fetched);
       } catch (err) {
-        console.error('Error fetching services:', err);
+        console.error("Error fetching services:", err);
       }
     };
 
@@ -49,106 +49,146 @@ const CheckoutPage: React.FC = () => {
       const res = await axiosInstance.get(`/customers/${id}`);
       return res.status === 200;
     } catch {
-      console.error('Error verifying customer.');
-      setErrorMessage('Error verifying the customer. Please try again.');
+      console.error("Error verifying customer.");
+      setErrorMessage("Error verifying the customer. Please try again.");
       return false;
     }
   };
 
   const handleSubmit = async () => {
-    setSuccessMessage('');
-    setErrorMessage('');
+    setSuccessMessage("");
+    setErrorMessage("");
 
     if (!customerId.trim()) {
-      setErrorMessage('Please enter a valid customer ID.');
+      setErrorMessage("Please enter a valid customer ID.");
       return;
     }
 
     const customerExists = await checkCustomerExists(customerId.trim());
     if (!customerExists) {
-      setErrorMessage('Invalid customer ID. That customer does not exist.');
+      setErrorMessage("Invalid customer ID. That customer does not exist.");
       return;
     }
 
     if (!appointmentDate) {
-      setErrorMessage('No appointment date selected.');
+      setErrorMessage("No appointment date selected.");
       return;
     }
 
     try {
-      const servicesString = selectedServiceIds.join(',');
+      const servicesString = selectedServiceIds.join(",");
 
       const payload = {
         customerId: customerId.trim(),
         appointmentDate,
         services: servicesString,
         comments,
-        status: 'pending'
+        status: "pending",
       };
 
-<<<<<<< HEAD
-      const response = await axiosInstance.post('/appointments/with-customerid', payload);
-=======
-      const response = await axiosInstance.post('/appointments', payload);
->>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+      const response = await axiosInstance.post(
+        "/appointments/with-customerid",
+        payload
+      );
       if (response.status === 201) {
-        setSuccessMessage(`Appointment created successfully! Appointment ID: ${response.data.appointmentId}`);
+        setSuccessMessage(
+          `Appointment created successfully! Appointment ID: ${response.data.appointmentId}`
+        );
       } else {
-        setErrorMessage('Failed to create appointment. Please try again.');
+        setErrorMessage("Failed to create appointment. Please try again.");
       }
     } catch (err) {
-      console.error('Error creating appointment:', err);
-      setErrorMessage('Error creating appointment. Please try again.');
+      console.error("Error creating appointment:", err);
+      setErrorMessage("Error creating appointment. Please try again.");
     }
   };
 
   return (
-    <div style={{ padding: '40px', maxWidth: '600px', margin: '0 auto', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', borderRadius: '10px', backgroundColor: '#f9f9f9' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Confirm Your Appointment</h1>
-      <div style={{ marginBottom: '20px' }}>
+    <div
+      style={{
+        padding: "40px",
+        maxWidth: "600px",
+        margin: "0 auto",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        borderRadius: "10px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Confirm Your Appointment
+      </h1>
+      <div style={{ marginBottom: "20px" }}>
         <h2>Selected Services</h2>
         {services.map((svc) => (
-          <div key={svc.serviceId} style={{ padding: '10px 0', borderBottom: '1px solid #ddd' }}>
+          <div
+            key={svc.serviceId}
+            style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}
+          >
             <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
           </div>
         ))}
         {services.length === 0 && (
-          <p>No service details available. (Check your IDs or backend calls.)</p>
+          <p>
+            No service details available. (Check your IDs or backend calls.)
+          </p>
         )}
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: "20px" }}>
         <h3>Date & Time:</h3>
         <p>{appointmentDate}</p>
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: "20px" }}>
         <label>Customer ID:</label>
         <input
           type="text"
           value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
-          style={{ width: '100%', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
           placeholder="Enter your Customer ID"
         />
       </div>
 
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: "20px" }}>
         <label>Comments:</label>
         <textarea
           value={comments}
           onChange={(e) => setComments(e.target.value)}
-          style={{ width: '100%', padding: '8px', borderRadius: '5px', border: '1px solid #ccc' }}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+          }}
           placeholder="Additional comments (optional)"
         />
       </div>
 
-      {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
-      {successMessage && <p style={{ color: 'green', textAlign: 'center' }}>{successMessage}</p>}
+      {errorMessage && (
+        <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>
+      )}
+      {successMessage && (
+        <p style={{ color: "green", textAlign: "center" }}>{successMessage}</p>
+      )}
 
       <button
         onClick={handleSubmit}
-        style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer', fontSize: '16px' }}
+        style={{
+          width: "100%",
+          padding: "10px",
+          backgroundColor: "#28a745",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          fontSize: "16px",
+        }}
       >
         Confirm Appointment
       </button>
