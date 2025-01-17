@@ -3,9 +3,13 @@ package com.ccleaninc.cclean.appointmentssubdomain.presentationlayer;
 import com.ccleaninc.cclean.appointmentssubdomain.businesslayer.AppointmentService;
 import com.ccleaninc.cclean.customerssubdomain.businesslayer.CustomerService;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
+
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +35,14 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
+
+    @PostMapping("/appointments")
+    public ResponseEntity<AppointmentResponseModel> createAppointment(@RequestBody AppointmentRequestModel requestModel) {
+        try {
+            AppointmentResponseModel createdAppointment = appointmentService.createAppointment(requestModel);
+            return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
+        } catch (InvalidInputException e) {
+
     @GetMapping("/appointments/{appointmentId}")
     public ResponseEntity<AppointmentResponseModel> getAppointmentByAppointmentId(@PathVariable String appointmentId) {
         try {
@@ -51,6 +63,7 @@ public class AppointmentController {
         }
     }
 
+
     @PutMapping("/appointments/{appointmentId}")
     public ResponseEntity<AppointmentResponseModel> updateAppointment(@PathVariable String appointmentId, @RequestBody AppointmentRequestModel appointmentRequestModel) {
         AppointmentResponseModel appointment = appointmentService.updateAppointment(appointmentId, appointmentRequestModel);
@@ -70,5 +83,6 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
 }

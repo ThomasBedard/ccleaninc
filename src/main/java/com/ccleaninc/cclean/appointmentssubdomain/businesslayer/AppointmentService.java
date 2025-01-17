@@ -8,6 +8,10 @@ import java.util.List;
 public interface AppointmentService {
 
     List<AppointmentResponseModel> getAllAppointments();
+
+    AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel);
+}
+
     AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
     AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
     // update appointment

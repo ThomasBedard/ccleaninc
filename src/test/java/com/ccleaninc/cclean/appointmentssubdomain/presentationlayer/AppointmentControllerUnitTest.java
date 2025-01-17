@@ -6,7 +6,11 @@ import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceController;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
+
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,6 +76,11 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+    void createAppointment_ShouldSucceed() {
+        when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
     void getAppointmentByAppointmentId_ShouldSucceed() {
         when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointmentResponseModel);
 
@@ -101,13 +110,23 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+
+    void createAppointment_InvalidInput_ShouldReturnBadRequest() {
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
+
     void addAppointment_AppointmentNotAdded_ShouldReturnBadRequest() {
         when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
 
         ResponseEntity<AppointmentResponseModel> response = appointmentController.addAppointment(appointmentRequestModel);
 
+
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
+
 
     @Test
     void updateAppointment_ShouldSucceed() {
@@ -125,5 +144,6 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
 
 }
