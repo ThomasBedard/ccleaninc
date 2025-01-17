@@ -9,7 +9,7 @@ import lombok.Value;
 @AllArgsConstructor
 public class EmployeeResponseModel {
 
-    private String id;
+    private String employeeId;      
     private String firstName;
     private String lastName;
     private String email;
@@ -17,4 +17,3 @@ public class EmployeeResponseModel {
     private String role;
     private Boolean isActive;
 }
-
