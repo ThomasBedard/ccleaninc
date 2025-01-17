@@ -1,19 +1,23 @@
 package com.ccleaninc.cclean.employeessubdomain.datalayer;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "employees")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Employee {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Integer id;
 
     @Embedded
-    private EmployeeIdentifier EmployeeIdentifier;
+    private EmployeeIdentifier employeeIdentifier;
 
     @Column(name = "first_name")
     private String firstName;

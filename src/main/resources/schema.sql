@@ -17,13 +17,12 @@ CREATE INDEX idx_customer_id ON customers (customer_id);
 -- Employee Table
 DROP TABLE IF EXISTS employees;
 CREATE TABLE IF NOT EXISTS employees (
-    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    employee_id VARCHAR(36) NOT NULL,
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    employee_id VARCHAR(36) NOT NULL UNIQUE,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone_number VARCHAR(20),
-    password_hash VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     role VARCHAR(50)
     );
@@ -85,6 +84,8 @@ DROP TABLE IF EXISTS appointments;
 CREATE TABLE IF NOT EXISTS appointments (
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
     appointment_id VARCHAR(36) NOT NULL UNIQUE,
+    customer_first_name VARCHAR(50),
+    customer_last_name VARCHAR(50),
     customer_id VARCHAR(36),
     scheduled_date DATETIME,
     status VARCHAR(36),
