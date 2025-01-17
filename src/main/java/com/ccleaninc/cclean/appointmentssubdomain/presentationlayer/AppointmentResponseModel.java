@@ -18,6 +18,8 @@ public class AppointmentResponseModel  {
 
     private Integer id;
     private String appointmentId;
+    private String customerFirstName;
+    private String customerLastName;
     private String customerId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     LocalDateTime appointmentDate;

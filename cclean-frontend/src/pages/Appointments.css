@@ -91,3 +91,39 @@
 .appointments-table td {
   transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions for interactivity */
 }
+
+.add-appointment-button {
+  position: fixed; /* Fixed position for right bottom placement */
+  bottom: 20px; /* Distance from the bottom */
+  right: 20px; /* Distance from the right */
+  padding: 10px 20px;
+  background-color: #28a745; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 50px; /* Fully rounded corners */
+  cursor: pointer;
+  font-size: 1rem; /* Larger font size for prominence */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for better visibility */
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.add-appointment-button:hover {
+  background-color: #218838; /* Darker green on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+.edit-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #FFD700;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+
+
