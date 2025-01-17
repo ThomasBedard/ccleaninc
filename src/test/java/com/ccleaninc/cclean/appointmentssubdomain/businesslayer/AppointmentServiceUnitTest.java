@@ -256,6 +256,38 @@ public class AppointmentServiceUnitTest {
         }
     }
 
+    @Test
+    void generateAppointmentPdf_InvalidInputException() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+
+        // Act & Assert
+        try {
+            appointmentService.generateAppointmentsPdf();
+        } catch (Exception e) {
+            assertEquals("No appointments found.", e.getMessage());
+        }
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldSucceed() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldReturnByteArrayOutputStream() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+
 
 
 }

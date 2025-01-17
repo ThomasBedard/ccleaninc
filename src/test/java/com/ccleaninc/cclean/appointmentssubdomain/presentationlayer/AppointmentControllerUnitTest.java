@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -125,5 +126,15 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+    @Test
+    void generateAppointmentsPdf_ShouldSucceed() {
+        when(appointmentService.generateAppointmentsPdf()).thenReturn(new ByteArrayOutputStream());
+
+        ResponseEntity<byte[]> response = appointmentController.generateAppointmentsPdf();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 
 }

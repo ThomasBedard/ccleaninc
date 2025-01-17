@@ -125,5 +125,19 @@
   transition: background-color 0.2s ease;
 }
 
+.download-pdf-button {
+  margin-left: 5px;
+  padding: 10px 15px;
+  background-color: #d0681989;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.download-pdf-button:hover {
+  background-color: #b02405;
+}
 
 
