@@ -1,15 +1,9 @@
 package com.ccleaninc.cclean.appointmentssubdomain.presentationlayer;
 
 import com.ccleaninc.cclean.appointmentssubdomain.businesslayer.AppointmentService;
-import com.ccleaninc.cclean.customerssubdomain.businesslayer.CustomerService;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
-
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
-
-import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
-import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
-
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +17,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class AppointmentController {
 
-    final private AppointmentService appointmentService;
-    final private CustomerRepository customerRepository;
+    private final AppointmentService appointmentService;
+    private final CustomerRepository customerRepository;
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentResponseModel>> getAllAppointments() {
@@ -35,13 +29,16 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
-
-    @PostMapping("/appointments")
+    @PostMapping("/appointments/with-customerid")
     public ResponseEntity<AppointmentResponseModel> createAppointment(@RequestBody AppointmentRequestModel requestModel) {
+        // This method requires requestModel.getCustomerId() to exist
         try {
             AppointmentResponseModel createdAppointment = appointmentService.createAppointment(requestModel);
             return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
         } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
 
     @GetMapping("/appointments/{appointmentId}")
     public ResponseEntity<AppointmentResponseModel> getAppointmentByAppointmentId(@PathVariable String appointmentId) {
@@ -50,11 +47,15 @@ public class AppointmentController {
             return ResponseEntity.ok().body(appointment);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
+
     @PostMapping("/appointments")
     public ResponseEntity<AppointmentResponseModel> addAppointment(@RequestBody AppointmentRequestModel appointmentRequestModel) {
+
         AppointmentResponseModel appointment = appointmentService.addAppointment(appointmentRequestModel);
         if (appointment != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(appointment);
@@ -63,14 +64,18 @@ public class AppointmentController {
         }
     }
 
-
     @PutMapping("/appointments/{appointmentId}")
-    public ResponseEntity<AppointmentResponseModel> updateAppointment(@PathVariable String appointmentId, @RequestBody AppointmentRequestModel appointmentRequestModel) {
-        AppointmentResponseModel appointment = appointmentService.updateAppointment(appointmentId, appointmentRequestModel);
-        if (appointment != null) {
+    public ResponseEntity<AppointmentResponseModel> updateAppointment(
+            @PathVariable String appointmentId,
+            @RequestBody AppointmentRequestModel appointmentRequestModel
+    ) {
+        try {
+            AppointmentResponseModel appointment = appointmentService.updateAppointment(appointmentId, appointmentRequestModel);
             return ResponseEntity.ok().body(appointment);
-        } else {
+        } catch (InvalidInputException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -81,8 +86,9 @@ public class AppointmentController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
 
 }
