@@ -86,10 +86,14 @@ const CheckoutPage: React.FC = () => {
         status: "pending",
       };
 
+<<<<<<< HEAD
       const response = await axiosInstance.post(
         "/appointments/with-customerid",
         payload
       );
+=======
+      const response = await axiosInstance.post('/appointments/with-customerid', payload);
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
       if (response.status === 201) {
         setSuccessMessage(
           `Appointment created successfully! Appointment ID: ${response.data.appointmentId}`

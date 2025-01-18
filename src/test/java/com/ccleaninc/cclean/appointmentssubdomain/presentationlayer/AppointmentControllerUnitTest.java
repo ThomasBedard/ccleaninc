@@ -4,6 +4,7 @@ import com.ccleaninc.cclean.appointmentssubdomain.businesslayer.AppointmentServi
 import com.ccleaninc.cclean.appointmentssubdomain.datalayer.Status;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
 import com.ccleaninc.cclean.servicesubdomain.businesslayer.ServiceService;
@@ -30,6 +31,10 @@ import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 =======
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
+import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,27 +48,39 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.*;
 =======
 import static org.junit.jupiter.api.Assertions.assertEquals;
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+import static org.junit.jupiter.api.Assertions.*;
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentControllerUnitTest {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
     @Mock
     private AppointmentService appointmentService;
 
     @InjectMocks
     private AppointmentController appointmentController;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
     private AppointmentResponseModel appointmentResponseModel;
     private AppointmentRequestModel appointmentRequestModel;
 
@@ -71,6 +88,9 @@ public class AppointmentControllerUnitTest {
     void setUp() {
         LocalDateTime appointmentDate = LocalDateTime.parse("2021-08-01T10:00");
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 
         // A typical response model you expect back
         appointmentResponseModel = AppointmentResponseModel.builder()
@@ -92,6 +112,9 @@ public class AppointmentControllerUnitTest {
                 .status(Status.pending)
                 .build();
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 
         // A typical request model you send in
         appointmentRequestModel = AppointmentRequestModel.builder()
@@ -114,6 +137,7 @@ public class AppointmentControllerUnitTest {
         when(appointmentService.getAllAppointments()).thenReturn(List.of(appointmentResponseModel));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         ResponseEntity<List<AppointmentResponseModel>> response =
                 appointmentController.getAllAppointments();
 
@@ -124,6 +148,13 @@ public class AppointmentControllerUnitTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 >>>>>>> a2bb356 (Added the code for the implementation)
+=======
+        ResponseEntity<List<AppointmentResponseModel>> response =
+                appointmentController.getAllAppointments();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
         assertEquals(1, response.getBody().size());
         assertEquals(appointmentResponseModel, response.getBody().get(0));
     }
@@ -132,6 +163,7 @@ public class AppointmentControllerUnitTest {
     void getAllAppointments_NoAppointmentsFound_ShouldReturnNotFound() {
         when(appointmentService.getAllAppointments()).thenReturn(List.of());
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         ResponseEntity<List<AppointmentResponseModel>> response =
                 appointmentController.getAllAppointments();
@@ -275,6 +307,10 @@ public class AppointmentControllerUnitTest {
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 =======
         ResponseEntity<List<AppointmentResponseModel>> response = appointmentController.getAllAppointments();
+=======
+        ResponseEntity<List<AppointmentResponseModel>> response =
+                appointmentController.getAllAppointments();
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -285,42 +321,78 @@ public class AppointmentControllerUnitTest {
 
     @Test
     void createAppointment_ShouldSucceed() {
-        when(appointmentService.createAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenReturn(appointmentResponseModel);
 
+<<<<<<< HEAD
         ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
 =======
 
+=======
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void createAppointment_InvalidInput_ShouldReturnBadRequest() {
+        when(appointmentService.createAppointment(appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.createAppointment(appointmentRequestModel);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
     @Test
     void getAppointmentByAppointmentId_ShouldSucceed() {
-        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointmentResponseModel);
+        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(appointmentResponseModel);
 
-        ResponseEntity<AppointmentResponseModel> response = appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertEquals(appointmentResponseModel, response.getBody());
     }
 
     @Test
     void getAppointmentByAppointmentId_AppointmentNotFound_ShouldReturnNotFound() {
-        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenThrow(new NotFoundException("Appointment with ID a1b2c3d4-e5f6-11ec-82a8-0242ac130000 was not found."));
+        when(appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenThrow(new NotFoundException("Appointment not found."));
 
-        ResponseEntity<AppointmentResponseModel> response = appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     void addAppointment_ShouldSucceed() {
-        when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(appointmentResponseModel);
+        when(appointmentService.addAppointment(appointmentRequestModel))
+                .thenReturn(appointmentResponseModel);
 
+<<<<<<< HEAD
         ResponseEntity<AppointmentResponseModel> response = appointmentController.addAppointment(appointmentRequestModel);
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.addAppointment(appointmentRequestModel);
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertEquals(appointmentResponseModel, response.getBody());
     }
 
     @Test
+<<<<<<< HEAD
 <<<<<<< HEAD
     void createAppointment_InvalidInput_ShouldReturnBadRequest() {
         when(appointmentService.createAppointment(appointmentRequestModel))
@@ -328,34 +400,58 @@ public class AppointmentControllerUnitTest {
 
         ResponseEntity<AppointmentResponseModel> response = appointmentController.createAppointment(appointmentRequestModel);
 =======
+=======
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
     void addAppointment_AppointmentNotAdded_ShouldReturnBadRequest() {
+        // Service returns null if appointment not created
         when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
 
+<<<<<<< HEAD
         ResponseEntity<AppointmentResponseModel> response = appointmentController.addAppointment(appointmentRequestModel);
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.addAppointment(appointmentRequestModel);
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
 =======
+=======
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
     @Test
     void updateAppointment_ShouldSucceed() {
-        when(appointmentService.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000", appointmentRequestModel)).thenReturn(appointmentResponseModel);
+        when(appointmentService.updateAppointment(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        )).thenReturn(appointmentResponseModel);
 
-        ResponseEntity<AppointmentResponseModel> response = appointmentController.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000", appointmentRequestModel);
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.updateAppointment(
+                        "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                        appointmentRequestModel
+                );
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertEquals(appointmentResponseModel, response.getBody());
     }
 
     @Test
     void deleteAppointmentByAppointmentId_ShouldSucceed() {
-        ResponseEntity<Void> response = appointmentController.deleteAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+        // We don't need a mock "when" here, as there's no return for delete
+        ResponseEntity<Void> response =
+                appointmentController.deleteAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+<<<<<<< HEAD
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 }
