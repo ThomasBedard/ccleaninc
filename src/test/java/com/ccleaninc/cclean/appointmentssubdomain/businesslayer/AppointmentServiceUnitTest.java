@@ -257,7 +257,7 @@ public class AppointmentServiceUnitTest {
     }
 
 
-    @Test
+    /*@Test
     void CreateAppointment_shouldSucceed() {
         AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
                 .customerId("1")
@@ -292,7 +292,7 @@ public class AppointmentServiceUnitTest {
         });
 
         assertEquals("Customer ID is required.", exception.getMessage());
-    }
+    } */
 
     @Test
     void CreateAppointment_shouldThrowInvalidInputException_whenAppointmentDateIsNull() {

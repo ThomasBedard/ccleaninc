@@ -10,14 +10,13 @@ public interface AppointmentService {
     List<AppointmentResponseModel> getAllAppointments();
 
     AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel);
-}
 
     AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
-    AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
-    // update appointment
-    AppointmentResponseModel updateAppointment (String appointmentId, AppointmentRequestModel appointmentRequestModel);
 
-    //deleteAppointment
+    AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
+
+    AppointmentResponseModel updateAppointment(String appointmentId, AppointmentRequestModel appointmentRequestModel);
+
     void deleteAppointmentByAppointmentId(String appointmentId);
 
 }
