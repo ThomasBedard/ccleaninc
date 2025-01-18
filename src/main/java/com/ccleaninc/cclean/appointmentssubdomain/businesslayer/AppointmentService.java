@@ -10,14 +10,18 @@ public interface AppointmentService {
     List<AppointmentResponseModel> getAllAppointments();
 <<<<<<< HEAD
     AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel);
+<<<<<<< HEAD
 }
 =======
-    AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
-    AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
-    // update appointment
-    AppointmentResponseModel updateAppointment (String appointmentId, AppointmentRequestModel appointmentRequestModel);
+=======
 
-    //deleteAppointment
+>>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+    AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
+
+    AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
+
+    AppointmentResponseModel updateAppointment(String appointmentId, AppointmentRequestModel appointmentRequestModel);
+
     void deleteAppointmentByAppointmentId(String appointmentId);
 
 }

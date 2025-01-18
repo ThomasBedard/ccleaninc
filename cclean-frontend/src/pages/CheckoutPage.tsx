@@ -86,7 +86,7 @@ const CheckoutPage: React.FC = () => {
         status: 'pending'
       };
 
-      const response = await axiosInstance.post('/appointments', payload);
+      const response = await axiosInstance.post('/appointments/with-customerid', payload);
       if (response.status === 201) {
         setSuccessMessage(`Appointment created successfully! Appointment ID: ${response.data.appointmentId}`);
       } else {
