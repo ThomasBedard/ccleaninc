@@ -44,18 +44,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.*;
+<<<<<<< HEAD
 =======
 import static org.junit.jupiter.api.Assertions.assertEquals;
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
 import static org.junit.jupiter.api.Assertions.*;
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+import static org.mockito.Mockito.doThrow;
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -374,6 +379,22 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+    void getAppointmentByAppointmentId_InvalidInput() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        when(appointmentService.getAppointmentByAppointmentId(invalidAppointmentId))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.getAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
     void addAppointment_ShouldSucceed() {
         when(appointmentService.addAppointment(appointmentRequestModel))
                 .thenReturn(appointmentResponseModel);
@@ -394,6 +415,7 @@ public class AppointmentControllerUnitTest {
     @Test
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     void createAppointment_InvalidInput_ShouldReturnBadRequest() {
         when(appointmentService.createAppointment(appointmentRequestModel))
                 .thenThrow(new InvalidInputException("Invalid input"));
@@ -402,6 +424,22 @@ public class AppointmentControllerUnitTest {
 =======
 =======
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+    void addAppointment_BadRequest() {
+        // Arrange
+        when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.addAppointment(appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
     void addAppointment_AppointmentNotAdded_ShouldReturnBadRequest() {
         // Service returns null if appointment not created
         when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
@@ -442,6 +480,38 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+    void updateAppointment_BadRequest() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        when(appointmentService.updateAppointment(invalidAppointmentId, appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.updateAppointment(invalidAppointmentId, appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void updateAppointment_NotFound() {
+        // Arrange
+        String nonExistentAppointmentId = "non-existent-id";
+        when(appointmentService.updateAppointment(nonExistentAppointmentId, appointmentRequestModel))
+                .thenThrow(new NotFoundException("Appointment not found."));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.updateAppointment(nonExistentAppointmentId, appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
     void deleteAppointmentByAppointmentId_ShouldSucceed() {
         // We don't need a mock "when" here, as there's no return for delete
         ResponseEntity<Void> response =
@@ -451,7 +521,50 @@ public class AppointmentControllerUnitTest {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 =======
 >>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
+=======
+    @Test
+    void deleteAppointmentByAppointmentId_NotFound() {
+        // Arrange
+        String nonExistentAppointmentId = "non-existent-id";
+        doThrow(new NotFoundException("Appointment not found."))
+                .when(appointmentService).deleteAppointmentByAppointmentId(nonExistentAppointmentId);
+
+        // Act
+        ResponseEntity<Void> response =
+                appointmentController.deleteAppointmentByAppointmentId(nonExistentAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void deleteAppointmentByAppointmentId_InvalidInput() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        doThrow(new InvalidInputException("Invalid input"))
+                .when(appointmentService).deleteAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Act
+        ResponseEntity<Void> response =
+                appointmentController.deleteAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void generateAppointmentsPdf_ShouldSucceed() {
+        when(appointmentService.generateAppointmentsPdf()).thenReturn(new ByteArrayOutputStream());
+
+        ResponseEntity<byte[]> response = appointmentController.generateAppointmentsPdf();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 }

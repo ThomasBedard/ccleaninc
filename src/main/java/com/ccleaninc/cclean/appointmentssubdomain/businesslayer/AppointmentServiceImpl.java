@@ -15,10 +15,15 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestMod
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -116,9 +121,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
 
         Appointment appointment = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
-        if (appointment == null) {
-            throw new NotFoundException("Appointment with ID " + appointmentId + " was not found.");
-        }
+
 
         appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
         appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
@@ -147,5 +150,82 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepository.delete(existing);
     }
 
+    @Override
+    public ByteArrayOutputStream generateAppointmentsPdf() {
+        List<Appointment> appointments = appointmentRepository.findAll(); // Fetch all appointments
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, outputStream);
+            document.open();
+
+            // Add company name at the top left
+            Font companyFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Paragraph companyName = new Paragraph("CCLEAN INC.", companyFont);
+            companyName.setAlignment(Element.ALIGN_LEFT);
+            document.add(companyName);
+
+            document.add(new Paragraph("\n"));
+
+            // Add title
+            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Paragraph title = new Paragraph("Appointments List", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+            document.add(new Paragraph("\n"));
+
+            // Create table
+            PdfPTable table = new PdfPTable(6);
+            table.setWidthPercentage(100);
+
+            // Add table headers
+            addTableHeader(table);
+
+            // Add table data
+            for (Appointment appointment : appointments) {
+                addTableRow(table, appointment);
+            }
+
+            document.add(table);
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } finally {
+            document.close();
+        }
+
+        return outputStream;
+    }
+
+    private void addTableHeader(PdfPTable table) {
+        Font headerFont = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+
+        PdfPCell cell = new PdfPCell(new Paragraph("ID", headerFont));
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Paragraph("Customer Name", headerFont));
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Paragraph("Date", headerFont));
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Paragraph("Status", headerFont));
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Paragraph("Services", headerFont));
+        table.addCell(cell);
+
+        cell = new PdfPCell(new Paragraph("Comments", headerFont));
+        table.addCell(cell);
+    }
+
+    private void addTableRow(PdfPTable table, Appointment appointment) {
+        table.addCell(appointment.getId().toString());
+        table.addCell(appointment.getCustomerFirstName() + " " + appointment.getCustomerLastName());
+        table.addCell(appointment.getAppointmentDate().toString());
+        table.addCell(appointment.getStatus().toString());
+        table.addCell(appointment.getServices());
+        table.addCell(appointment.getComments());
+    }
 
 }

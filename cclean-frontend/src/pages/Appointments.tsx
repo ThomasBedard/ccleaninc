@@ -85,7 +85,6 @@ const Appointments = () => {
     }
   };
 
-  // Function to delete an appointment
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
       alert("Invalid appointment ID");
@@ -121,6 +120,56 @@ const Appointments = () => {
       const response = await axiosInstance.get("/appointments/pdf", {
         responseType: "blob", // Important to receive the PDF as a blob
       });
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "appointments.pdf"); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while downloading the PDF."
+      );
+    }
+  };
+
+  // Function to download the PDF
+  const downloadPdf = async () => {
+    try {
+      const response = await axiosInstance.get("/appointments/pdf", {
+        responseType: "blob", // Important to receive the PDF as a blob
+      });
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "appointments.pdf"); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while downloading the PDF."
+      );
+    }
+  };
+
+  // Function to download the PDF
+  const downloadPdf = async () => {
+    try {
+      const response = await axiosInstance.get("/appointments/pdf", {
+        responseType: "blob", // Important to receive the PDF as a blob
+      });
       const url = window.URL.createObjectURL(
         new Blob([response.data], { type: "application/pdf" })
       );
@@ -140,7 +189,6 @@ const Appointments = () => {
   };
   useEffect(() => {
     fetchAllAppointments();
-    // eslint-disable-next-line
   }, []);
 
   if (loading) {

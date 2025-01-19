@@ -49,11 +49,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
+=======
+import java.io.ByteArrayOutputStream;
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 <<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.*;
@@ -406,6 +411,7 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
+<<<<<<< HEAD
 =======
         // Arrange
 =======
@@ -422,12 +428,53 @@ public class AppointmentServiceUnitTest {
     void CreateAppointment_shouldSucceed() {
         AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
                 .customerId("1")
+=======
+
+    @Test
+    void generateAppointmentPdf_InvalidInputException() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+
+        // Act & Assert
+        try {
+            appointmentService.generateAppointmentsPdf();
+        } catch (Exception e) {
+            assertEquals("No appointments found.", e.getMessage());
+        }
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldSucceed() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldReturnByteArrayOutputStream() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+    @Test
+    void updateAppointment_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
+        // Arrange
+        AppointmentRequestModel appointmentRequestModel = AppointmentRequestModel.builder()
+                .customerFirstName("John")
+                .customerLastName("Doe")
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
                 .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
                 .services("services")
                 .comments("comments")
                 .status(Status.pending)
                 .build();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> a2bb356 (Added the code for the implementation)
 =======
@@ -475,4 +522,55 @@ public class AppointmentServiceUnitTest {
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
 >>>>>>> 5876d42 (feat(CCICC-15): Implement multiple service selection flow)
+=======
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.updateAppointment(null, appointmentRequestModel);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.updateAppointment(invalidAppointmentId, appointmentRequestModel);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
+
+    @Test
+    void getAppointmentById_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
+        // Arrange
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.getAppointmentByAppointmentId(null);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.getAppointmentByAppointmentId(invalidAppointmentId);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
+
+    @Test
+    void deleteAppointmentByAppointmentId_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
+        // Arrange
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.deleteAppointmentByAppointmentId(null);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.deleteAppointmentByAppointmentId(invalidAppointmentId);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
+
+
+>>>>>>> a50bd81 (Implemented the Download list for all appointments feature for admin)
 }

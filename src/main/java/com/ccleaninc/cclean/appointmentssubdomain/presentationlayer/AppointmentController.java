@@ -8,10 +8,13 @@ import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseMo
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 @RestController
@@ -92,6 +95,19 @@ public class AppointmentController {
         } catch (InvalidInputException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping("/appointments/pdf")
+    public ResponseEntity<byte[]> generateAppointmentsPdf() {
+        ByteArrayOutputStream pdfData = appointmentService.generateAppointmentsPdf();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "appointments.pdf");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfData.toByteArray());
     }
 
 }
