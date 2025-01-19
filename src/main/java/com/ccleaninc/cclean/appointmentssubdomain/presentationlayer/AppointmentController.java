@@ -90,5 +90,39 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+    @GetMapping("/appointments/by-customer/{customerId}")
+    public ResponseEntity<List<AppointmentResponseModel>> getAppointmentsByCustomerId(@PathVariable String customerId) {
+        try {
+            List<AppointmentResponseModel> appointments = appointmentService.getAppointmentsByCustomerId(customerId);
+            if (appointments.isEmpty()) {
+                // If no appointments found, decide if you return 200 with empty list or 404
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(appointments);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+    @PutMapping("/appointments/customer/{appointmentId}")
+    public ResponseEntity<AppointmentResponseModel> updateAppointmentCustomer(
+            @PathVariable String appointmentId,
+            @RequestBody AppointmentRequestModel appointmentRequestModel) {
+
+        // This calls a new method that does NOT overwrite the customerId
+        AppointmentResponseModel appointment = appointmentService.updateAppointmentForCustomer(
+                appointmentId, appointmentRequestModel
+        );
+
+        if (appointment != null) {
+            return ResponseEntity.ok().body(appointment);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
+
 
 }

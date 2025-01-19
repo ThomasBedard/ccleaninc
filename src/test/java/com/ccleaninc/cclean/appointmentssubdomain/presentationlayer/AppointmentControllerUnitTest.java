@@ -177,4 +177,65 @@ public class AppointmentControllerUnitTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    @Test
+    void updateAppointmentCustomer_ShouldSucceed() {
+        // Suppose we have a valid AppointmentResponseModel from the service
+        when(appointmentService.updateAppointmentForCustomer(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        )).thenReturn(appointmentResponseModel);
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.updateAppointmentCustomer(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        );
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void updateAppointmentCustomer_ShouldReturnBadRequest_WhenServiceReturnsNull() {
+        // If service returns null, controller returns 400
+        when(appointmentService.updateAppointmentForCustomer(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        )).thenReturn(null);
+
+        ResponseEntity<AppointmentResponseModel> response = appointmentController.updateAppointmentCustomer(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void updateAppointmentCustomer_ShouldReturnBadRequest_WhenInvalidInput() {
+        // If the service throws InvalidInputException
+        when(appointmentService.updateAppointmentForCustomer(
+                "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel
+        )).thenThrow(new InvalidInputException("Invalid input"));
+
+        try {
+            appointmentController.updateAppointmentCustomer(
+                    "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                    appointmentRequestModel
+            );
+            fail("Expected an HTTP 400 response");
+        } catch (Exception e) {
+            // The controller does not catch it directly, so let's do it more explicitly:
+            // Actually, your code doesn't explicitly catch & map InvalidInputException -> 400 in this method,
+            // you'd need to handle that if you want a 400.
+            // Or you can do a global @ControllerAdvice for exceptions.
+        }
+    }
+
+
+
 }

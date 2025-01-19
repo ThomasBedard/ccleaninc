@@ -7,6 +7,8 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentRes
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 
+import com.ccleaninc.cclean.customerssubdomain.datalayer.Customer;
+import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 
 import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
@@ -25,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +47,9 @@ public class AppointmentServiceUnitTest {
 
     @Mock
     private AppointmentResponseMapper appointmentResponseMapper;
+
+    @Mock
+    private CustomerRepository customerRepository;
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
@@ -310,4 +316,54 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
+    @Test
+    void getAppointmentsByCustomerId_ShouldSucceed() {
+        // Setup
+        when(customerRepository.findByCustomerIdentifier_CustomerId("c1d2e3f4")).thenReturn(Optional.of(new Customer()));
+        when(appointmentRepository.findAllByCustomerId("c1d2e3f4")).thenReturn(List.of(appointment));
+        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment)))
+                .thenReturn(List.of(appointmentResponseModel));
+
+        // Act
+        List<AppointmentResponseModel> result = appointmentService.getAppointmentsByCustomerId("c1d2e3f4");
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals(appointmentResponseModel, result.get(0));
+        verify(customerRepository).findByCustomerIdentifier_CustomerId("c1d2e3f4");
+        verify(appointmentRepository).findAllByCustomerId("c1d2e3f4");
+    }
+
+    @Test
+    void getAppointmentsByCustomerId_ShouldThrowNotFound_WhenCustomerNotFound() {
+        when(customerRepository.findByCustomerIdentifier_CustomerId("c1d2e3f4")).thenReturn(Optional.empty());
+
+        NotFoundException ex = assertThrows(
+                NotFoundException.class,
+                () -> appointmentService.getAppointmentsByCustomerId("c1d2e3f4")
+        );
+        assertEquals("No customer found for ID: c1d2e3f4", ex.getMessage());
+    }
+
+    @Test
+    void getAppointmentsByCustomerId_ShouldThrowInvalidInput_WhenCustomerIdIsBlank() {
+        InvalidInputException ex = assertThrows(
+                InvalidInputException.class,
+                () -> appointmentService.getAppointmentsByCustomerId("   ")
+        );
+        assertEquals("Customer ID cannot be null or empty.", ex.getMessage());
+    }
+    
+
+    @Test
+    void updateAppointmentForCustomer_ShouldThrowInvalidInput_WhenAppointmentIdIsInvalid() {
+        // e.g. wrong length or null
+        InvalidInputException ex = assertThrows(
+                InvalidInputException.class,
+                () -> appointmentService.updateAppointmentForCustomer(null, AppointmentRequestModel.builder().build())
+        );
+        assertEquals("Appointment ID must be 36 chars", ex.getMessage());
+    }
+
+
 }

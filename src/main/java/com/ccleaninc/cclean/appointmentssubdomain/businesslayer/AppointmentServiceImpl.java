@@ -145,4 +145,46 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepository.delete(existing);
     }
 
+    @Override
+    public List<AppointmentResponseModel> getAppointmentsByCustomerId(String customerId) {
+        if (customerId == null || customerId.isBlank()) {
+            throw new InvalidInputException("Customer ID cannot be null or empty.");
+        }
+
+        var optionalCustomer = customerRepository.findByCustomerIdentifier_CustomerId(customerId);
+        if (optionalCustomer.isEmpty()) {
+            throw new NotFoundException("No customer found for ID: " + customerId);
+        }
+
+        // Use the correct repository method name:
+        var appointments = appointmentRepository.findAllByCustomerId(customerId);
+
+        return appointmentResponseMapper.entityToResponseModelList(appointments);
+    }
+
+    @Override
+    public AppointmentResponseModel updateAppointmentForCustomer(String appointmentId, AppointmentRequestModel requestModel) {
+        // Similar validation
+        if (appointmentId == null || appointmentId.length() != 36) {
+            throw new InvalidInputException("Appointment ID must be 36 chars");
+        }
+        Appointment appointment = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
+        if (appointment == null) {
+            throw new NotFoundException("Appointment not found for " + appointmentId);
+        }
+
+        // Keep the existing appointment.getCustomerId()
+        // DO NOT overwrite it with random
+        appointment.setCustomerFirstName(requestModel.getCustomerFirstName());
+        appointment.setCustomerLastName(requestModel.getCustomerLastName());
+        // appointment.setCustomerId(...)  <-- not touched
+        appointment.setAppointmentDate(requestModel.getAppointmentDate());
+        appointment.setServices(requestModel.getServices());
+        appointment.setComments(requestModel.getComments());
+        appointment.setStatus(requestModel.getStatus());
+
+        Appointment saved = appointmentRepository.save(appointment);
+        return appointmentResponseMapper.entityToResponseModel(saved);
+    }
+
 }
