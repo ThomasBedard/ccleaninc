@@ -11,10 +11,6 @@ import com.ccleaninc.cclean.customerssubdomain.datalayer.Customer;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 
-import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
-import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
-import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
-import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,11 +19,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -316,8 +313,9 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
+
     @Test
-    void getAppointmentsByCustomerId_ShouldSucceed() {
+            void getAppointmentsByCustomerId_ShouldSucceed() {
         // Setup
         when(customerRepository.findByCustomerIdentifier_CustomerId("c1d2e3f4")).thenReturn(Optional.of(new Customer()));
         when(appointmentRepository.findAllByCustomerId("c1d2e3f4")).thenReturn(List.of(appointment));
@@ -353,7 +351,6 @@ public class AppointmentServiceUnitTest {
         );
         assertEquals("Customer ID cannot be null or empty.", ex.getMessage());
     }
-    
 
     @Test
     void updateAppointmentForCustomer_ShouldThrowInvalidInput_WhenAppointmentIdIsInvalid() {
@@ -362,8 +359,98 @@ public class AppointmentServiceUnitTest {
                 InvalidInputException.class,
                 () -> appointmentService.updateAppointmentForCustomer(null, AppointmentRequestModel.builder().build())
         );
-        assertEquals("Appointment ID must be 36 chars", ex.getMessage());
+        assertEquals("Appointment ID must be a valid 36-character string.", ex.getMessage());
     }
 
+    @Test
+    void generateAppointmentPdf_InvalidInputException() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of());
+
+        // Act & Assert
+        try {
+            appointmentService.generateAppointmentsPdf();
+        } catch (Exception e) {
+            assertEquals("No appointments found.", e.getMessage());
+        }
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldSucceed() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+    @Test
+    void generateAppointmentPdf_shouldReturnByteArrayOutputStream() {
+        // Arrange
+        when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
+        // Act
+        appointmentService.generateAppointmentsPdf();
+    }
+
+    @Test
+    void updateAppointment_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid() {
+        // Arrange
+        AppointmentRequestModel appointmentRequestModel = AppointmentRequestModel.builder()
+                .customerFirstName("John")
+                .customerLastName("Doe")
+                .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
+                .services("services")
+                .comments("comments")
+                .status(Status.pending)
+                .build();
+
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.updateAppointment(null, appointmentRequestModel);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.updateAppointment(invalidAppointmentId, appointmentRequestModel);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
+
+    @Test
+    void getAppointmentById_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid() {
+        // Arrange
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.getAppointmentByAppointmentId(null);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.getAppointmentByAppointmentId(invalidAppointmentId);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
+
+    @Test
+    void deleteAppointmentByAppointmentId_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid() {
+        // Arrange
+        // Act & Assert - Null appointmentId
+        Exception exception = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.deleteAppointmentByAppointmentId(null);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
+        // Act & Assert - Invalid appointmentId (length not 36 characters)
+        String invalidAppointmentId = "12345";
+        Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
+            appointmentService.deleteAppointmentByAppointmentId(invalidAppointmentId);
+        });
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+    }
 
 }

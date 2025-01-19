@@ -13,10 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -127,6 +129,22 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+    void getAppointmentByAppointmentId_InvalidInput() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        when(appointmentService.getAppointmentByAppointmentId(invalidAppointmentId))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.getAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
     void addAppointment_ShouldSucceed() {
         when(appointmentService.addAppointment(appointmentRequestModel))
                 .thenReturn(appointmentResponseModel);
@@ -137,6 +155,20 @@ public class AppointmentControllerUnitTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(appointmentResponseModel, response.getBody());
+    }
+
+    @Test
+    void addAppointment_BadRequest() {
+        // Arrange
+        when(appointmentService.addAppointment(appointmentRequestModel)).thenReturn(null);
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.addAppointment(appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -169,12 +201,77 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
+    void updateAppointment_BadRequest() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        when(appointmentService.updateAppointment(invalidAppointmentId, appointmentRequestModel))
+                .thenThrow(new InvalidInputException("Invalid input"));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.updateAppointment(invalidAppointmentId, appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void updateAppointment_NotFound() {
+        // Arrange
+        String nonExistentAppointmentId = "non-existent-id";
+        when(appointmentService.updateAppointment(nonExistentAppointmentId, appointmentRequestModel))
+                .thenThrow(new NotFoundException("Appointment not found."));
+
+        // Act
+        ResponseEntity<AppointmentResponseModel> response =
+                appointmentController.updateAppointment(nonExistentAppointmentId, appointmentRequestModel);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
     void deleteAppointmentByAppointmentId_ShouldSucceed() {
         // We don't need a mock "when" here, as there's no return for delete
         ResponseEntity<Void> response =
                 appointmentController.deleteAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+
+    @Test
+    void deleteAppointmentByAppointmentId_NotFound() {
+        // Arrange
+        String nonExistentAppointmentId = "non-existent-id";
+        doThrow(new NotFoundException("Appointment not found."))
+                .when(appointmentService).deleteAppointmentByAppointmentId(nonExistentAppointmentId);
+
+        // Act
+        ResponseEntity<Void> response =
+                appointmentController.deleteAppointmentByAppointmentId(nonExistentAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+    }
+
+    @Test
+    void deleteAppointmentByAppointmentId_InvalidInput() {
+        // Arrange
+        String invalidAppointmentId = "invalid-id";
+        doThrow(new InvalidInputException("Invalid input"))
+                .when(appointmentService).deleteAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Act
+        ResponseEntity<Void> response =
+                appointmentController.deleteAppointmentByAppointmentId(invalidAppointmentId);
+
+        // Assert
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -215,27 +312,33 @@ public class AppointmentControllerUnitTest {
     }
 
     @Test
-    void updateAppointmentCustomer_ShouldReturnBadRequest_WhenInvalidInput() {
-        // If the service throws InvalidInputException
+    void updateAppointmentCustomer_ShouldThrowInvalidInputException() {
+        // Arrange: Mock the service to throw InvalidInputException
         when(appointmentService.updateAppointmentForCustomer(
                 "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
                 appointmentRequestModel
         )).thenThrow(new InvalidInputException("Invalid input"));
 
-        try {
-            appointmentController.updateAppointmentCustomer(
-                    "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
-                    appointmentRequestModel
-            );
-            fail("Expected an HTTP 400 response");
-        } catch (Exception e) {
-            // The controller does not catch it directly, so let's do it more explicitly:
-            // Actually, your code doesn't explicitly catch & map InvalidInputException -> 400 in this method,
-            // you'd need to handle that if you want a 400.
-            // Or you can do a global @ControllerAdvice for exceptions.
-        }
+        // Act & Assert: Verify the exception is thrown
+        InvalidInputException exception = assertThrows(
+                InvalidInputException.class,
+                () -> appointmentController.updateAppointmentCustomer(
+                        "a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                        appointmentRequestModel
+                )
+        );
+
+        assertEquals("Invalid input", exception.getMessage());
     }
 
 
+    @Test
+    void generateAppointmentsPdf_ShouldSucceed() {
+        when(appointmentService.generateAppointmentsPdf()).thenReturn(new ByteArrayOutputStream());
+
+        ResponseEntity<byte[]> response = appointmentController.generateAppointmentsPdf();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
 
 }
