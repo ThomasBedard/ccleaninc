@@ -39,6 +39,8 @@ services:
     container_name: cclean_frontend
     ports:
       - "5173:5173"
+    env_file:
+      - ../../../cclean-frontend/.env
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest

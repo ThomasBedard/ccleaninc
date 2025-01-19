@@ -14,6 +14,15 @@ CREATE TABLE IF NOT EXISTS customers (
 -- Added an index to customer_id for foreign key references
 CREATE INDEX idx_customer_id ON customers (customer_id);
 
+CREATE TABLE IF NOT EXISTS users (
+    user_id CHAR(36) PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    customer_id VARCHAR(36) NOT NULL UNIQUE,
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
+    );
+
+
 -- Employee Table
 DROP TABLE IF EXISTS employees;
 CREATE TABLE IF NOT EXISTS employees (

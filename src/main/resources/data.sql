@@ -16,6 +16,13 @@ INSERT INTO customers (
 (UUID(), NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0909'),
 (UUID(), 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
 
+
+INSERT INTO users (user_id, email, password_hash, customer_id)
+VALUES
+    (UUID(), 'jean.tremblay@mail.com', 'plaintext_password',
+     (SELECT customer_id FROM customers WHERE email = 'jean.tremblay@mail.com' LIMIT 1));
+
+
 -- Insert Employees
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, password_hash, is_active, role) 
 VALUES 
