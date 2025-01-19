@@ -17,7 +17,6 @@ import FormEditService from "./pages/FormEditService";
 import CreateCustomer from "./components/customers/CreateCustomer";
 import EditCustomer from "./components/customers/EditCustomer";
 import SubmitFeedback from "./pages/SubmitFeedback";
-import Profile from "./components/Profile";
 import CalendarTestPage from "./pages/CalendarTestPage";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";

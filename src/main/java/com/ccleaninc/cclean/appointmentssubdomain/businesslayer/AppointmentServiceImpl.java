@@ -9,18 +9,12 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentRes
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
-<<<<<<< HEAD
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
-<<<<<<< HEAD
-=======
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
-=======
->>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
->>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,7 +40,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-<<<<<<< HEAD
     public AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel) {
         if (requestModel.getCustomerId() == null || requestModel.getCustomerId().isBlank()) {
             throw new InvalidInputException("Customer ID is required.");
@@ -76,7 +69,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
-=======
     public AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string: " + appointmentId);
@@ -155,9 +147,5 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepository.delete(existing);
     }
 
-<<<<<<< HEAD
->>>>>>> 93ff3db (Implemented the CRUD operations for Appointments)
 
-=======
->>>>>>> 30f5822 (fix(CCICC-68): Fixed appointment creation to correctly use customer ID and updated unit tests)
 }

@@ -1,5 +1,4 @@
 // Navbar.tsx
-import React from 'react';
 
 const UsersNavbar = () => {
   return (
