@@ -21,18 +21,9 @@ import Profile from "./components/Profile";
 import CalendarTestPage from "./pages/CalendarTestPage";
 import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
+import Profile from "./components/Profile";
 
 const App = () => {
-  const { isLoading } = useAuth0();
-
-  if (isLoading) {
-    return (
-      <div className="page-layout">
-        <PageLoader />
-      </div>
-    );
-  }
-
   return (
     <BrowserRouter>
       <PageLayout>
