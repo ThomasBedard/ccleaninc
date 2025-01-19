@@ -47,7 +47,7 @@ const Appointments = () => {
 
           for (const token of serviceTokens) {
             const trimmedToken = token.trim();
-            
+
             if (isUuidFormat(trimmedToken)) {
               // It's a valid UUID, so fetch from the /services endpoint
               try {
@@ -81,6 +81,7 @@ const Appointments = () => {
     }
   };
 
+  // Function to delete an appointment
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
       alert('Invalid appointment ID');
@@ -108,9 +109,32 @@ const Appointments = () => {
     }
   };
 
+  // Function to download the PDF
+  const downloadPdf = async () => {
+    try {
+      const response = await axiosInstance.get('/appointments/pdf', {
+        responseType: 'blob', // Important to receive the PDF as a blob
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'appointments.pdf'); // Set the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      alert(
+        err instanceof Error
+          ? err.message
+          : 'An error occurred while downloading the PDF.'
+      );
+    }
+  };
+
   useEffect(() => {
     fetchAllAppointments();
-    // eslint-disable-next-line
+    
   }, []);
 
   if (loading) {
@@ -124,12 +148,20 @@ const Appointments = () => {
   return (
     <div className="appointments-page">
       <h1 className="appointments-title">Appointments Page</h1>
-      <button
-        className="add-appointment-button"
-        onClick={() => navigate('/appointments/add')}
-      >
-        Add Appointment
-      </button>
+      <div className="appointments-actions">
+        <button
+          className="add-appointment-button"
+          onClick={() => navigate('/appointments/add')}
+        >
+          Add Appointment
+        </button>
+        <button
+          className="download-pdf-button"
+          onClick={downloadPdf}
+        >
+          Download PDF
+        </button>
+      </div>
       <table className="appointments-table">
         <thead>
           <tr>
