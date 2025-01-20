@@ -33,6 +33,7 @@ const times = [
 const SelectDateTimePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const { selectedServiceIds } = location.state as {
     selectedServiceIds: string[];
   };
@@ -40,26 +41,32 @@ const SelectDateTimePage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("");
 
+
   const handleDateChange = (date: Date) => setSelectedDate(date);
   const handleTimeSelect = (time: string) => setSelectedTime(time);
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
+
       alert("Please select both a date and a time.");
+
       return;
     }
 
     const year = selectedDate.getFullYear();
+
     const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
     const day = String(selectedDate.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${day}T${selectedTime}`;
 
     navigate("/checkout", {
       state: { selectedServiceIds, appointmentDate: dateString },
+
     });
   };
 
   return (
+
     <div style={{ textAlign: "center", marginTop: "20px" }}>
       <h1>Select Date &amp; Time</h1>
       <div
@@ -78,9 +85,11 @@ const SelectDateTimePage: React.FC = () => {
         {selectedDate && (
           <div style={{ marginTop: "10px" }}>
             Selected Date: {selectedDate.toLocaleDateString("en-US")}
+
           </div>
         )}
       </div>
+
 
       <div style={{ marginTop: "20px" }}>
         <h2>Select Time</h2>
@@ -92,11 +101,13 @@ const SelectDateTimePage: React.FC = () => {
             gap: "8px",
           }}
         >
+
           {times.map((time) => (
             <button
               key={time}
               onClick={() => handleTimeSelect(time)}
               style={{
+
                 padding: "8px 12px",
                 borderRadius: "5px",
                 border: "1px solid #ccc",
@@ -104,6 +115,7 @@ const SelectDateTimePage: React.FC = () => {
                 color: selectedTime === time ? "#fff" : "#000",
                 cursor: "pointer",
                 minWidth: "60px",
+
               }}
             >
               {time}
@@ -123,6 +135,7 @@ const SelectDateTimePage: React.FC = () => {
           borderRadius: "5px",
           cursor: "pointer",
           fontSize: "16px",
+
         }}
       >
         Next
@@ -131,4 +144,6 @@ const SelectDateTimePage: React.FC = () => {
   );
 };
 
+
 export default SelectDateTimePage;
+

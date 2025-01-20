@@ -268,6 +268,7 @@ public class AppointmentServiceUnitTest {
                 .comments("comments")
                 .status(Status.pending)
                 .build();
+
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
         when(appointmentResponseMapper.entityToResponseModel(any(Appointment.class))).thenReturn(appointmentResponseModel);
         AppointmentResponseModel response = appointmentService.createAppointment(requestModel);
@@ -284,9 +285,11 @@ public class AppointmentServiceUnitTest {
                 .comments("comments")
                 .status(Status.pending)
                 .build();
+
         InvalidInputException exception = assertThrows(InvalidInputException.class, () -> {
             appointmentService.createAppointment(requestModel);
         });
+
         assertEquals("Customer ID is required.", exception.getMessage());
     } */
 
@@ -306,10 +309,12 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Appointment date/time is required.", exception.getMessage());
     }
+  
     @Test
     void generateAppointmentPdf_InvalidInputException() {
         // Arrange
         when(appointmentRepository.findAll()).thenReturn(List.of());
+
         // Act & Assert
         try {
             appointmentService.generateAppointmentsPdf();
@@ -317,20 +322,25 @@ public class AppointmentServiceUnitTest {
             assertEquals("No appointments found.", e.getMessage());
         }
     }
+
     @Test
     void generateAppointmentPdf_shouldSucceed() {
         // Arrange
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
         // Act
         appointmentService.generateAppointmentsPdf();
     }
+
     @Test
     void generateAppointmentPdf_shouldReturnByteArrayOutputStream() {
         // Arrange
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
+
         // Act
         appointmentService.generateAppointmentsPdf();
     }
+
     @Test
     void updateAppointment_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
         // Arrange
@@ -342,11 +352,13 @@ public class AppointmentServiceUnitTest {
                 .comments("comments")
                 .status(Status.pending)
                 .build();
+
         // Act & Assert - Null appointmentId
         Exception exception = assertThrows(InvalidInputException.class, () -> {
             appointmentService.updateAppointment(null, appointmentRequestModel);
         });
         assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
         // Act & Assert - Invalid appointmentId (length not 36 characters)
         String invalidAppointmentId = "12345";
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
@@ -354,6 +366,7 @@ public class AppointmentServiceUnitTest {
         });
         assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
     }
+
     @Test
     void getAppointmentById_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
         // Arrange
@@ -362,6 +375,7 @@ public class AppointmentServiceUnitTest {
             appointmentService.getAppointmentByAppointmentId(null);
         });
         assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
         // Act & Assert - Invalid appointmentId (length not 36 characters)
         String invalidAppointmentId = "12345";
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
@@ -369,6 +383,7 @@ public class AppointmentServiceUnitTest {
         });
         assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
     }
+
     @Test
     void deleteAppointmentByAppointmentId_shouldThrowInvalidInputExceptionWhenAppointmentIdIsInvalid(){
         // Arrange
@@ -377,6 +392,7 @@ public class AppointmentServiceUnitTest {
             appointmentService.deleteAppointmentByAppointmentId(null);
         });
         assertEquals("Appointment ID must be a valid 36-character string: null", exception.getMessage());
+
         // Act & Assert - Invalid appointmentId (length not 36 characters)
         String invalidAppointmentId = "12345";
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
@@ -385,3 +401,4 @@ public class AppointmentServiceUnitTest {
         assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
     }
 }
+

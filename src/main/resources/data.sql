@@ -25,6 +25,7 @@ VALUES
 
 -- Insert Employees
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role)
+
 VALUES 
 (UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
 (UUID(), 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');
@@ -68,4 +69,3 @@ INSERT INTO appointments (appointment_id, customer_first_name, customer_last_nam
 ('d4e5f6g7-b8c9-11ec-82a8-0242ac130003', 'Sophie', 'Girard', 'f5g6h7i8-d9e0-11ec-82a8-0242ac130003', '2025-01-18 14:00:00', 'pending', 'Detailed Deep Cleaning', 'Cancelled due to customer illness'),
 ('e5f6g7h8-c9d0-11ec-82a8-0242ac130003', 'Lucas', 'Fortin', 'g6h7i8j9-e0f1-11ec-82a8-0242ac130003', '2025-01-19 11:00:00', 'pending', 'Detailed Deep Cleaning', 'Requested vegan-friendly products'),
 ('f6g7h8i9-d0e1-11ec-82a8-0242ac130003', 'John', 'Doe', 'h7i8j9k0-f1g2-11ec-82a8-0242ac130003', '2025-01-20 13:00:00', 'pending', 'Detailed Deep Cleaning', 'Customer requested express service');
-

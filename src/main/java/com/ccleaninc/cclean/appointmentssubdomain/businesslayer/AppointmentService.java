@@ -9,6 +9,7 @@ import java.util.List;
 public interface AppointmentService {
 
     List<AppointmentResponseModel> getAllAppointments();
+
     AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel);
 
     AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
@@ -22,4 +23,3 @@ public interface AppointmentService {
     ByteArrayOutputStream generateAppointmentsPdf();
 
 }
-

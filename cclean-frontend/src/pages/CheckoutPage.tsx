@@ -1,6 +1,8 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../api/axios";
+
 
 interface Service {
   serviceId: string;
@@ -18,10 +20,12 @@ const CheckoutPage: React.FC = () => {
   };
 
   const [services, setServices] = useState<Service[]>([]);
+
   const [customerId, setCustomerId] = useState("");
   const [comments, setComments] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -35,7 +39,9 @@ const CheckoutPage: React.FC = () => {
         }
         setServices(fetched);
       } catch (err) {
+
         console.error("Error fetching services:", err);
+
       }
     };
 
@@ -49,40 +55,51 @@ const CheckoutPage: React.FC = () => {
       const res = await axiosInstance.get(`/customers/${id}`);
       return res.status === 200;
     } catch {
+
       console.error("Error verifying customer.");
       setErrorMessage("Error verifying the customer. Please try again.");
+
       return false;
     }
   };
 
   const handleSubmit = async () => {
+
     setSuccessMessage("");
     setErrorMessage("");
 
     if (!customerId.trim()) {
       setErrorMessage("Please enter a valid customer ID.");
+
       return;
     }
 
     const customerExists = await checkCustomerExists(customerId.trim());
     if (!customerExists) {
+
       setErrorMessage("Invalid customer ID. That customer does not exist.");
+
       return;
     }
 
     if (!appointmentDate) {
+
       setErrorMessage("No appointment date selected.");
+
       return;
     }
 
     try {
+
       const servicesString = selectedServiceIds.join(",");
+
 
       const payload = {
         customerId: customerId.trim(),
         appointmentDate,
         services: servicesString,
         comments,
+
         status: "pending",
       };
 
@@ -100,10 +117,12 @@ const CheckoutPage: React.FC = () => {
     } catch (err) {
       console.error("Error creating appointment:", err);
       setErrorMessage("Error creating appointment. Please try again.");
+
     }
   };
 
   return (
+
     <div
       style={{
         padding: "40px",
@@ -124,10 +143,12 @@ const CheckoutPage: React.FC = () => {
             key={svc.serviceId}
             style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}
           >
+
             <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
           </div>
         ))}
         {services.length === 0 && (
+
           <p>
             No service details available. (Check your IDs or backend calls.)
           </p>
@@ -135,40 +156,50 @@ const CheckoutPage: React.FC = () => {
       </div>
 
       <div style={{ marginBottom: "20px" }}>
+
         <h3>Date & Time:</h3>
         <p>{appointmentDate}</p>
       </div>
 
+
       <div style={{ marginBottom: "20px" }}>
+
         <label>Customer ID:</label>
         <input
           type="text"
           value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
+
           style={{
             width: "100%",
             padding: "8px",
             borderRadius: "5px",
             border: "1px solid #ccc",
           }}
+
           placeholder="Enter your Customer ID"
         />
       </div>
 
+
       <div style={{ marginBottom: "20px" }}>
+
         <label>Comments:</label>
         <textarea
           value={comments}
           onChange={(e) => setComments(e.target.value)}
+
           style={{
             width: "100%",
             padding: "8px",
             borderRadius: "5px",
             border: "1px solid #ccc",
           }}
+
           placeholder="Additional comments (optional)"
         />
       </div>
+
 
       {errorMessage && (
         <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>
@@ -189,6 +220,7 @@ const CheckoutPage: React.FC = () => {
           cursor: "pointer",
           fontSize: "16px",
         }}
+
       >
         Confirm Appointment
       </button>

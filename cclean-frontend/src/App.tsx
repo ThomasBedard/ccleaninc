@@ -22,6 +22,7 @@ import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import Profile from "./components/Profile";
 
+
 const App = () => {
   return (
     <BrowserRouter>
@@ -35,6 +36,8 @@ const App = () => {
             path="/appointments/edit/:appointmentId"
             element={<AppointmentsEditForm />}
           />
+
+          <Route path="/appointments/edit/:appointmentId" element={<AppointmentsEditForm />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contacts" element={<Contacts />} />
           {/* Employee routes */}

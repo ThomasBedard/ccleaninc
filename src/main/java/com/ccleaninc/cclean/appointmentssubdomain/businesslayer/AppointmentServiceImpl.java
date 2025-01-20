@@ -41,8 +41,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<AppointmentResponseModel> getAllAppointments() {
         return appointmentResponseMapper.entityToResponseModelList(appointmentRepository.findAll());
-
-
     }
 
 
@@ -76,6 +74,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
+
+    @Override
     public AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string: " + appointmentId);
