@@ -19,7 +19,7 @@ INSERT INTO customers (
 
 INSERT INTO users (user_id, email, password_hash, customer_id)
 VALUES
-    (UUID(), 'jean.tremblay@mail.com', 'plaintext_password',
+    (UUID(), 'jean.tremblay@mail.com', '^Kv9w@t1BRSAgbDZaAem',
      (SELECT customer_id FROM customers WHERE email = 'jean.tremblay@mail.com' LIMIT 1));
 
 
