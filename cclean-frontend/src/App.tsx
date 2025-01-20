@@ -22,6 +22,10 @@ import SubmitFeedback from './pages/SubmitFeedback';
 import CalendarTestPage from './pages/CalendarTestPage';
 import SelectDateTimePage from './pages/SelectDateTimePage';
 import CheckoutPage from './pages/CheckoutPage';
+import MyAppointments from './pages/MyAppointments';
+import CustomerAppointmentsEditForm from './pages/CustomerAppointmentsEditForm';
+
+
 
 const App = () => {
   return (
@@ -51,6 +55,8 @@ const App = () => {
           <Route path="/calendar-test" element={<CalendarTestPage />} />
           <Route path="/calendar-select" element={<SelectDateTimePage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/my-appointments" element={<MyAppointments />} />
+          <Route path="/my-appointments/edit/:appointmentId" element={<CustomerAppointmentsEditForm />} />
         </Routes>
       </Layout>
     </Router>

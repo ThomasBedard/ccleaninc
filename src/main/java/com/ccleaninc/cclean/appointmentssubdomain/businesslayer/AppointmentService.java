@@ -19,6 +19,10 @@ public interface AppointmentService {
     AppointmentResponseModel updateAppointment(String appointmentId, AppointmentRequestModel appointmentRequestModel);
 
     void deleteAppointmentByAppointmentId(String appointmentId);
+    List<AppointmentResponseModel> getAppointmentsByCustomerId(String customerId);
+
+    AppointmentResponseModel updateAppointmentForCustomer(String appointmentId, AppointmentRequestModel requestModel); // Customer
+
 
     ByteArrayOutputStream generateAppointmentsPdf();
 

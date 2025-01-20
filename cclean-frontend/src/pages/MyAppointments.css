@@ -1,0 +1,149 @@
+/* MyAppointments.css */
+
+/* Container */
+.my-appointments-container {
+    padding: 2rem;
+    background: linear-gradient(135deg, #b3d9ff, #e6f7ff);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Title */
+  .my-appointments-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+    text-align: center;
+  }
+  
+  /* Form */
+  .my-appointments-form {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .my-appointments-form label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #34495e;
+  }
+  
+  .my-appointments-form input {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    width: 300px;
+    font-size: 1rem;
+  }
+  
+  .my-appointments-form button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .my-appointments-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Error Message */
+  .my-appointments-error {
+    color: #e74c3c;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  /* No Results Message */
+  .my-appointments-no-results {
+    color: #34495e;
+    font-size: 1.2rem;
+    margin-top: 1rem;
+  }
+  
+  /* Table */
+  .my-appointments-table {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .my-appointments-table th {
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 1rem;
+    text-align: left;
+  }
+  
+  .my-appointments-table td {
+    padding: 1rem;
+    color: #34495e;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .my-appointments-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .my-appointments-table tr:nth-child(odd) {
+    background-color: white;
+  }
+  
+  .my-appointments-table tr:hover {
+    background-color: #e3f2fd;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Buttons in Table */
+  .my-appointments-table button {
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .my-appointments-table button:hover {
+    opacity: 0.9;
+  }
+  
+  .my-appointments-table button:first-child {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .my-appointments-table button:first-child:hover {
+    background-color: #c0392b;
+  }
+  
+  .my-appointments-table button:last-child {
+    background-color: #f39c12;
+    color: white;
+  }
+  
+  .my-appointments-table button:last-child:hover {
+    background-color: #d35400;
+  }
+  
