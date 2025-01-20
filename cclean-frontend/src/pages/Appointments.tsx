@@ -85,6 +85,7 @@ const Appointments = () => {
     }
   };
 
+  // Function to delete an appointment
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
       alert("Invalid appointment ID");
@@ -110,31 +111,6 @@ const Appointments = () => {
         err instanceof Error
           ? err.message
           : "An unexpected error occurred while deleting the appointment."
-      );
-    }
-  };
-
-  // Function to download the PDF
-  const downloadPdf = async () => {
-    try {
-      const response = await axiosInstance.get("/appointments/pdf", {
-        responseType: "blob", // Important to receive the PDF as a blob
-      });
-
-      const url = window.URL.createObjectURL(
-        new Blob([response.data], { type: "application/pdf" })
-      );
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "appointments.pdf"); // Set the file name
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      alert(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while downloading the PDF."
       );
     }
   };
@@ -230,15 +206,6 @@ const Appointments = () => {
                   Delete
                 </button>
               </td>
-
-              <td>{appointment.appointmentId || "N/A"}</td>
-              <td>{appointment.customerId || "N/A"}</td>
-              <td>{appointment.customerFirstName || "N/A"}</td>
-              <td>{appointment.customerLastName || "N/A"}</td>
-              <td>{appointment.appointmentDate || "N/A"}</td>
-              <td>{appointment.serviceTitles || "N/A"}</td>
-              <td>{appointment.status || "N/A"}</td>
-              <td>{appointment.comments || "N/A"}</td>
             </tr>
           ))}
         </tbody>
