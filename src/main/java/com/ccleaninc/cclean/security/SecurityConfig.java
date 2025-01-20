@@ -24,8 +24,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         //.requestMatchers("/api/v1/feedbacks").hasRole("Employee")
                         // Catch-all for other URLs
-
-                        .requestMatchers("/api/messages/protected", "/api/messages/admin").authenticated()
                         .anyRequest().permitAll())
                 .cors(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2
