@@ -37,8 +37,7 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/feedbacks")
-    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/feedback")
     public ResponseEntity<FeedbackResponseModel> addFeedback(@RequestBody FeedbackRequestModel feedbackRequestModel) {
         try {
             FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel);
@@ -51,14 +50,12 @@ public class FeedbackController {
     }
 
     @DeleteMapping("/feedbacks/{feedbackId}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Void> deleteFeedbackById(@PathVariable String feedbackId) {
         feedbackService.removeFeedback(feedbackId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/feedbacks/{feedbackId}/publish")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<FeedbackResponseModel> updateFeedbackState(@PathVariable String feedbackId, @RequestBody String status) {
         try {
             FeedbackResponseModel updatedFeedback = feedbackService.updateFeedbackState(feedbackId, status);

@@ -22,7 +22,6 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<List<CustomerResponseModel>> getAllCustomers() {
         List<CustomerResponseModel> customers = customerService.getAllCustomers();
         if (customers == null || customers.isEmpty()) {
@@ -33,7 +32,6 @@ public class CustomerController {
 
     // Get a customer by customer ID
     @GetMapping("/{customerId}")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<CustomerResponseModel> getCustomerByCustomerId(@PathVariable String customerId) {
         try {
             CustomerResponseModel customer = customerService.getCustomerByCustomerId(customerId);
@@ -45,7 +43,6 @@ public class CustomerController {
 
     // Add a new customer
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomerResponseModel> addCustomer(@RequestBody CustomerRequestModel customerRequestModel) {
         try {
             CustomerResponseModel newCustomer = customerService.addCustomer(customerRequestModel);
@@ -57,7 +54,6 @@ public class CustomerController {
 
     // Update an existing customer
     @PutMapping("/{customerId}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<CustomerResponseModel> updateCustomer(
             @PathVariable String customerId,
             @RequestBody CustomerRequestModel customerRequestModel) {
@@ -73,7 +69,6 @@ public class CustomerController {
 
     // Delete a customer by customer ID
     @DeleteMapping("/{customerId}")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId) {
         try {
             customerService.deleteCustomerByCustomerId(customerId);
@@ -85,7 +80,6 @@ public class CustomerController {
 
     // Search customers by name or company
     @GetMapping("/search")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<List<CustomerResponseModel>> searchCustomers(@RequestParam String searchTerm) {
         List<CustomerResponseModel> customers = customerService.searchCustomers(searchTerm);
         if (customers == null || customers.isEmpty()) {

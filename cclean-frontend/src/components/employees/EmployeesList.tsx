@@ -66,6 +66,27 @@ const EmployeesList: React.FC = () => {
     setFilteredEmployees(filtered);
   };
 
+  // Handle deleting an employee
+  const handleDelete = async (employeeId: string) => {
+    if (!window.confirm("Are you sure you want to delete this employee?")) {
+      return;
+    }
+    try {
+      await axiosInstance.delete(`/employees/${employeeId}`);
+      // Update the local list
+      setEmployees((prev) =>
+        prev.filter((emp) => emp.employeeId !== employeeId)
+      );
+      setFilteredEmployees((prev) =>
+        prev.filter((emp) => emp.employeeId !== employeeId)
+      );
+      alert("Employee deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      alert("Failed to delete employee.");
+    }
+  };
+
   return (
     <div className="employees-container">
       <h1>Employees</h1>
@@ -91,7 +112,7 @@ const EmployeesList: React.FC = () => {
               phoneNumber={emp.phoneNumber}
               role={emp.role}
               isActive={emp.isActive}
-              onDelete={() => {}}
+              onDelete={handleDelete}
             />
           ))
         ) : (
