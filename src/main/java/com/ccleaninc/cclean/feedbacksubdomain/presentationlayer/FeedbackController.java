@@ -6,6 +6,7 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class FeedbackController {
     }
 
     @PostMapping("/feedbacks")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<FeedbackResponseModel> addFeedback(@RequestBody FeedbackRequestModel feedbackRequestModel) {
         try {
             FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel);
@@ -49,12 +51,14 @@ public class FeedbackController {
     }
 
     @DeleteMapping("/feedbacks/{feedbackId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Void> deleteFeedbackById(@PathVariable String feedbackId) {
         feedbackService.removeFeedback(feedbackId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PatchMapping("/feedbacks/{feedbackId}/publish")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<FeedbackResponseModel> updateFeedbackState(@PathVariable String feedbackId, @RequestBody String status) {
         try {
             FeedbackResponseModel updatedFeedback = feedbackService.updateFeedbackState(feedbackId, status);

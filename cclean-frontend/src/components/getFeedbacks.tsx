@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/v1/feedbacks';
+import axiosInstance from "../api/axios";
 
 export const getFeedbacks = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await axiosInstance.get("/feedbacks"); // No need to specify the full URL
     return response.data;
   } catch (error) {
-    console.error('Error fetching feedbacks:', error);
+    console.error("Error fetching feedbacks:", error);
     throw error;
   }
 };
