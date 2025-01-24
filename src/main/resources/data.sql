@@ -61,3 +61,31 @@ INSERT INTO appointments (appointment_id, customer_first_name, customer_last_nam
 ('d4e5f6g7-b8c9-11ec-82a8-0242ac130003', 'Sophie', 'Girard', 'f5g6h7i8-d9e0-11ec-82a8-0242ac130003', '2025-01-18 14:00:00', 'pending', 'Detailed Deep Cleaning', 'Cancelled due to customer illness'),
 ('e5f6g7h8-c9d0-11ec-82a8-0242ac130003', 'Lucas', 'Fortin', 'g6h7i8j9-e0f1-11ec-82a8-0242ac130003', '2025-01-19 11:00:00', 'pending', 'Detailed Deep Cleaning', 'Requested vegan-friendly products'),
 ('f6g7h8i9-d0e1-11ec-82a8-0242ac130003', 'John', 'Doe', 'h7i8j9k0-f1g2-11ec-82a8-0242ac130003', '2025-01-20 13:00:00', 'pending', 'Detailed Deep Cleaning', 'Customer requested express service');
+
+INSERT INTO employee_schedule_availabilities 
+(availability_id, employee_first_name, employee_last_name, employee_id, shift, available_date)
+VALUES
+
+-- -----------------------------------------------------------------------
+-- Availabilities for Alice Johnson
+-- -----------------------------------------------------------------------
+('a1b2c3d4-e5f6-11ec-82a8-0242ac130010', 'Alice', 'Johnson', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 
+ 'MORNING', '2025-02-15 08:00:00'),
+
+('b2c3d4e5-f6a7-11ec-82a8-0242ac130010', 'Alice', 'Johnson', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 
+ 'EVENING', '2025-02-16 16:00:00'),
+
+('c3d4e5f6-a7b8-11ec-82a8-0242ac130010', 'Alice', 'Johnson', 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003',
+ 'NIGHT',   '2025-02-17 00:00:00'),
+
+-- -----------------------------------------------------------------------
+-- Availabilities for Bob Williams
+-- -----------------------------------------------------------------------
+('d4e5f6g7-b8c9-11ec-82a8-0242ac130010', 'Bob', 'Williams', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 
+ 'MORNING', '2025-02-16 08:00:00'),
+
+('e5f6g7h8-c9d0-11ec-82a8-0242ac130010', 'Bob', 'Williams', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 
+ 'EVENING', '2025-02-17 16:00:00'),
+
+('f6g7h8i9-d0e1-11ec-82a8-0242ac130010', 'Bob', 'Williams', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 
+ 'NIGHT',   '2025-02-18 00:00:00');
