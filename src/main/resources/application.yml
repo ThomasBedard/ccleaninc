@@ -1,3 +1,50 @@
+# # Default Spring Profile
+# server:
+#   error:
+#     include-message: always
+
+# logging:
+#   level:
+#     root: INFO
+#     com.cclean: DEBUG
+#     org.hibernate.SQL: DEBUG
+#     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# ---
+# # for docker
+
+# spring:
+#   datasource:
+#     url: jdbc:mysql://database/ccleandb
+#     username: user
+#     password: pwd
+
+#   jpa:
+#     hibernate:
+#       ddl-auto: none
+
+#   config:
+#     activate:
+#       on-profile: docker
+
+#   sql:
+#     init:
+#       platform: mysql
+#       mode: always
+
+# server.port: 8080
+
+# spring.datasource.hikari.initializationFailTimeout: 60000
+
+
+
+
+
+
+
+
+
+
 # Default Spring Profile
 server:
   error:
@@ -11,7 +58,7 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 ---
-# for docker
+# For docker
 
 spring:
   datasource:
@@ -35,3 +82,24 @@ spring:
 server.port: 8080
 
 spring.datasource.hikari.initializationFailTimeout: 60000
+
+---
+# For tests (H2 Database)
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;
+      INIT=RUNSCRIPT FROM 'classpath:h2_schema.sql'\\;RUNSCRIPT FROM 'classpath:h2_data.sql'
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  config:
+    activate:
+      on-profile: test
+
+server.port: 8080
