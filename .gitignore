@@ -50,3 +50,6 @@ out/
 ### env files ###
 .env
 ./cclean-frontend/.env
+
+### database ###
+data/database/
