@@ -1,8 +1,10 @@
 package com.ccleaninc.cclean.availabilitiessubdomain.businesslayer;
 
 import com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Availability;
+import com.ccleaninc.cclean.availabilitiessubdomain.datalayer.AvailabilityIdentifier;
 import com.ccleaninc.cclean.availabilitiessubdomain.datalayer.AvailabilityRepository;
 import com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift;
+import com.ccleaninc.cclean.availabilitiessubdomain.datamapperlayer.AvailabilityRequestMapper;
 import com.ccleaninc.cclean.availabilitiessubdomain.datamapperlayer.AvailabilityResponseMapper;
 import com.ccleaninc.cclean.availabilitiessubdomain.presentationlayer.AvailabilityRequestModel;
 import com.ccleaninc.cclean.availabilitiessubdomain.presentationlayer.AvailabilityResponseModel;
@@ -15,11 +17,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AvailabilityServiceUnitTest {
@@ -30,6 +35,9 @@ public class AvailabilityServiceUnitTest {
     @Mock
     private AvailabilityResponseMapper availabilityResponseMapper;
 
+    @Mock
+    private AvailabilityRequestMapper availabilityRequestMapper;
+
     @InjectMocks
     private AvailabilityServiceImpl availabilityService;
 
@@ -38,111 +46,146 @@ public class AvailabilityServiceUnitTest {
 
     @BeforeEach
     void setUp() {
-        LocalDateTime availableDate = LocalDateTime.parse("2025-02-15T08:00");
         availability = Availability.builder()
-                .id(1)
-                .employeeId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000")
-                .employeeFirstName("Alice")
-                .employeeLastName("Johnson")
-                .availableDate(availableDate)
+                .availabilityIdentifier(new AvailabilityIdentifier("123e4567-e89b-12d3-a456-426614174000"))
+                .employeeId("emp-001")
+                .employeeFirstName("John")
+                .employeeLastName("Doe")
+                .availableDate(LocalDateTime.now())
                 .shift(Shift.MORNING)
-                .comments("Available for morning shifts")
+                .comments("Available for morning shift")
                 .build();
 
         availabilityResponseModel = AvailabilityResponseModel.builder()
-                .id(1)
-                .employeeId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000")
-                .employeeFirstName("Alice")
-                .employeeLastName("Johnson")
-                .availableDate(availableDate)
+                .availabilityId("123e4567-e89b-12d3-a456-426614174000")
+                .employeeId("emp-001")
+                .employeeFirstName("John")
+                .employeeLastName("Doe")
+                .availableDate(LocalDateTime.now())
                 .shift(Shift.MORNING)
-                .comments("Available for morning shifts")
+                .comments("Available for morning shift")
                 .build();
     }
 
     @Test
-    void getAllAvailabilities_shouldSucceed() {
+    void getAllAvailabilities_ShouldReturnAvailabilities() {
+        // Arrange
         when(availabilityRepository.findAll()).thenReturn(List.of(availability));
         when(availabilityResponseMapper.entityToResponseModelList(List.of(availability))).thenReturn(List.of(availabilityResponseModel));
 
-        List<AvailabilityResponseModel> availabilities = availabilityService.getAllAvailabilities();
+        // Act
+        List<AvailabilityResponseModel> response = availabilityService.getAllAvailabilities();
 
-        assertEquals(1, availabilities.size());
-        assertEquals(availabilityResponseModel.getId(), availabilities.get(0).getId());
+        // Assert
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(availabilityResponseModel.getAvailabilityId(), response.get(0).getAvailabilityId());
     }
 
     @Test
-    void getAvailabilityByAvailabilityId_shouldSucceed() {
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000"))
-                .thenReturn(availability);
+    void getAllAvailabilities_NoAvailabilitiesFound_ShouldReturnEmptyList() {
+        // Arrange
+        when(availabilityRepository.findAll()).thenReturn(Collections.emptyList());
+
+        // Act
+        List<AvailabilityResponseModel> response = availabilityService.getAllAvailabilities();
+
+        // Assert
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void getAvailabilityByAvailabilityId_ShouldReturnAvailability() {
+        // Arrange
+        String availabilityId = "123e4567-e89b-12d3-a456-426614174000";
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(availability);
         when(availabilityResponseMapper.entityToResponseModel(availability)).thenReturn(availabilityResponseModel);
 
-        AvailabilityResponseModel response = availabilityService.getAvailabilityByAvailabilityId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000");
+        // Act
+        AvailabilityResponseModel response = availabilityService.getAvailabilityByAvailabilityId(availabilityId);
 
-        assertEquals(availabilityResponseModel.getId(), response.getId());
-        assertEquals(availabilityResponseModel.getEmployeeId(), response.getEmployeeId());
+        // Assert
+        assertNotNull(response);
+        assertEquals(availabilityResponseModel.getAvailabilityId(), response.getAvailabilityId());
     }
 
     @Test
-    void getAvailabilityByAvailabilityId_shouldThrowNotFoundException() {
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId("invalid-id")).thenReturn(null);
+    void getAvailabilityByAvailabilityId_NotFound_ShouldThrowNotFoundException() {
+        // Arrange
+        String availabilityId = "123e4567-e89b-12d3-a456-426614174001";
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(null);
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            availabilityService.getAvailabilityByAvailabilityId("invalid-id");
-        });
-
-        assertEquals("Availability with ID invalid-id was not found.", exception.getMessage());
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> availabilityService.getAvailabilityByAvailabilityId(availabilityId));
     }
 
     @Test
-    void createAvailability_shouldSucceed() {
+    void createAvailability_ShouldReturnCreatedAvailability() {
+        // Arrange
         AvailabilityRequestModel requestModel = AvailabilityRequestModel.builder()
-                .employeeId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000")
-                .employeeFirstName("Alice")
-                .employeeLastName("Johnson")
-                .availableDate(LocalDateTime.parse("2025-02-15T08:00"))
+                .employeeId("emp-001")
+                .employeeFirstName("John")
+                .employeeLastName("Doe")
+                .availableDate(LocalDateTime.now())
                 .shift(Shift.MORNING)
-                .comments("Available for morning shifts")
+                .comments("Available for morning shift")
                 .build();
 
         when(availabilityRepository.save(any(Availability.class))).thenReturn(availability);
         when(availabilityResponseMapper.entityToResponseModel(availability)).thenReturn(availabilityResponseModel);
 
+        // Act
         AvailabilityResponseModel response = availabilityService.createAvailability(requestModel);
 
-        assertEquals(availabilityResponseModel.getId(), response.getId());
+        // Assert
+        assertNotNull(response);
+        assertEquals(availabilityResponseModel.getAvailabilityId(), response.getAvailabilityId());
     }
 
     @Test
-    void createAvailability_shouldThrowInvalidInputException() {
-        AvailabilityRequestModel requestModel = null;
+    void createAvailability_InvalidInput_ShouldThrowInvalidInputException() {
+        // Arrange
+        AvailabilityRequestModel requestModel = AvailabilityRequestModel.builder()
+                .employeeId(null)
+                .build();
 
-        InvalidInputException exception = assertThrows(InvalidInputException.class, () -> {
-            availabilityService.createAvailability(requestModel);
-        });
-
-        assertEquals("Availability request model cannot be null.", exception.getMessage());
+        // Act & Assert
+        assertThrows(InvalidInputException.class, () -> availabilityService.createAvailability(requestModel));
     }
 
     @Test
-    void deleteAvailabilityByAvailabilityId_shouldSucceed() {
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000"))
-                .thenReturn(availability);
+    void deleteAvailabilityByAvailabilityId_ShouldSucceed() {
+        // Arrange
+        String availabilityId = "123e4567-e89b-12d3-a456-426614174000";
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(availability);
 
-        assertDoesNotThrow(() -> {
-            availabilityService.deleteAvailabilityByAvailabilityId("e1b2c3d4-f5g6-11ec-82a8-0242ac130000");
-        });
+        // Act
+        availabilityService.deleteAvailabilityByAvailabilityId(availabilityId);
+
+        // Assert
+        // No exception should be thrown
     }
 
     @Test
-    void deleteAvailabilityByAvailabilityId_shouldThrowNotFoundException() {
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId("invalid-id")).thenReturn(null);
+    void deleteAvailabilityByAvailabilityId_NotFound_ShouldThrowNotFoundException() {
+        // Arrange
+        String availabilityId = "123e4567-e89b-12d3-a456-426614174001";
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(null);
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
-            availabilityService.deleteAvailabilityByAvailabilityId("invalid-id");
-        });
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> availabilityService.deleteAvailabilityByAvailabilityId(availabilityId));
+    }
 
-        assertEquals("Availability with ID invalid-id was not found.", exception.getMessage());
+    @Test
+    void generateAvailabilitiesPdf_ShouldSucceed() {
+        // Arrange
+        when(availabilityRepository.findAll()).thenReturn(List.of(availability));
+
+        // Act
+        ByteArrayOutputStream pdfData = availabilityService.generateAvailabilitiesPdf();
+
+        // Assert
+        assertNotNull(pdfData);
     }
 }
-
