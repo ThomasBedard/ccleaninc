@@ -102,5 +102,6 @@ CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
     employee_first_name VARCHAR(50) NOT NULL,
     employee_last_name VARCHAR(50) NOT NULL,
     shift VARCHAR(36) NOT NULL,
-    available_date DATETIME NOT NULL
+    available_date DATETIME NOT NULL,
+    comments VARCHAR(255)
 );
