@@ -32,6 +32,11 @@ spring:
       platform: mysql
       mode: always
 
+okta:
+  oauth2:
+    issuer: ${OKTA_OAUTH2_ISSUER}
+    audience: ${OKTA_OAUTH2_AUDIENCE}
+
 server.port: 8080
 
 spring.datasource.hikari.initializationFailTimeout: 60000
