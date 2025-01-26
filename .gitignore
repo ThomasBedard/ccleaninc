@@ -46,3 +46,10 @@ out/
 *.tmp
 *.swp
 *.bak
+
+### env files ###
+.env
+./cclean-frontend/.env
+
+### database ###
+data/database/

@@ -1,26 +1,35 @@
-import React, { useState } from 'react';
-import EmployeesList from '../employees/EmployeesList';
-import CustomersList from '../customers/CustomersList';
-import Services from '../../pages/Services';
-import AdminFeedbackList from './AdminFeedbackList';
-import Appointments from '../../pages/Appointments';
-import { motion } from 'framer-motion';
-import { FaUserTie, FaUsers, FaConciergeBell, FaCommentDots, FaCalendarCheck } from 'react-icons/fa';
+import React, { useState } from "react";
+import "./AdminDashboard.css";
+import EmployeesList from "../employees/EmployeesList";
+import CustomersList from "../customers/CustomersList";
+import Services from "../../pages/Services";
+import AdminFeedbackList from "./AdminFeedbackList";
+import Appointments from "../../pages/Appointments";
+
+// Added from feat/CCICC-78-UI_Overhaul
+import { motion } from "framer-motion";
+import {
+  FaUserTie,
+  FaUsers,
+  FaConciergeBell,
+  FaCommentDots,
+  FaCalendarCheck,
+} from "react-icons/fa";
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('employees');
+  const [activeTab, setActiveTab] = useState<string>("employees");
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'employees':
+      case "employees":
         return <EmployeesList />;
-      case 'customers':
+      case "customers":
         return <CustomersList />;
-      case 'services':
+      case "services":
         return <Services />;
-      case 'feedbacks':
+      case "feedbacks":
         return <AdminFeedbackList />;
-      case 'appointments':
+      case "appointments":
         return <Appointments />;
       default:
         return null;
@@ -32,43 +41,45 @@ const AdminDashboard: React.FC = () => {
       <h1>Admin Dashboard</h1>
       <div className="tab-navigation">
         <button
-          className={`tab-button ${activeTab === 'employees' ? 'active' : ''}`}
-          onClick={() => setActiveTab('employees')}
+          className={`tab-button ${activeTab === "employees" ? "active" : ""}`}
+          onClick={() => setActiveTab("employees")}
         >
-          <FaUserTie style={{ marginRight: '6px' }} />
+          <FaUserTie style={{ marginRight: "6px" }} />
           Employees
         </button>
         <button
-          className={`tab-button ${activeTab === 'customers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('customers')}
+          className={`tab-button ${activeTab === "customers" ? "active" : ""}`}
+          onClick={() => setActiveTab("customers")}
         >
-          <FaUsers style={{ marginRight: '6px' }} />
+          <FaUsers style={{ marginRight: "6px" }} />
           Customers
         </button>
         <button
-          className={`tab-button ${activeTab === 'services' ? 'active' : ''}`}
-          onClick={() => setActiveTab('services')}
+          className={`tab-button ${activeTab === "services" ? "active" : ""}`}
+          onClick={() => setActiveTab("services")}
         >
-          <FaConciergeBell style={{ marginRight: '6px' }} />
+          <FaConciergeBell style={{ marginRight: "6px" }} />
           Services
         </button>
         <button
-          className={`tab-button ${activeTab === 'feedbacks' ? 'active' : ''}`}
-          onClick={() => setActiveTab('feedbacks')}
+          className={`tab-button ${activeTab === "feedbacks" ? "active" : ""}`}
+          onClick={() => setActiveTab("feedbacks")}
         >
-          <FaCommentDots style={{ marginRight: '6px' }} />
+          <FaCommentDots style={{ marginRight: "6px" }} />
           Feedbacks
         </button>
         <button
-          className={`tab-button ${activeTab === 'appointments' ? 'active' : ''}`}
-          onClick={() => setActiveTab('appointments')}
+          className={`tab-button ${
+            activeTab === "appointments" ? "active" : ""
+          }`}
+          onClick={() => setActiveTab("appointments")}
         >
-          <FaCalendarCheck style={{ marginRight: '6px' }} />
+          <FaCalendarCheck style={{ marginRight: "6px" }} />
           Appointments
         </button>
       </div>
 
-      {/* Animate tab content with a simple fade-in */}
+      {/* Simple fade-in animation when switching tabs */}
       <motion.div
         key={activeTab}
         initial={{ opacity: 0, y: 10 }}

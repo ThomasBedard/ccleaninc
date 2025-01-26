@@ -1,26 +1,44 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbarcss.css";
 import { ReactNode } from "react";
-import { toast } from "react-toastify";
-import { FaHome, FaBuilding, FaCalendarAlt, FaUserTie, FaTools, FaInfoCircle, FaPhone, FaCalendarCheck } from 'react-icons/fa';
 
+// From feat/CCICC-78-UI_Overhaul
+import { toast } from "react-toastify";
+import {
+  FaHome,
+  FaBuilding,
+  FaCalendarAlt,
+  FaUserTie,
+  FaTools,
+  FaInfoCircle,
+  FaPhone,
+  FaCalendarCheck,
+} from "react-icons/fa";
+
+// From main
+import LoginButton from "./buttons/LoginButton";
+import LogoutButton from "./buttons/LogoutButton";
+
+// 3) Navbar component
 interface NavbarProps {
   children: ReactNode;
 }
 
 const Navbar = ({ children }: NavbarProps) => {
+  // Brought over from feat/CCICC-78-UI_Overhaul
   const navigate = useNavigate();
 
   const handleLanguageSwitch = () => {
-    // For demonstration, show a toast instead of an alert
     toast.info("Switched language to French (FR)");
-    // any actual language switch logic here...
+    // Actual language switch logic would go here
   };
 
   return (
     <>
       <nav className="navbar">
         <div className="navbar-brand">C CLEAN inc.</div>
+
+        {/* Navigation Links (feat/CCICC-78-UI_Overhaul's icon usage) */}
         <div className="navbar-links">
           <Link to="/" className="navbar-link">
             <FaHome style={{ marginRight: "4px" }} />
@@ -59,19 +77,28 @@ const Navbar = ({ children }: NavbarProps) => {
             My Appointments
           </Link>
         </div>
+
+        {/* Actions (Merged from both branches) */}
         <div className="navbar-actions">
+          {/* Language Switch from feat/CCICC-78-UI_Overhaul */}
           <button className="navbar-button" onClick={handleLanguageSwitch}>
             FR
           </button>
+
+          {/* Sign in / Register from feat/CCICC-78-UI_Overhaul */}
           <Link to="/login" className="navbar-link">
             Sign in
           </Link>
-          <button
-            onClick={() => navigate("/register")}
-            className="navbar-register"
-          >
+          <button onClick={() => navigate("/register")} className="navbar-register">
             Register
           </button>
+
+          {/* Login/Logout/Profile from main */}
+          <LoginButton />
+          <LogoutButton />
+          <Link to="/profile" className="navbar-link">
+            Profile
+          </Link>
         </div>
       </nav>
       <main>{children}</main>

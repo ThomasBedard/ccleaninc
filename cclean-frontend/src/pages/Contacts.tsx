@@ -1,5 +1,4 @@
-import React from 'react';
-import './Contacts.css';
+import "./Contacts.css";
 
 const Contacts = () => {
   return (
@@ -7,7 +6,8 @@ const Contacts = () => {
       <div className="contacts-header">
         <h1>Contact Us</h1>
         <p className="subtitle">
-          If you have a question about C CLEAN INC. services, please feel free to contact us.
+          If you have a question about C CLEAN INC. services, please feel free
+          to contact us.
         </p>
       </div>
       <div className="contacts-content">
