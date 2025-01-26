@@ -42,6 +42,10 @@ const Navbar = ({ children }: NavbarProps) => {
           <Link to="/my-appointments" className="navbar-link">
             My Appointments
           </Link>
+          {/* NEW: My Availabilities link for employees */}
+          <Link to="/my-availabilities" className="navbar-link">
+            My Availabilities
+          </Link>
         </div>
         <div className="navbar-actions">
           <button className="navbar-button">FR</button>
