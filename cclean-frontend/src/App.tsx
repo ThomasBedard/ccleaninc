@@ -1,17 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// From feat/CCICC-78-UI_Overhaul
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from "framer-motion"; // For global animations
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-
-// From main
 import { useAuth0 } from "@auth0/auth0-react";
 import Profile from "./pages/Profile";
-
-// Shared imports
 import Layout from "./components/Navbar";
 import Home from "./pages/Home";
 import Services from "./pages/Services";
@@ -36,7 +29,6 @@ import CheckoutPage from "./pages/CheckoutPage";
 import MyAppointments from "./pages/MyAppointments";
 import CustomerAppointmentsEditForm from "./pages/CustomerAppointmentsEditForm";
 
-// Global CSS (from feat/CCICC-78-UI_Overhaul)
 import "./pages/GlobalOverride.css";
 import "./index.css";
 
@@ -69,12 +61,6 @@ const App = () => {
             />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/contacts" element={<Contacts />} />
-
-            {/* Additional routes from feat/CCICC-78-UI_Overhaul */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            {/* Employee routes */}
             <Route path="/employees" element={<EmployeesList />} />
             <Route path="/add-employee" element={<CreateEmployee />} />
             <Route

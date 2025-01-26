@@ -1,4 +1,0 @@
-PORT=6060
-CLIENT_ORIGIN_URL=http://localhost:5173
-OKTA_OAUTH2_ISSUER=https://dev-f1w4h2s8nspizas7.us.auth0.com/
-OKTA_OAUTH2_AUDIENCE=https://cclean.com/

@@ -1,5 +1,0 @@
-VITE_AUTH0_DOMAIN=dev-f1w4h2s8nspizas7.us.auth0.com
-VITE_AUTH0_CLIENT_ID=R0RrCghRz3IKJLrB3AKwo810xTcKMEMG
-VITE_AUTH0_CALLBACK_URL=http://localhost:5173
-VITE_API_SERVER_URL=http://localhost:6060
-VITE_AUTH0_AUDIENCE=https://cclean.com/

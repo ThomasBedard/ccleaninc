@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Navbarcss.css";
 import { ReactNode } from "react";
 
@@ -25,8 +25,7 @@ interface NavbarProps {
 }
 
 const Navbar = ({ children }: NavbarProps) => {
-  // Brought over from feat/CCICC-78-UI_Overhaul
-  const navigate = useNavigate();
+
 
   const handleLanguageSwitch = () => {
     toast.info("Switched language to French (FR)");
@@ -84,15 +83,6 @@ const Navbar = ({ children }: NavbarProps) => {
           <button className="navbar-button" onClick={handleLanguageSwitch}>
             FR
           </button>
-
-          {/* Sign in / Register from feat/CCICC-78-UI_Overhaul */}
-          <Link to="/login" className="navbar-link">
-            Sign in
-          </Link>
-          <button onClick={() => navigate("/register")} className="navbar-register">
-            Register
-          </button>
-
           {/* Login/Logout/Profile from main */}
           <LoginButton />
           <LogoutButton />
