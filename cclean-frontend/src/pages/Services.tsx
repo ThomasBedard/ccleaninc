@@ -3,6 +3,7 @@ import axiosInstance from '../api/axios';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Services.css'; 
+import { toast } from 'react-toastify';
 
 interface Service {
   serviceId: string;
@@ -12,6 +13,7 @@ interface Service {
   isAvailable: boolean;
   category: string;
   durationMinutes: number;
+  image?: string; // Optional field for service image
 }
 
 const Services = () => {
@@ -56,7 +58,7 @@ const Services = () => {
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
-      alert('Please enter a service title to search.');
+      toast.error('Please enter a service title to search.');
       return;
     }
 
@@ -79,7 +81,7 @@ const Services = () => {
 
   const handleDelete = async (serviceId: string) => {
     if (!serviceId || serviceId.length !== 36) {
-      alert('Invalid Service ID. Please try again.');
+      toast.error('Invalid Service ID. Please try again.');
       return;
     }
 
@@ -94,12 +96,12 @@ const Services = () => {
         setServices((prevServices) =>
           prevServices.filter((service) => service.serviceId !== serviceId)
         );
-        alert('Service deleted successfully!');
+        toast.success('Service deleted successfully!');
       } catch (err) {
         if (axios.isAxiosError(err)) {
-          alert(err.response?.data?.message || 'Failed to delete the service. Please try again later.');
+          toast.error(err.response?.data?.message || 'Failed to delete the service. Please try again later.');
         } else {
-          alert('An unexpected error occurred while deleting the service.');
+          toast.error('An unexpected error occurred while deleting the service.');
         }
       }
     }
@@ -158,8 +160,9 @@ const Services = () => {
             <div key={service.serviceId} className="service-card">
               <div className="service-image">
                 <img
-                  src={`https://via.placeholder.com/300?text=${encodeURIComponent(service.title)}`}
+                  src={service.image || `/images/fallback-image.jpg`} // Replace `/fallback-image.jpg` with a real local asset
                   alt={service.title}
+                  onError={(e) => (e.currentTarget.src = `/images/fallback-image.jpg`)} // Handle broken links
                 />
               </div>
               <div className="service-details">
