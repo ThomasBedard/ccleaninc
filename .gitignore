@@ -53,9 +53,3 @@ out/
 
 ### database ###
 data/database/
-
-# Ignore MySQL socket and temporary files
-data/database/mysql.sock
-data/database/undo_*
-data/database/#*
-data/database/*.tmp
