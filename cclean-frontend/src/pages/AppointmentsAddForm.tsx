@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './AppointmentsAddForm.css';
+import { toast } from 'react-toastify';
 
 const AppointmentsAddForm = () => {
   const [appointment, setAppointment] = useState({
@@ -28,10 +29,10 @@ const AppointmentsAddForm = () => {
 
     try {
       await axiosInstance.post('/appointments', appointment);
-      window.alert('Appointment added successfully.');
+      toast.success('Appointment added successfully.');
       navigate('/appointments'); // Redirect to the Appointments page
     } catch (err) {
-      alert(
+      toast.error(
         err instanceof Error
           ? err.message
           : 'An unexpected error occurred while adding the appointment.'

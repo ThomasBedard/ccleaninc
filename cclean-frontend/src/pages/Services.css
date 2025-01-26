@@ -23,17 +23,18 @@
 
 /* Service Card */
 .service-card {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .service-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
 
 /* No Services Message */
 .no-services-message {
@@ -46,9 +47,11 @@
   
   /* Service Image */
   .service-image img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    width: 100%; /* Ensure images span the full width */
+    height: 200px; /* Fixed height for consistency */
+    object-fit: cover; /* Maintain aspect ratio and crop */
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
   }
   
   /* Service Details */
@@ -60,19 +63,18 @@
     font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: #1a202c; /* Dark gray */
+    color: #2c3e50;
   }
   
   .service-description {
     font-size: 0.875rem;
-    color: #4a5568; /* Medium gray */
-    margin-bottom: 0.75rem;
+    color: #4a5568;
   }
   
   .service-price {
     font-size: 1rem;
     font-weight: bold;
-    color: #2d3748; /* Darker gray */
+    color: #2ecc71;
     margin-bottom: 1rem;
   }
   
@@ -85,6 +87,7 @@
     font-weight: bold;
     text-transform: uppercase;
   }
+  
   
   .service-availability.available {
     background-color: #d4f5d9;

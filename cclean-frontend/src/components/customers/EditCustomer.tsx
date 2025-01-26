@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Customers.css';
+import { toast } from 'react-toastify';
 
 const EditCustomer: React.FC = () => {
   const { customerId } = useParams<{ customerId: string }>();
@@ -24,7 +25,7 @@ const EditCustomer: React.FC = () => {
         setCompanyName(customer.companyName || '');
       } catch (error) {
         console.error('Error fetching customer details:', error);
-        alert('Failed to fetch customer details.');
+        toast.error('Failed to fetch customer details.');
       }
     };
     fetchCustomer();
@@ -39,11 +40,11 @@ const EditCustomer: React.FC = () => {
         phoneNumber,
         companyName,
       });
-      alert('Customer updated successfully!');
+      toast.success('Customer updated successfully!');
       navigate('/admin-dashboard');
     } catch (error) {
       console.error('Error updating customer:', error);
-      alert('Failed to update customer.');
+      toast.error('Failed to update customer.');
     }
   };
 

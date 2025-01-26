@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../api/axios';
 import './AdminFeedbackList.css';
+import { toast } from 'react-toastify';
 
 interface Feedback {
   feedbackId: string;
@@ -44,7 +45,7 @@ const AdminFeedbackList: React.FC = () => {
       );
     } catch (error) {
       console.error('Error updating feedback visibility:', error);
-      alert('Failed to update feedback visibility.');
+      toast.error('Failed to update feedback visibility.');
     }
   };
 

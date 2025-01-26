@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 import axiosInstance from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import './SubmitFeedback.css';
+import { toast } from 'react-toastify';
 
 const SubmitFeedback: React.FC = () => {
   const [customerId, setCustomerId] = useState('');
@@ -36,7 +37,7 @@ const SubmitFeedback: React.FC = () => {
         stars: stars,
         content: content
       });
-      alert('Feedback submitted successfully! It will be visible once an admin publishes it.');
+      toast.success('Feedback submitted successfully! It will be visible once an admin publishes it.');
       navigate('/');
     } catch (err) {
       if (axios.isAxiosError(err)) {

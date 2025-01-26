@@ -1,7 +1,10 @@
+// EmployeesList.tsx
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../api/axios';
-import Employee from './Employee';       
+import Employee from './Employee';
 import './Employees.css';
+import { toast } from 'react-toastify';
+import { motion } from 'framer-motion';
 
 interface EmployeeData {
   employeeId: string;
@@ -18,7 +21,6 @@ const EmployeesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredEmployees, setFilteredEmployees] = useState<EmployeeData[]>([]);
 
-  // Fetch employees on mount
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -27,14 +29,13 @@ const EmployeesList: React.FC = () => {
         setFilteredEmployees(response.data);
       } catch (error) {
         console.error('Error fetching employees:', error);
-        alert('Failed to fetch employees.');
+        toast.error('Failed to fetch employees.');
       }
     };
 
     fetchEmployees();
   }, []);
 
-  // Handle search input
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
@@ -48,20 +49,18 @@ const EmployeesList: React.FC = () => {
     setFilteredEmployees(filtered);
   };
 
-  // Handle deleting an employee
   const handleDelete = async (employeeId: string) => {
     if (!window.confirm('Are you sure you want to delete this employee?')) {
       return;
     }
     try {
       await axiosInstance.delete(`/employees/${employeeId}`);
-      // Update the local list
       setEmployees((prev) => prev.filter((emp) => emp.employeeId !== employeeId));
       setFilteredEmployees((prev) => prev.filter((emp) => emp.employeeId !== employeeId));
-      alert('Employee deleted successfully.');
+      toast.success('Employee deleted successfully.');
     } catch (error) {
       console.error('Error deleting employee:', error);
-      alert('Failed to delete employee.');
+      toast.error('Failed to delete employee.');
     }
   };
 
@@ -69,7 +68,6 @@ const EmployeesList: React.FC = () => {
     <div className="employees-container">
       <h1>Employees</h1>
 
-      {/* Search bar */}
       <div className="search-bar">
         <input
           type="text"
@@ -79,7 +77,6 @@ const EmployeesList: React.FC = () => {
         />
       </div>
 
-      {/* Button to add a new employee */}
       <button
         className="add-button"
         onClick={() => (window.location.href = '/add-employee')}
@@ -87,8 +84,13 @@ const EmployeesList: React.FC = () => {
         Add Employee
       </button>
 
-      {/* Render the list of employees */}
-      <div className="employees-list">
+      {/* Fade in the employees list using Framer Motion */}
+      <motion.div
+        className="employees-list"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         {filteredEmployees.length > 0 ? (
           filteredEmployees.map((emp) => (
             <Employee
@@ -106,7 +108,7 @@ const EmployeesList: React.FC = () => {
         ) : (
           <p>No employees found.</p>
         )}
-      </div>
+      </motion.div>
     </div>
   );
 };
