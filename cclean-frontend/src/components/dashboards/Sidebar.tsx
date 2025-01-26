@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 const Sidebar = () => {
-  const [active, setActive] = useState('dashboard');
+  const [active, setActive] = useState("dashboard");
 
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: 'home' },
-    { id: 'search', label: 'Search', icon: 'search' },
-    { id: 'insights', label: 'Insights', icon: 'chart-bar' },
-    { id: 'docs', label: 'Docs', icon: 'document' },
-    { id: 'products', label: 'Products', icon: 'shopping-cart' },
-    { id: 'settings', label: 'Settings', icon: 'cog' },
+    { id: "dashboard", label: "Dashboard", icon: "home" },
+    { id: "search", label: "Search", icon: "search" },
+    { id: "insights", label: "Insights", icon: "chart-bar" },
+    { id: "docs", label: "Docs", icon: "document" },
+    { id: "products", label: "Products", icon: "shopping-cart" },
+    { id: "settings", label: "Settings", icon: "cog" },
   ];
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
-      case 'home':
+      case "home":
         return (
           <svg
             className="w-5 h-5"
@@ -31,7 +31,7 @@ const Sidebar = () => {
             />
           </svg>
         );
-      case 'search':
+      case "search":
         return (
           <svg
             className="w-5 h-5"
@@ -48,7 +48,7 @@ const Sidebar = () => {
             />
           </svg>
         );
-      case 'chart-bar':
+      case "chart-bar":
         return (
           <svg
             className="w-5 h-5"
@@ -65,7 +65,7 @@ const Sidebar = () => {
             />
           </svg>
         );
-      case 'document':
+      case "document":
         return (
           <svg
             className="w-5 h-5"
@@ -82,7 +82,7 @@ const Sidebar = () => {
             />
           </svg>
         );
-      case 'shopping-cart':
+      case "shopping-cart":
         return (
           <svg
             className="w-5 h-5"
@@ -99,7 +99,7 @@ const Sidebar = () => {
             />
           </svg>
         );
-      case 'cog':
+      case "cog":
         return (
           <svg
             className="w-5 h-5"
@@ -128,8 +128,8 @@ const Sidebar = () => {
             key={item.id}
             className={`flex items-center w-full px-4 py-3 text-left ${
               active === item.id
-                ? 'bg-gray-300 text-gray-800'
-                : 'hover:bg-gray-200 hover:text-gray-800'
+                ? "bg-gray-300 text-gray-800"
+                : "hover:bg-gray-200 hover:text-gray-800"
             }`}
             onClick={() => setActive(item.id)}
           >
@@ -143,4 +143,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
