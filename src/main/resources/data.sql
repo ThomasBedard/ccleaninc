@@ -16,11 +16,12 @@ INSERT INTO customers (
 ('k0l1m2n3-i4j5-11ec-82a8-0242ac130003', NULL, NULL, 'Lebeau Glass Experts', 'info@lebeau.com', '514-555-0909'),
 ('l1m2n3o4-j5k6-11ec-82a8-0242ac130003', 'Amélie', 'Roy', 'Roy & Partners Consulting', 'amelie.roy@royconsulting.com', '514-555-1010');
 
--- Insert Employees
+-- Insert Employees (with consistent employee_id)
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role) 
 VALUES 
-(UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
-(UUID(), 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');
+('c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
+('d3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');
+
 
 -- Insert Admins
 INSERT INTO admins (admin_id, first_name, last_name, email, password_hash) 

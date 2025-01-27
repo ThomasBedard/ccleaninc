@@ -63,6 +63,10 @@ const MyAvailabilities: React.FC = () => {
     navigate(`/my-availabilities/edit/${availabilityId}`);
   };
 
+  const handleAddAvailability = () => {
+    navigate('/add-availability');
+  };
+
   return (
     <div className="my-availabilities-container">
       <h1 className="my-availabilities-title">My Availabilities</h1>
@@ -84,33 +88,51 @@ const MyAvailabilities: React.FC = () => {
       )}
 
       {availabilities.length > 0 && (
-        <table className="my-availabilities-table">
-          <thead>
-            <tr>
-              <th>Availability ID</th>
-              <th>Employee Name</th>
-              <th>Date/Time</th>
-              <th>Shift</th>
-              <th>Comments</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {availabilities.map((avail) => (
-              <tr key={avail.availabilityId}>
-                <td>{avail.availabilityId}</td>
-                <td>{`${avail.employeeFirstName} ${avail.employeeLastName}`}</td>
-                <td>{avail.availableDate}</td>
-                <td>{avail.shift}</td>
-                <td>{avail.comments || 'N/A'}</td>
-                <td>
-                  <button onClick={() => handleDelete(avail.availabilityId)}>Delete</button>
-                  <button onClick={() => handleEdit(avail.availabilityId)}>Edit</button>
-                </td>
+        <>
+          <table className="my-availabilities-table">
+            <thead>
+              <tr>
+                <th>Availability ID</th>
+                <th>Employee Name</th>
+                <th>Date/Time</th>
+                <th>Shift</th>
+                <th>Comments</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {availabilities.map((avail) => (
+                <tr key={avail.availabilityId}>
+                  <td>{avail.availabilityId}</td>
+                  <td>{`${avail.employeeFirstName} ${avail.employeeLastName}`}</td>
+                  <td>{avail.availableDate}</td>
+                  <td>{avail.shift}</td>
+                  <td>{avail.comments || 'N/A'}</td>
+                  <td>
+                    <button onClick={() => handleDelete(avail.availabilityId)}>Delete</button>
+                    <button onClick={() => handleEdit(avail.availabilityId)}>Edit</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <button
+            onClick={handleAddAvailability}
+            style={{
+              marginTop: '20px',
+              padding: '10px 20px',
+              backgroundColor: '#007BFF',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
+          >
+            Add Schedule Availabilities
+          </button>
+        </>
       )}
     </div>
   );

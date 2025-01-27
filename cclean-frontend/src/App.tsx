@@ -26,6 +26,7 @@ import MyAppointments from './pages/MyAppointments';
 import CustomerAppointmentsEditForm from './pages/CustomerAppointmentsEditForm';
 import MyAvailabilities from './pages/MyAvailabilities'; // New import
 import EmployeeAvailabilitiesEditForm from './pages/EmployeeAvailabilitiesEditForm'; // New import
+import AddAvailability from './pages/AddAvailability';
 
 
 const App = () => {
@@ -61,6 +62,7 @@ const App = () => {
           {/* Availabilities routes */}
           <Route path="/my-availabilities" element={<MyAvailabilities />} /> {/* New route */}
           <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} /> {/* New route */}
+          <Route path="/add-availability" element={<AddAvailability />} />
         </Routes>
       </Layout>
     </Router>
