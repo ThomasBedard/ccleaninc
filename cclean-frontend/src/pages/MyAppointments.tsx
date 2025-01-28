@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axiosInstance from '../api/axios';
 import { useNavigate } from 'react-router-dom';
-import './MyAppointments.css'; // <-- NEW CSS import
+import { toast } from 'react-toastify';
+import './Appointments.css';
 
 interface Appointment {
   appointmentId: string;
@@ -105,10 +106,10 @@ const MyAppointments: React.FC = () => {
         apt.appointmentId === appointmentId ? { ...apt, status: 'cancelled' } : apt
       );
       setAppointments(updated);
-      alert('Appointment cancelled successfully.');
+      toast.success('Appointment cancelled successfully.');
     } catch (err) {
       console.error('Error canceling appointment:', err);
-      alert('Failed to cancel appointment.');
+      toast.error('Failed to cancel appointment.');
     }
   };
 

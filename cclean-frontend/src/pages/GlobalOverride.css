@@ -1,0 +1,234 @@
+/* GlobalRefined.css
+   A single override to transform the entire site’s look.
+   Import it LAST so it takes priority. 
+*/
+
+/* 1) Import your chosen Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+/* 2) Define some custom properties for easy theming */
+:root {
+  --font-family: 'Poppins', sans-serif;
+  --color-primary: #28a745;     /* Softer green accent */
+  --color-secondary: #ffffff;   /* White background */
+  --color-bg: #f5f7fa;         /* Subtle neutral background */
+  --color-text: #2c3e50;       /* Dark gray for text */
+  --color-shadow: rgba(0, 0, 0, 0.1);
+  --radius-base: 8px;
+  --spacing-base: 1rem;
+  --transition-base: 0.3s;      /* For hover/focus transitions */
+}
+
+/* 3) Universal resets/overrides */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--font-family) !important;
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  min-height: 100vh !important;
+}
+
+/* 4) Headings and text: consistent spacing */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700 !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+p {
+  margin-bottom: 1rem !important;
+}
+
+/* 5) Cards: unify all “card” elements (employee/service cards, etc.) */
+.card, .employee-card, .service-card, .feedback-card {
+  background-color: var(--color-secondary) !important;
+  border-radius: var(--radius-base) !important;
+  box-shadow: 0 4px 8px var(--color-shadow) !important;
+  padding: 1.5rem !important;
+  margin: 1rem 0 !important;
+  transition: transform var(--transition-base), box-shadow var(--transition-base) !important;
+}
+.card:hover, .employee-card:hover, .service-card:hover, .feedback-card:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 6) Buttons: modern, vibrant, and consistent */
+button, .btn, input[type="submit"], .delete-button, .edit-button, .add-button {
+  display: inline-block !important;
+  padding: 0.6rem 1.2rem !important;
+  border: none !important;
+  border-radius: var(--radius-base) !important;
+  font-family: var(--font-family) !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  transition: background-color var(--transition-base), transform var(--transition-base) !important;
+}
+button:hover, .btn:hover, .delete-button:hover, .edit-button:hover, .add-button:hover {
+  background-color: #218838 !important; /* Darker green on hover */
+  transform: translateY(-2px) !important;
+}
+button:active, .btn:active {
+  transform: scale(0.98) !important;
+}
+/* Make special "delete" or "warn" buttons red, if desired */
+.delete-button {
+  background-color: #ff4d4f !important;
+}
+.delete-button:hover {
+  background-color: #d9363e !important;
+}
+/* Alternatively, keep them all green if you prefer one style. */
+
+/* 7) Navbar: White with subtle shadow, consistent spacing */
+.navbar {
+  background-color: var(--color-secondary) !important;
+  box-shadow: 0 2px 4px var(--color-shadow) !important;
+  padding: var(--spacing-base) 2rem !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
+}
+.navbar-brand {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  color: var(--color-text) !important;
+}
+.navbar-links a {
+  color: var(--color-text) !important;
+  font-weight: 500 !important;
+  margin: 0 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: var(--radius-base) !important;
+  transition: background-color var(--transition-base) !important;
+}
+.navbar-links a:hover {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+.navbar-actions .navbar-register {
+  border: 2px solid var(--color-primary) !important;
+  background: none !important;
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+}
+.navbar-actions .navbar-register:hover {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+/* 8) Tab Navigation (like the AdminDashboard tabs) */
+.tab-navigation {
+  display: flex !important;
+  justify-content: center !important;
+  margin-bottom: 1.5rem !important;
+}
+.tab-button {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0.6rem 1.2rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  margin: 0 0.5rem !important;
+  color: var(--color-primary) !important;
+  transition: color var(--transition-base), border-bottom var(--transition-base) !important;
+}
+.tab-button.active {
+  color: #000 !important;
+  border-bottom: 2px solid var(--color-primary) !important;
+}
+.tab-button:hover {
+  color: #27ae60 !important;
+}
+
+/* 9) Admin Dashboard and other pages: apply a fancy background 
+   (blue gradient, for instance) */
+.admin-dashboard {
+  background: linear-gradient(135deg, #e6f7ff, #b3d9ff) !important;
+  min-height: 100vh !important;
+  padding: 2rem !important;
+}
+/* If you want employees pages, feedback pages, etc. also to have a gradient: */
+.employees-container, .feedback-page, .appointments-page {
+  background: linear-gradient(135deg, #e6f7ff, #b3d9ff) !important;
+  min-height: 100vh !important;
+  padding: 2rem !important;
+}
+
+/* 10) Table styling (if you have raw tables) */
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 1.5rem 0 !important;
+  background-color: var(--color-secondary) !important;
+  border-radius: var(--radius-base) !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 4px var(--color-shadow) !important;
+}
+th, td {
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #ddd !important;
+  text-align: left !important;
+}
+th {
+  background-color: #f9f9f9 !important;
+  font-weight: 600 !important;
+}
+tr:hover {
+  background-color: #f2f2f2 !important;
+}
+
+/* 11) Subtle fade-in animation for a sleek first impression */
+.fade-in {
+  animation: fadeInUp 0.5s ease forwards !important;
+}
+/* Force the appointments table header to stay blue with white text */
+.appointments-table th {
+    background-color: #007bff !important;
+    color: #fff !important;
+  }
+.my-appointments-table th {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+.global-page-wrapper {
+    background: linear-gradient(135deg, #e6f7ff, #b3d9ff); /* Blue gradient */
+    min-height: 100vh; /* Ensures the page spans the entire viewport */
+    padding: 2rem; /* Consistent padding for all pages */
+    box-sizing: border-box; /* Avoid padding affecting width calculations */
+}
+.plain-page-wrapper {
+  background-color: #ffffff !important;
+  min-height: 100vh;
+  padding: 2rem; /* or however you want it */
+}
+
+/* Add this to your global override or specific CSS file */
+.card, .customer-card, .employee-card, .service-card, .feedback-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover, .customer-card:hover, .employee-card:hover, .service-card:hover, .feedback-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+  
+  
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+}

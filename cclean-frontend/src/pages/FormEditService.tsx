@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './FormAddService.css';
+import { toast } from 'react-toastify';
 
 const FormEditService = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
@@ -31,7 +32,7 @@ const FormEditService = () => {
       !serviceData.category.trim() ||
       !serviceData.durationMinutes.trim()
     ) {
-      alert('All fields must be filled to submit the form.');
+      toast.error('All fields must be filled to submit the form.');
       return;
     }
 
@@ -43,10 +44,10 @@ const FormEditService = () => {
         category: serviceData.category,
         durationMinutes: parseInt(serviceData.durationMinutes, 10),
       });
-      alert('Service updated successfully!');
+      toast.success('Service updated successfully!');
       navigate('/services');
     } catch {
-      alert('Failed to update service. Please try again.');
+      toast.error('Failed to update service. Please try again.');
     }
   };
 

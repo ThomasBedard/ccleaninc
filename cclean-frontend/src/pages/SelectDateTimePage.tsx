@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar } from 'rsuite';
 import 'rsuite/dist/rsuite.min.css';
+import { toast } from 'react-toastify';
 
 const times = [
   '09:00', '09:30', '10:00', '10:30', 
@@ -25,7 +26,7 @@ const SelectDateTimePage: React.FC = () => {
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
-      alert('Please select both a date and a time.');
+      toast.error('Please select both a date and a time.');
       return;
     }
 

@@ -2,29 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global body styling to match your Home page's gradient + fonts */
 body {
-  @apply bg-secondary text-textPrimary font-sans;
+  @apply bg-gradient text-textPrimary font-sans min-h-screen;
 }
-.bg-gradient {
-  background: linear-gradient(to bottom, #e4edf5, #f7f8fc);
+
+/* Optional: A consistent "container" style for all pages */
+.app-container {
+  @apply max-w-7xl mx-auto px-4 py-8;
+  /* 7xl is Tailwind’s default ~1280px max width; adjust if needed */
 }
+
+/* Table defaults (if you have many pages using tables) */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
+  @apply w-full border-collapse my-4;
 }
-
 th, td {
-  text-align: left;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
+  @apply border border-gray-300 px-4 py-2 text-left align-top;
 }
-
 th {
-  background-color: #f4f4f4;
-  font-weight: 600;
+  @apply bg-gray-100 font-semibold;
 }
-
 tr:hover {
-  background-color: #f9f9f9;
+  @apply bg-gray-50;
 }
