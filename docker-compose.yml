@@ -6,11 +6,11 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: ccleandb
       MYSQL_USER: user
-      MYSQL_PASSWORD: pwd 
+      MYSQL_PASSWORD: pwd
     ports:
       - "3306:3306"
     volumes:
-      - ./data/database:/var/lib/database
+      - ./data/database:/var/lib/mysql
       - ./data/init.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-uuser", "-ppwd", "-h", "localhost"]
@@ -20,9 +20,11 @@ services:
 
   backend:
     build:
-      context: ../../../
-      dockerfile: src/main/docker/Dockerfile
+      context: .
+      dockerfile: ./Dockerfile
     container_name: cclean_backend
+    env_file:
+      - ./.env
     ports:
       - "8080:8080"
     environment:
@@ -32,11 +34,15 @@ services:
 
   frontend:
     build:
-      context: ../../../
-      dockerfile: cclean-frontend/Dockerfile
+      context: .
+      dockerfile: ./cclean-frontend/Dockerfile
     container_name: cclean_frontend
+    env_file:
+      - ./cclean-frontend/.env
     ports:
       - "5173:5173"
+    depends_on:
+      - backend
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -45,11 +51,11 @@ services:
       - database
     restart: always
     ports:
-      - "8081:80"                        # Expose phpMyAdmin on port 8081
+      - "8081:80"
     environment:
       - PMA_ARBITRARY=1
     depends_on:
-      - database # Ensure MySQL starts before phpMyAdmin
+      - database
 
 volumes:
   mysql_data:

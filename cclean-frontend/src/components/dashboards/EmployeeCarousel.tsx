@@ -1,11 +1,26 @@
-import React from 'react';
-import './EmployeeCarousel.css';
+import "./EmployeeCarousel.css";
 
 const employees = [
-  { name: 'Jane Doe', role: 'UI & UX Designer', imgUrl: '/images/employee-1169923_1920.jpg' },
-  { name: 'Alex Smith', role: 'CEO Expert', imgUrl: '/images/man-7450033_1920.jpg' },
-  { name: 'Emily New', role: 'Web Designer', imgUrl: '/images/man-7428290_1920.jpg' },
-  { name: 'Lisa Boley', role: 'Marketing Coordinator', imgUrl: '/images/portrait-3353699_1920.jpg' },
+  {
+    name: "Jane Doe",
+    role: "UI & UX Designer",
+    imgUrl: "/images/employee-1169923_1920.jpg",
+  },
+  {
+    name: "Alex Smith",
+    role: "CEO Expert",
+    imgUrl: "/images/man-7450033_1920.jpg",
+  },
+  {
+    name: "Emily New",
+    role: "Web Designer",
+    imgUrl: "/images/man-7428290_1920.jpg",
+  },
+  {
+    name: "Lisa Boley",
+    role: "Marketing Coordinator",
+    imgUrl: "/images/portrait-3353699_1920.jpg",
+  },
 ];
 
 const EmployeeCarousel = () => {
@@ -16,9 +31,9 @@ const EmployeeCarousel = () => {
           key={index}
           style={{
             backgroundImage: `url(${employee.imgUrl})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         >
           <div className="content">

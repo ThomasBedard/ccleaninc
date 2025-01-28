@@ -1,14 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
-import './Navbarcss.css';
-import { ReactNode } from 'react';
+import { Link } from "react-router-dom";
+import "./Navbarcss.css";
+import { ReactNode } from "react";
+import LoginButton from "./buttons/LoginButton";
+import LogoutButton from "./buttons/LogoutButton";
 
 interface NavbarProps {
   children: ReactNode;
 }
 
 const Navbar = ({ children }: NavbarProps) => {
-  const navigate = useNavigate();
-
   return (
     <>
       <nav className="navbar">
@@ -49,15 +49,11 @@ const Navbar = ({ children }: NavbarProps) => {
         </div>
         <div className="navbar-actions">
           <button className="navbar-button">FR</button>
-          <Link to="/login" className="navbar-link">
-            Sign in
+          <LoginButton />
+          <LogoutButton />
+          <Link to="/profile" className="navbar-link">
+            Profile
           </Link>
-          <button
-            onClick={() => navigate('/register')}
-            className="navbar-register"
-          >
-            Register
-          </button>
         </div>
       </nav>
       <main>{children}</main>

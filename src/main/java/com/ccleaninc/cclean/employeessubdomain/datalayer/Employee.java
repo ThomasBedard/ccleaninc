@@ -32,6 +32,7 @@ public class Employee {
     private String phoneNumber;
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private Boolean isActive = true;
 
     @Column(name = "role")

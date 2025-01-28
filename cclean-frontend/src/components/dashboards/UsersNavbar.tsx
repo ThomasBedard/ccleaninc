@@ -1,6 +1,4 @@
 // Navbar.tsx
-import React from 'react';
-
 const UsersNavbar = () => {
   return (
     <div className="flex justify-between items-center bg-gray-100 p-4 shadow">
