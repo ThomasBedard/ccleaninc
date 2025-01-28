@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import './Employees.css';
+import { toast } from 'react-toastify';
 
 const CreateEmployee: React.FC = () => {
   const navigate = useNavigate();
@@ -23,12 +24,12 @@ const CreateEmployee: React.FC = () => {
         role,
         isActive,
       });
-      alert('Employee created successfully!');
-      navigate('/admin-dashboard');
-    } catch (error) {
-      console.error('Error creating employee:', error);
-      alert('Failed to create employee.');
-    }
+      toast.success('Employee created successfully!');
+    navigate('/admin-dashboard');
+  } catch (error) {
+    console.error('Error creating employee:', error);
+    toast.error('Failed to create employee.');
+  }
   };
 
   return (

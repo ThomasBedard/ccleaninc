@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './AppointmentsEditForm.css'; 
+import { toast } from 'react-toastify';
 
 const CustomerAppointmentsEditForm = () => {
   const [appointment, setAppointment] = useState({
@@ -23,7 +24,7 @@ const CustomerAppointmentsEditForm = () => {
         setAppointment(response.data);
       } catch (err) {
         console.error(err); // <-- Using the error here
-        alert('Error loading appointment.');
+        toast.error('Error loading appointment.');
       }
     };
     fetchAppointment();
@@ -41,11 +42,11 @@ const CustomerAppointmentsEditForm = () => {
     e.preventDefault();
     try {
       await axiosInstance.put(`/appointments/customer/${appointmentId}`, appointment);
-      alert('Appointment updated successfully (Customer).');
+      toast.success('Appointment updated successfully (Customer).');
       navigate('/my-appointments');
     } catch (err) {
       console.error(err); // <-- Using the error here
-      alert('Failed to update appointment for customer.');
+      toast.error('Failed to update appointment for customer.');
     }
   };
 

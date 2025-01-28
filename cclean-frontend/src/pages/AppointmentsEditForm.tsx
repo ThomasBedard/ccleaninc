@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './AppointmentsEditForm.css';
+import { toast } from 'react-toastify';
 
 const AppointmentsEditForm = () => {
   const [appointment, setAppointment] = useState({
@@ -21,7 +22,7 @@ const AppointmentsEditForm = () => {
         const response = await axiosInstance.get(`/appointments/${appointmentId}`);
         setAppointment(response.data);
       } catch (err) {
-        alert(
+        toast.error(
           err instanceof Error
             ? err.message
             : 'An unexpected error occurred while fetching the appointment.'
@@ -45,10 +46,10 @@ const AppointmentsEditForm = () => {
 
     try {
       await axiosInstance.put(`/appointments/${appointmentId}`, appointment);
-      window.alert('Appointment updated successfully.');
+      toast.success('Appointment updated successfully.');
       navigate('/appointments'); // Redirect to the Appointments page
     } catch (err) {
-      alert(
+      toast.error(
         err instanceof Error
           ? err.message
           : 'An unexpected error occurred while updating the appointment.'

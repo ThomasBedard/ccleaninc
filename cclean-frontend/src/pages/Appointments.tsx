@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './Appointments.css';
+import { toast } from 'react-toastify';
 
 interface Appointment {
   appointmentId?: string;
@@ -84,7 +85,7 @@ const Appointments = () => {
   // Function to delete an appointment
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
-      alert('Invalid appointment ID');
+      toast.error('Invalid appointment ID');
       return;
     }
 
@@ -99,9 +100,9 @@ const Appointments = () => {
       setAppointments((prevAppointments) =>
         prevAppointments.filter((appointment) => appointment.appointmentId !== appointmentId)
       );
-      window.alert('Appointment deleted successfully.');
+      toast.success('Appointment deleted successfully.');
     } catch (err) {
-      alert(
+      toast.success(
         err instanceof Error
           ? err.message
           : 'An unexpected error occurred while deleting the appointment.'
@@ -124,7 +125,7 @@ const Appointments = () => {
       link.click();
       link.remove();
     } catch (err) {
-      alert(
+      toast.error(
         err instanceof Error
           ? err.message
           : 'An error occurred while downloading the PDF.'
