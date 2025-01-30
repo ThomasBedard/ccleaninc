@@ -1,0 +1,24 @@
+### Node.js ###
+node_modules/
+cclean-frontend/node_modules/
+
+### Gradle ###
+.gradle
+build/
+
+# IDEs and Editor Configuration
+.idea/
+.vscode/
+*.iml
+
+# System Files
+.DS_Store
+*.log
+*.tmp
+
+# Environment Files
+.env
+./cclean-frontend/.env
+
+# database 
+data/database/
