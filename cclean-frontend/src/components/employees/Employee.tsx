@@ -1,6 +1,9 @@
+// Employee.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Employees.css';
+import { motion } from 'framer-motion';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 
 interface EmployeeProps {
   employeeId: string;
@@ -30,7 +33,11 @@ const Employee: React.FC<EmployeeProps> = ({
   };
 
   return (
-    <div className="employee-card">
+    <motion.div
+      className="employee-card"
+      whileHover={{ scale: 1.03, boxShadow: '0 6px 12px rgba(0,0,0,0.15)' }}
+      transition={{ duration: 0.3 }}
+    >
       <p>
         <strong>Name:</strong> {firstName} {lastName}
       </p>
@@ -52,16 +59,18 @@ const Employee: React.FC<EmployeeProps> = ({
           className="edit-button"
           onClick={() => navigate(`/edit-employee/${employeeId}`)}
         >
+          <FaEdit style={{ marginRight: '5px' }} />
           Edit
         </button>
         <button
           className="delete-button"
           onClick={handleDeleteClick}
         >
+          <FaTrash style={{ marginRight: '5px' }} />
           Delete
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

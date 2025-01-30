@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axios';
 import './Customers.css';
+import { toast } from 'react-toastify';
 
 interface Customer {
   customerId: string;
@@ -24,7 +25,7 @@ const CustomersList: React.FC = () => {
         setFilteredCustomers(response.data);
       } catch (error) {
         console.error('Error fetching customers:', error);
-        alert('Failed to fetch customers.');
+        toast.error('Failed to fetch customers.');
       }
     };
 
@@ -55,10 +56,10 @@ const CustomersList: React.FC = () => {
       await axiosInstance.delete(`/customers/${customerId}`);
       setCustomers((prev) => prev.filter((customer) => customer.customerId !== customerId));
       setFilteredCustomers((prev) => prev.filter((customer) => customer.customerId !== customerId));
-      alert('Customer deleted successfully.');
+      toast.success('Customer deleted successfully.');
     } catch (error) {
       console.error('Error deleting customer:', error);
-      alert('Failed to delete customer.');
+      toast.error('Failed to delete customer.');
     }
   };
 

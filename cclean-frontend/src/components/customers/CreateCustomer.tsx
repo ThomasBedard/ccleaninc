@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axiosInstance from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import './Customers.css';
+import { toast } from 'react-toastify';
 
 const CreateCustomer: React.FC = () => {
   const [firstName, setFirstName] = useState('');
@@ -20,11 +21,11 @@ const CreateCustomer: React.FC = () => {
         phoneNumber,
         companyName,
       });
-      alert('Customer created successfully!');
+      toast.success('Customer created successfully!');
       navigate('/admin-dashboard');
     } catch (error) {
       console.error('Error creating customer:', error);
-      alert('Failed to create customer.');
+      toast.error('Failed to create customer.');
     }
   };
 

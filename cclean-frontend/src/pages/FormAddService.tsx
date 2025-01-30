@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './FormAddService.css';
+import { toast } from 'react-toastify';
 
 const FormAddService = () => {
   const [newService, setNewService] = useState({
@@ -31,7 +32,7 @@ const FormAddService = () => {
       !newService.category.trim() ||
       !newService.durationMinutes.trim()
     ) {
-      alert('All fields are required. Please fill in all the fields.');
+      toast.error('All fields are required. Please fill in all the fields.');
       return;
     }
 
@@ -43,10 +44,10 @@ const FormAddService = () => {
         category: newService.category,
         durationMinutes: parseInt(newService.durationMinutes, 10),
       });
-      alert('Service created successfully!');
+      toast.success('Service created successfully!');
       navigate('/services'); 
     } catch {
-      alert('Failed to create service. Please try again.');
+      toast.error('Failed to create service. Please try again.');
     }
   };
 

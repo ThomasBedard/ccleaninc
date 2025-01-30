@@ -22,11 +22,16 @@
 }
 
 /* Navigation Links Container */
-.navbar-links {
-  display: none;
-  gap: 2rem; /* Spacious gap for better layout */
-  font-weight: 500;
+.navbar-links a {
+  color: #34495e;
+  text-decoration: none;
+  font-size: 0.95rem;     /* slightly smaller text */
+  padding: 0.4rem 0.6rem; /* narrower horizontal padding */
+  margin: 0 0.3rem;       /* narrower horizontal gap */
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
+
 
 .navbar-links a {
   color: #34495e; /* Balanced dark gray */
