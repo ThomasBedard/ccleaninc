@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import './Employees.css';
+import { toast } from 'react-toastify';
 
 const EditEmployee: React.FC = () => {
   const { employeeId } = useParams<{ employeeId: string }>();
@@ -27,7 +28,7 @@ const EditEmployee: React.FC = () => {
         setIsActive(emp.isActive);
       } catch (error) {
         console.error('Error fetching employee details:', error);
-        alert('Failed to fetch employee details.');
+        toast.error('Failed to fetch employee details.');
       }
     };
 
@@ -46,11 +47,11 @@ const EditEmployee: React.FC = () => {
         role,
         isActive,
       });
-      alert('Employee updated successfully!');
+      toast.success('Employee updated successfully!');
       navigate('/admin-dashboard');
     } catch (error) {
       console.error('Error updating employee:', error);
-      alert('Failed to update employee.');
+      toast.error('Failed to update employee.');
     }
   };
 

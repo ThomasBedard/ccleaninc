@@ -12,9 +12,12 @@
   "dependencies": {
     "@auth0/auth0-react": "^2.2.4",
     "axios": "^1.7.9",
+    "framer-motion": "^12.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0",
     "react-router-dom": "^7.0.2",
+    "react-toastify": "^11.0.3",
     "rsuite": "^5.76.3"
   },
   "devDependencies": {
@@ -22,6 +25,7 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-toastify": "^4.0.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.16.0",

@@ -4,6 +4,9 @@ import axiosInstance from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import "./SubmitFeedback.css";
 
+// Added from feat/CCICC-78-UI_Overhaul
+import { toast } from "react-toastify";
+
 const SubmitFeedback: React.FC = () => {
   const [customerId, setCustomerId] = useState("");
   const [stars, setStars] = useState<number>(0);
@@ -32,13 +35,21 @@ const SubmitFeedback: React.FC = () => {
 
     try {
       await axiosInstance.post("/feedbacks", {
-        customerId: customerId, // Changed from userId to customerId
+        customerId: customerId, // changed from userId to customerId
         stars: stars,
         content: content,
       });
+
+      // From feat/CCICC-78-UI_Overhaul:
+      toast.success(
+        "Feedback submitted successfully! It will be visible once an admin publishes it."
+      );
+
+      // From main:
       alert(
         "Feedback submitted successfully! It will be visible once an admin publishes it."
       );
+
       navigate("/");
     } catch (err) {
       if (axios.isAxiosError(err)) {
