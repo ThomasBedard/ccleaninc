@@ -1,0 +1,56 @@
+.availabilities-edit-page {
+    padding: 2rem;
+    background: linear-gradient(135deg, #fbe9e7, #ffccbc);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .availabilities-edit-form {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .availabilities-edit-form h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #d84315;
+  }
+  
+  .availabilities-edit-form input,
+  .availabilities-edit-form select,
+  .availabilities-edit-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d84315;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .availabilities-edit-form textarea {
+    height: 100px;
+  }
+  
+  .availabilities-edit-form button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #d84315;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .availabilities-edit-form button:hover {
+    background-color: #bf360c;
+  }
+  

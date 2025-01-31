@@ -92,3 +92,16 @@ CREATE TABLE IF NOT EXISTS appointments (
     services VARCHAR(255),
     comments VARCHAR(255)
 );
+
+DROP TABLE IF EXISTS employee_schedule_availabilities;
+
+CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    availability_id VARCHAR(36) NOT NULL UNIQUE,
+    employee_id VARCHAR(36) NOT NULL,
+    employee_first_name VARCHAR(50) NOT NULL,
+    employee_last_name VARCHAR(50) NOT NULL,
+    shift VARCHAR(36) NOT NULL,
+    available_date DATETIME NOT NULL,
+    comments VARCHAR(255)
+);

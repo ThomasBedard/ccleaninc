@@ -28,6 +28,9 @@ import SelectDateTimePage from "./pages/SelectDateTimePage";
 import CheckoutPage from "./pages/CheckoutPage";
 import MyAppointments from "./pages/MyAppointments";
 import CustomerAppointmentsEditForm from "./pages/CustomerAppointmentsEditForm";
+import MyAvailabilities from './pages/MyAvailabilities'; 
+import EmployeeAvailabilitiesEditForm from './pages/EmployeeAvailabilitiesEditForm'; 
+import AddAvailability from './pages/AddAvailability';
 
 import "./pages/GlobalOverride.css";
 import "./index.css";
@@ -105,7 +108,10 @@ const App = () => {
               path="/my-appointments/edit/:appointmentId"
               element={<CustomerAppointmentsEditForm />}
             />
-
+            {/* Availabilities routes */}
+            <Route path="/my-availabilities" element={<MyAvailabilities />} /> 
+            <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} /> 
+            <Route path="/add-availability" element={<AddAvailability />} />
             {/* Route from main branch */}
             <Route path="/profile" element={<Profile />} />
           </Routes>

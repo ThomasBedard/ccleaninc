@@ -75,6 +75,10 @@ const Navbar = ({ children }: NavbarProps) => {
             <FaCalendarAlt style={{ marginRight: "4px" }} />
             My Appointments
           </Link>
+          {/* NEW: My Availabilities link for employees */}
+          <Link to="/my-availabilities" className="navbar-link">
+            My Availabilities
+          </Link>
         </div>
 
         {/* Actions (Merged from both branches) */}
