@@ -112,7 +112,6 @@ const App = () => {
             <Route path="/my-availabilities" element={<MyAvailabilities />} /> 
             <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} /> 
             <Route path="/add-availability" element={<AddAvailability />} />
-
             {/* Route from main branch */}
             <Route path="/profile" element={<Profile />} />
           </Routes>
