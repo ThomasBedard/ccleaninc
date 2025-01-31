@@ -1,0 +1,12 @@
+# .dockerignore
+.git
+node_modules
+build
+target
+.gradle
+.idea
+.vscode
+logs
+*.log
+.env
+data/

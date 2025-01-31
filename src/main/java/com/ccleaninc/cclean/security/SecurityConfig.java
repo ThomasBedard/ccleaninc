@@ -25,5 +25,14 @@ public class SecurityConfig {
     private JwtAuthenticationConverter makePermissionsConverter() {
         return CustomJwtAuthenticationConverter.jwtAuthenticationConverter();
     }
+
+//    @Bean
+//    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+//        return http
+//                .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF
+//                .authorizeHttpRequests(authz -> authz.anyRequest().permitAll()) // ✅ Allow all requests for testing
+//                .cors(Customizer.withDefaults())
+//                .build();
+//    }
 }
 

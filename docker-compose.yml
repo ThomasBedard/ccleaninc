@@ -29,6 +29,8 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_MAIL_USERNAME=viniciusvelozodesousa@gmail.com
+      - SPRING_MAIL_PASSWORD=afbalomnaskqhzrm
     depends_on:
       - database
 

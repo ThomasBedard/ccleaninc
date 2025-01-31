@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
@@ -139,6 +140,16 @@ public class AppointmentController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(pdfData.toByteArray());
+    }
+
+    @PostMapping("/appointments/customers/{customerId}")
+    public ResponseEntity<AppointmentResponseModel> addAppointmentToCustomerAccount (@PathVariable String customerId,@RequestBody AppointmentRequestModel appointmentRequestModel) throws MessagingException {
+
+        AppointmentResponseModel appointment = appointmentService.addAppointmentToCustomerAccount(customerId, appointmentRequestModel);
+        if(appointment == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(appointment);
     }
 
 }

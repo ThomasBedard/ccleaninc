@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:8080/api/v1",
@@ -11,29 +11,41 @@ const axiosInstance = axios.create({
 });
 
 export const useAxiosWithAuth = () => {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
-    useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const attachToken = async () => {
+    const fetchToken = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        console.log("Token fetched:", token); // Debugging log
+        if (!isAuthenticated) {
+          console.warn("❌ User is not authenticated. Redirecting to login...");
+          await loginWithRedirect();
+          return;
+        }
 
-        axiosInstance.interceptors.request.use(
-          (config) => {
-            config.headers.Authorization = `Bearer ${token}`;
-            return config;
-          },
-          (error) => Promise.reject(error)
-        );
+        const fetchedToken = await getAccessTokenSilently();
+        console.log("🔑 Auth0 Token Retrieved:", fetchedToken);
+        setToken(fetchedToken);
       } catch (error) {
-        console.error("Error fetching token:", error);
+        console.error("❌ Error fetching Auth0 token:", error);
       }
     };
 
-    attachToken();
+    fetchToken();
   }, [isAuthenticated, getAccessTokenSilently, loginWithRedirect]);
+
+  useEffect(() => {
+    if (token) {
+      axiosInstance.interceptors.request.use(
+        (config) => {
+          config.headers.Authorization = `Bearer ${token}`;
+          console.log("📡 Sending Request with Token:", config.headers.Authorization);
+          return config;
+        },
+        (error) => Promise.reject(error)
+      );
+    }
+  }, [token]);
 
   return axiosInstance;
 };

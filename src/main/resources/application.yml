@@ -10,6 +10,15 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
+# Thymeleaf Configuration (✅ Fix for template not found)
+spring:
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    cache: false  # Disable caching for development/testing
+
 ---
 # for docker
 
@@ -31,6 +40,15 @@ spring:
     init:
       platform: mysql
       mode: always
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: viniciusvelozodesousa@gmail.com
+    password: afbalomnaskqhzrm
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 okta:
   oauth2:

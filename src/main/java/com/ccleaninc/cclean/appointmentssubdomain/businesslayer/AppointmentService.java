@@ -3,6 +3,7 @@ package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
 
+import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public interface AppointmentService {
     AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId);
 
     AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel);
+
+    AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException;
 
     AppointmentResponseModel updateAppointment(String appointmentId, AppointmentRequestModel appointmentRequestModel);
 

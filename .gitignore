@@ -53,3 +53,5 @@ out/
 
 ### database ###
 data/database/
+data/database/*
+*.sock
