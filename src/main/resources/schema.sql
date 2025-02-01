@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS customers (
     last_name VARCHAR(50),                       -- Optional last name
     company_name VARCHAR(100),                   -- Optional company name
     email VARCHAR(100) UNIQUE NOT NULL,          -- Common email field
-    phone_number VARCHAR(20) NOT NULL                    -- Common phone number field
+    phone_number VARCHAR(20) NULL,                    -- Common phone number field
+    address VARCHAR(255) DEFAULT NULL
 );
 
 -- Added an index to customer_id for foreign key references
