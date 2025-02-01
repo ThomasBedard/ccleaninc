@@ -17,7 +17,7 @@ public class AppointmentRequestModel {
     private String customerFirstName;
     private String customerLastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
-    LocalDateTime appointmentDate;
+    private LocalDateTime appointmentDate;
     private String services;
     private String comments;
     private Status status;
