@@ -105,3 +105,14 @@ CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
     available_date DATETIME NOT NULL,
     comments VARCHAR(255)
 );
+
+DROP TABLE IF EXISTS verification_token;
+CREATE TABLE IF NOT EXISTS  verification_token
+(
+    id          int auto_increment
+    primary key,
+    token       varchar(50)  not null,
+    email       varchar(100) not null,
+    customer_id     varchar(36)  ,
+    expiry_date datetime     not null
+    );
