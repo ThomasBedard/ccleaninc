@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS customers (
     last_name VARCHAR(50),                        -- Optional last name
     company_name VARCHAR(100),                    -- Optional company name
     email VARCHAR(100) NOT NULL UNIQUE,           -- Required email
-    phone_number VARCHAR(20) NOT NULL
+    phone_number VARCHAR(20) NULL,
+    address VARCHAR(255) DEFAULT NULL
 );
 
 -- Create an index for customer_id

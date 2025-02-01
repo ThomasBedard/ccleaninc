@@ -18,5 +18,8 @@ public interface CustomerService {
     CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel);
 
     CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel);
-    
+
+    CustomerResponseModel getOrCreateCustomerByEmail(String email);
+
+
 }

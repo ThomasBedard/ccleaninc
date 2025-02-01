@@ -212,5 +212,27 @@ public class CustomerControllerUnitTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    void getCustomerByEmail_ShouldReturnCustomer() {
+        String email = "john.doe@mail.com";
+        when(customerService.getOrCreateCustomerByEmail(email)).thenReturn(customerResponseModel);
+
+        ResponseEntity<CustomerResponseModel> response = customerController.getCustomerByEmail(email);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(customerResponseModel, response.getBody());
+    }
+
+    @Test
+    void getCustomerByEmail_CustomerNotFound_ShouldReturnInternalServerError() {
+        String email = "nonexistent@mail.com";
+        when(customerService.getOrCreateCustomerByEmail(email)).thenThrow(new RuntimeException("Customer not found"));
+
+        ResponseEntity<CustomerResponseModel> response = customerController.getCustomerByEmail(email);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
 
 }

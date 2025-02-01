@@ -84,8 +84,25 @@ public class CustomerServiceImpl implements CustomerService{
         existingCustomer.setCompanyName(customerRequestModel.getCompanyName());
         existingCustomer.setEmail(customerRequestModel.getEmail());
         existingCustomer.setPhoneNumber(customerRequestModel.getPhoneNumber());
+        existingCustomer.setAddress(customerRequestModel.getAddress());
 
         return customerResponseMapper.entityToResponseModel(customerRepository.save(existingCustomer));
+    }
+
+    @Override
+    public CustomerResponseModel getOrCreateCustomerByEmail(String email) {
+        Customer existing = customerRepository.findByEmail(email);
+        if (existing != null) {
+            return customerResponseMapper.entityToResponseModel(existing);
+        }
+
+        // If no record exists, create a new blank one
+        Customer newCustomer = new Customer();
+        newCustomer.setCustomerIdentifier(new CustomerIdentifier());
+        newCustomer.setEmail(email);
+        // Everything else stays null
+        Customer saved = customerRepository.save(newCustomer);
+        return customerResponseMapper.entityToResponseModel(saved);
     }
 
 }

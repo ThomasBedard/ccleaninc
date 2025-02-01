@@ -87,4 +87,18 @@ public class CustomerController {
         }
         return ResponseEntity.ok(customers);
     }
+
+    @GetMapping("/byEmail")
+    public ResponseEntity<CustomerResponseModel> getCustomerByEmail(@RequestParam String email) {
+        try {
+            // Must use getOrCreateCustomerByEmail here
+            CustomerResponseModel customer = customerService.getOrCreateCustomerByEmail(email);
+            return ResponseEntity.ok(customer);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 }
+

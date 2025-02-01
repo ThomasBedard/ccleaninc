@@ -30,6 +30,9 @@ public class Customer {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number") // no nullable=false
     private String phoneNumber;
+
+    @Column(name = "address")
+    private String address;
 }

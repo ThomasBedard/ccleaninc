@@ -15,4 +15,5 @@ public class CustomerResponseModel {
     private String companyName;   // optional if business
     private String email;
     private String phoneNumber;
+    private String address;
 }
