@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../hooks/useLanguage'; // ✅ Import the language hook
 import axiosInstance from '../api/axios';
 import './Home.css';
 
@@ -25,6 +26,7 @@ const Home = () => {
   const [customerMap, setCustomerMap] = useState<Record<string, Customer>>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { translations } = useLanguage(); // ✅ Get translations from context
   const navigate = useNavigate();
 
   const fetchFeedbacks = async () => {
@@ -33,7 +35,6 @@ const Home = () => {
       const feedbackData = response.data;
       setFeedbacks(feedbackData);
 
-      // Fetch customer details for each unique customerId
       const uniqueCustomerIds = Array.from(new Set(feedbackData.map(f => f.customerId)));
       const customerPromises = uniqueCustomerIds.map(id => axiosInstance.get<Customer>(`/customers/${id}`));
 
@@ -59,15 +60,15 @@ const Home = () => {
   }, []);
 
   const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={`star ${i <= rating ? 'filled' : ''}`}>
-          ★
-        </span>
-      );
-    }
-    return <div className="star-container">{stars}</div>;
+    return (
+      <div className="star-container">
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className={`star ${i < rating ? 'filled' : ''}`}>
+            ★
+          </span>
+        ))}
+      </div>
+    );
   };
 
   const getCustomerName = (customerId: string): string => {
@@ -85,37 +86,30 @@ const Home = () => {
     <div className="home-container">
       <header className="home-header">
         <div className="home-header-content">
-          <h1 className="home-title">C CLEAN inc.</h1>
+          <h1 className="home-title">{translations.home?.title || "C CLEAN inc."}</h1>
           <p className="home-description">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad.
+            {translations.home?.description ||
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad."}
           </p>
-          <button
-            onClick={() => navigate('/about-us')}
-            className="home-learn-more-button"
-          >
-            Learn More
+          <button onClick={() => navigate('/about-us')} className="home-learn-more-button">
+            {translations.home?.learnMore || "Learn More"}
           </button>
         </div>
 
         <div className="home-image-container">
-          <img
-            src="/images/cleaning-product.png"
-            alt="Cleaning Product"
-          />
+          <img src="/images/cleaning-product.png" alt="Cleaning Product" />
         </div>
       </header>
 
       <section className="feedback-section">
-        <h2 className="feedback-section-title">Customer Feedbacks</h2>
-        <button
-          onClick={() => navigate('/submit-feedback')}
-          className="home-submit-feedback-button"
-        >
-          Submit Feedback
+        <h2 className="feedback-section-title">
+          {translations.home?.customerFeedbacks || "Customer Feedbacks"}
+        </h2>
+        <button onClick={() => navigate('/submit-feedback')} className="home-submit-feedback-button">
+          {translations.home?.submitFeedback || "Submit Feedback"}
         </button>
         {loading ? (
-          <p className="loading-text">Loading feedbacks...</p>
+          <p className="loading-text">{translations.home?.loadingFeedbacks || "Loading feedbacks..."}</p>
         ) : error ? (
           <p className="error-text">{error}</p>
         ) : feedbacks.length > 0 ? (
@@ -127,13 +121,14 @@ const Home = () => {
                   {renderStars(feedback.stars)}
                   <span className="rating-text">{feedback.stars}/5</span>
                 </div>
-                <p className="feedback-user">Customer: {getCustomerName(feedback.customerId)}</p>
-                {/* Removed status display for homepage */}
+                <p className="feedback-user">
+                  {translations.home?.customer || "Customer"}: {getCustomerName(feedback.customerId)}
+                </p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="loading-text">No feedback available at the moment.</p>
+          <p className="loading-text">{translations.home?.noFeedback || "No feedback available at the moment."}</p>
         )}
       </section>
     </div>

@@ -1,0 +1,192 @@
+{
+    "navbar": {
+      "brand": "C CLEAN inc.",
+      "home": "Accueil",
+      "services": "Services",
+      "appointments": "Rendez-vous",
+      "schedule": "Horaire",
+      "employees": "Employés",
+      "admin_dashboard": "Tableau de bord administrateur",
+      "about_us": "À propos de nous",
+      "contacts": "Contacts",
+      "my_appointments": "Mes rendez-vous",
+      "my_availabilities": "Mes disponibilités",
+      "language_switch": "Langue changée en Français (FR)",
+      "profile": "Profil"
+    },
+    "about_us": {
+      "header": "Objectifs et Valeurs",
+      "subtitle": "Fondée en 2020, C CLEAN INC. s'engage à fournir des services de nettoyage exceptionnels aux clients commerciaux avec un fort engagement envers l'intégrité, la fiabilité et la satisfaction du client.",
+      "body": "Nos valeurs fondamentales mettent l'accent sur le professionnalisme et un profond respect pour nos clients et leurs espaces. Nous croyons en la création d'environnements propres et sains qui améliorent la qualité de vie de tous ceux que nous servons. Alors que nous nous développons vers des contrats de nettoyage résidentiel, notre objectif reste le même : offrir des solutions de nettoyage de qualité supérieure qui reflètent notre engagement envers l'excellence et notre passion pour un monde plus propre et plus durable."
+    },
+    "add_availability": {
+      "title": "Ajouter une disponibilité",
+      "employee_id_label": "ID de l'employé :",
+      "employee_id_placeholder": "Entrez l'ID de l'employé",
+      "first_name_label": "Prénom de l'employé :",
+      "first_name_placeholder": "Entrez le prénom",
+      "last_name_label": "Nom de l'employé :",
+      "last_name_placeholder": "Entrez le nom",
+      "available_date_label": "Date disponible :",
+      "select_shift_label": "Sélectionnez le quart de travail :",
+      "select_shift_placeholder": "Sélectionnez un quart",
+      "shifts": {
+        "morning": "Matin",
+        "evening": "Soir",
+        "night": "Nuit"
+      },
+      "comments_label": "Commentaires (optionnels) :",
+      "comments_placeholder": "Ajoutez des détails supplémentaires...",
+      "submit_button": "Ajouter la disponibilité",
+      "alerts": {
+        "missing_fields": "Veuillez remplir tous les champs obligatoires.",
+        "success": "Disponibilité ajoutée avec succès !",
+        "error": "Une erreur inattendue s'est produite lors de l'ajout de la disponibilité."
+      }
+    },
+    "appointments": {
+      "title": "Page des rendez-vous",
+      "actions": {
+        "add": "Ajouter un rendez-vous",
+        "download_pdf": "Télécharger le PDF"
+      },
+      "table": {
+        "appointment_id": "ID du rendez-vous",
+        "customer_id": "ID du client",
+        "first_name": "Prénom du client",
+        "last_name": "Nom du client",
+        "date": "Date",
+        "services": "Services",
+        "status": "Statut",
+        "comments": "Commentaires",
+        "actions": "Actions",
+        "edit": "Modifier",
+        "delete": "Supprimer"
+      },
+      "messages": {
+        "loading": "Chargement des rendez-vous...",
+        "error": "Erreur lors du chargement des rendez-vous.",
+        "delete_confirm": "Êtes-vous sûr de vouloir supprimer le rendez-vous avec l'ID : {id} ?",
+        "delete_success": "Rendez-vous supprimé avec succès.",
+        "delete_error": "Une erreur inattendue s'est produite lors de la suppression du rendez-vous.",
+        "pdf_download_error": "Une erreur est survenue lors du téléchargement du PDF."
+      }
+    },
+    "appointments_add_form": {
+      "title": "Ajouter un rendez-vous",
+      "customer_first_name_label": "Prénom du client :",
+      "customer_first_name_placeholder": "Entrez le prénom du client",
+      "customer_last_name_label": "Nom du client :",
+      "customer_last_name_placeholder": "Entrez le nom du client",
+      "appointment_date_label": "Date du rendez-vous :",
+      "appointment_date_placeholder": "Sélectionnez la date du rendez-vous",
+      "services_label": "Services :",
+      "services_placeholder": "Entrez les services",
+      "comments_label": "Commentaires (optionnels) :",
+      "comments_placeholder": "Ajoutez des commentaires supplémentaires...",
+      "status_label": "Statut :",
+      "status_options": {
+        "pending": "En attente",
+        "confirmed": "Confirmé",
+        "cancelled": "Annulé",
+        "completed": "Terminé"
+      },
+      "submit_button": "Ajouter le rendez-vous",
+      "alerts": {
+        "success": "Rendez-vous ajouté avec succès !",
+        "error": "Une erreur inattendue s'est produite lors de l'ajout du rendez-vous."
+      }
+    },
+    "appointments_edit_form": {
+      "title": "Modifier le rendez-vous",
+      "customer_first_name_label": "Prénom du client :",
+      "customer_first_name_placeholder": "Entrez le prénom du client",
+      "customer_last_name_label": "Nom du client :",
+      "customer_last_name_placeholder": "Entrez le nom du client",
+      "appointment_date_label": "Date du rendez-vous :",
+      "appointment_date_placeholder": "Sélectionnez la date du rendez-vous",
+      "services_label": "Services :",
+      "services_placeholder": "Entrez les services",
+      "comments_label": "Commentaires (optionnels) :",
+      "comments_placeholder": "Ajoutez des commentaires supplémentaires...",
+      "status_label": "Statut :",
+      "status_options": {
+        "pending": "En attente",
+        "confirmed": "Confirmé",
+        "cancelled": "Annulé",
+        "completed": "Terminé"
+      },
+      "submit_button": "Mettre à jour le rendez-vous",
+      "alerts": {
+        "success": "Rendez-vous mis à jour avec succès !",
+        "error": "Une erreur inattendue s'est produite lors de la mise à jour du rendez-vous."
+      }
+    },
+    "contacts": {
+      "title": "Nous contacter",
+      "subtitle": "Si vous avez une question sur les services de C CLEAN INC., n'hésitez pas à nous contacter.",
+      "companyName": "C CLEAN INC.",
+      "address": "3042 RUE MASSON, QUÉBEC",
+      "phone": "TÉL : 514-555-5555",
+      "email": "EMAIL : fffffff@gmail.com"
+    },
+    "select_date_time": {
+    "title": "Sélectionner la date et l'heure",
+    "selected_date": "Date sélectionnée : {date}",
+    "select_time": "Sélectionner l'heure",
+    "error": "Veuillez sélectionner une date et une heure.",
+    "next_button": "Suivant"
+  },
+    "home": {
+      "title": "C CLEAN inc.",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad.",
+      "learnMore": "En savoir plus",
+      "customerFeedbacks": "Avis des clients",
+      "submitFeedback": "Soumettre un avis",
+      "loadingFeedbacks": "Chargement des avis...",
+      "noFeedback": "Aucun avis disponible pour le moment.",
+      "customer": "Client"
+    },
+    "checkout": {
+    "title": "Confirmer votre rendez-vous",
+    "selected_services": "Services sélectionnés",
+    "no_services": "Aucun service disponible. (Vérifiez vos identifiants ou les appels backend.)",
+    "date_time": "Date & Heure:",
+    "customer_id": "ID du client:",
+    "first_name": "Prénom:",
+    "last_name": "Nom de famille:",
+    "comments": "Commentaires:",
+    "comments_placeholder": "Commentaires supplémentaires (optionnel)",
+    "error": {
+      "invalid_fields": "⚠️ Veuillez entrer un ID client valide, un prénom et un nom de famille.",
+      "invalid_customer": "⚠️ ID client invalide. Ce client n'existe pas.",
+      "no_date": "⚠️ Aucune date de rendez-vous sélectionnée.",
+      "fetch_services": "❌ Erreur lors de la récupération des services.",
+      "appointment_creation": "❌ Erreur lors de la création du rendez-vous. Veuillez réessayer."
+    },
+    "success": {
+      "appointment_created": "✅ Rendez-vous créé avec succès ! Redirection en cours..."
+    },
+    "confirm_button": "Confirmer le rendez-vous",
+    "confirming": "Confirmation en cours..."
+  },
+    "services": {
+      "title": "Services de nettoyage résidentiel et commercial",
+      "searchPlaceholder": "Rechercher des services par titre...",
+      "searchButton": "Rechercher",
+      "loading": "Chargement...",
+      "errorMessage": "Une erreur est survenue. Veuillez réessayer plus tard.",
+      "noServicesFound": "Aucun service trouvé. Essayez une autre recherche.",
+      "pricing": "Contactez-nous pour les tarifs",
+      "availability": {
+        "available": "Disponible",
+        "unavailable": "Indisponible"
+      },
+      "select": "Sélectionner",
+      "delete": "Supprimer",
+      "editService": "Modifier le service",
+      "addService": "Ajouter un service",
+      "continueWithSelected": "Continuer avec les services sélectionnés"
+    }
+  }
+  
