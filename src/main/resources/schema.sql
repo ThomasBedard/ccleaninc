@@ -1,3 +1,7 @@
+-- Drop dependent table first (child table)
+DROP TABLE IF EXISTS employee_schedules;
+DROP TABLE IF EXISTS employee_schedule_availabilities;
+
 -- Customers table
 DROP TABLE IF EXISTS customers; 
 
@@ -93,7 +97,7 @@ CREATE TABLE IF NOT EXISTS appointments (
     comments VARCHAR(255)
 );
 
-DROP TABLE IF EXISTS employee_schedule_availabilities;
+-- DROP TABLE IF EXISTS employee_schedule_availabilities;
 
 CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -106,8 +110,7 @@ CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
     comments VARCHAR(255)
 );
 
-DROP TABLE IF EXISTS employee_schedules;
-
+-- Employee Schedules
 CREATE TABLE IF NOT EXISTS employee_schedules (
     id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
     schedule_id VARCHAR(36) NOT NULL UNIQUE,
@@ -117,12 +120,8 @@ CREATE TABLE IF NOT EXISTS employee_schedules (
     shift VARCHAR(36) NOT NULL,
     status VARCHAR(50) DEFAULT 'APPROVED',
     comments VARCHAR(255),
-    
-    -- Foreign Key Constraints
-    CONSTRAINT fk_employee_id FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
-    CONSTRAINT fk_availability_id FOREIGN KEY (availability_id) REFERENCES employee_schedule_availabilities(availability_id)
+    CONSTRAINT fk_employee_id FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE,
+    CONSTRAINT fk_availability_id FOREIGN KEY (availability_id) REFERENCES employee_schedule_availabilities(availability_id) ON DELETE CASCADE
 );
-
 CREATE INDEX idx_employee_id ON employee_schedules (employee_id);
 CREATE INDEX idx_availability_id ON employee_schedules (availability_id);
-

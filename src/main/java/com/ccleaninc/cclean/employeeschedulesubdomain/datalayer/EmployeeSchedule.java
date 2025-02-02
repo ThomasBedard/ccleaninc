@@ -3,6 +3,7 @@ package com.ccleaninc.cclean.employeeschedulesubdomain.datalayer;
 import java.time.LocalDateTime;
 
 import com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift;
+import com.ccleaninc.cclean.employeessubdomain.datalayer.Employee;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,10 @@ public class EmployeeSchedule {
 
     @Column(name = "employee_id")
     private String employeeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", referencedColumnName = "employee_id", insertable = false, updatable = false)
+    private Employee employee;
 
     @Column(name = "availability_id")
     private String availabilityId; // References Availability

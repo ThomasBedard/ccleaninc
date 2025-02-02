@@ -32,11 +32,11 @@ public interface EmployeeScheduleRepository extends JpaRepository<EmployeeSchedu
      * - Assigned date
      */
     @Query("SELECT s FROM EmployeeSchedule s " +
-           "JOIN Employee e ON s.employeeId = e.employeeId " +
-           "WHERE (LOWER(e.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-           "OR LOWER(e.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-           "OR LOWER(e.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
-           "OR e.phoneNumber LIKE CONCAT('%', :searchTerm, '%')) " +
-           "OR (CAST(s.assignedDate AS string) LIKE CONCAT('%', :searchTerm, '%'))")
+    "JOIN s.employee e " +  // Reference the mapped relationship
+    "WHERE (LOWER(e.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "OR LOWER(e.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "OR LOWER(e.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+    "OR e.phoneNumber LIKE CONCAT('%', :searchTerm, '%')) " +
+    "OR (CAST(s.assignedDate AS string) LIKE CONCAT('%', :searchTerm, '%'))")
     List<EmployeeSchedule> searchSchedulesAdvanced(@Param("searchTerm") String searchTerm);
 }
