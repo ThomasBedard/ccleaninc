@@ -19,13 +19,10 @@ spring:
     check-template-location: true
     cache: false  # Disable caching for development/testing
 ---
-# for docker
 
 spring:
   datasource:
-    url: jdbc:mysql://database/ccleandb
-    username: user
-    password: pwd
+    url: ${MYSQL_URL}
 
   jpa:
     hibernate:
