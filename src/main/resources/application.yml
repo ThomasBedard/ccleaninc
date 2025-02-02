@@ -1,4 +1,4 @@
-# Default Spring Profile
+# Default Spring Profile (No database, useful for local development)
 server:
   error:
     include-message: always
@@ -18,19 +18,20 @@ spring:
     suffix: .html
     check-template-location: true
     cache: false  # Disable caching for development/testing
----
 
+---
+# Docker Profile (This only activates if SPRING_PROFILES_ACTIVE=docker)
 spring:
+  config:
+    activate:
+      on-profile: docker
+
   datasource:
     url: ${MYSQL_URL}
 
   jpa:
     hibernate:
       ddl-auto: none
-
-  config:
-    activate:
-      on-profile: docker
 
   sql:
     init:
