@@ -90,3 +90,17 @@ VALUES
 
 ('f6g7h8i9-d0e1-11ec-82a8-0242ac130010', 'Bob', 'Williams', 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 
  'NIGHT',   '2025-02-18 00:00:00', 'Prefers not to work late-night shifts but available if needed');
+
+-- Insert Employee Schedules for Alice Johnson
+INSERT INTO employee_schedules (
+    schedule_id, employee_id, availability_id, assigned_date, shift, status, comments
+) VALUES 
+(UUID(), 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'a1b2c3d4-e5f6-11ec-82a8-0242ac130010', '2025-02-15 08:00:00', 'MORNING', 'APPROVED', 'Assigned based on morning preference'),
+(UUID(), 'c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'b2c3d4e5-f6a7-11ec-82a8-0242ac130010', '2025-02-16 16:00:00', 'EVENING', 'APPROVED', 'Assigned evening shift');
+
+-- Insert Employee Schedules for Bob Williams
+INSERT INTO employee_schedules (
+    schedule_id, employee_id, availability_id, assigned_date, shift, status, comments
+) VALUES 
+(UUID(), 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'd4e5f6g7-b8c9-11ec-82a8-0242ac130010', '2025-02-16 08:00:00', 'MORNING', 'APPROVED', 'Assigned based on morning preference'),
+(UUID(), 'd3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'e5f6g7h8-c9d0-11ec-82a8-0242ac130010', '2025-02-17 16:00:00', 'EVENING', 'APPROVED', 'Assigned evening shift');

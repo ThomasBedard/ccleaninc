@@ -1,5 +1,7 @@
 package com.ccleaninc.cclean.employeeschedulesubdomain.datalayer;
 
-public class ScheduleStatus {
-    
+public enum ScheduleStatus {
+    PENDING,    
+    APPROVED,   // DEFAULT STATUS. 
+    CANCELED    
 }
