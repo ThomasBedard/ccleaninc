@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
+import { useLanguage } from '../hooks/useLanguage'; // ✅ Import translations
 import './Appointments.css';
 import { toast } from 'react-toastify';
 
@@ -10,87 +11,73 @@ interface Appointment {
   customerFirstName?: string;
   customerLastName?: string;
   appointmentDate?: string;
-  services?: string;      // e.g. "id1,id2,id3" or "Residential Cleaning Service"
-  serviceTitles?: string; // We'll add this property after we fetch names
+  services?: string;
+  serviceTitles?: string;
   status?: string;
   comments?: string;
 }
 
 // Add a helper for checking UUID format
-function isUuidFormat(str: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-}
+const isUuidFormat = (str: string): boolean =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
 const Appointments = () => {
+  const { translations } = useLanguage(); // ✅ Get translations from context
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fetch all appointments, then transform service IDs -> service titles
-  const fetchAllAppointments = async () => {
+  // ✅ Memoized fetch function to avoid unnecessary re-renders
+  const fetchAllAppointments = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await axiosInstance.get<Appointment[]>('/appointments');
       const fetchedAppointments = response.data;
 
-      // Transform each appointment's 'services' from IDs to titles
       const updatedAppointments = await Promise.all(
         fetchedAppointments.map(async (apt) => {
-          if (!apt.services) {
-            return { ...apt, serviceTitles: '' };
-          }
+          if (!apt.services) return { ...apt, serviceTitles: '' };
 
-          // Example: "id1,id2" or "Residential Cleaning Service"
           const serviceTokens = apt.services.split(',');
           const titles: string[] = [];
 
           for (const token of serviceTokens) {
             const trimmedToken = token.trim();
-
             if (isUuidFormat(trimmedToken)) {
-              // It's a valid UUID, so fetch from the /services endpoint
               try {
                 const serviceRes = await axiosInstance.get(`/services/${trimmedToken}`);
-                // If successful, push the service's title
-                titles.push(serviceRes.data.title || 'Unknown Service');
-              } catch {
-                // If we fail to fetch by ID, treat it as unknown
-                titles.push('Unknown Service');
+                titles.push(serviceRes.data.title || translations.appointments?.messages?.error || 'Unknown Service');
+              } catch (err) {
+                console.error("Error fetching service:", err);
+                titles.push(translations.appointments?.messages?.error || 'Unknown Service');
               }
             } else {
-              // It's NOT a UUID, so treat it as a literal service name
               titles.push(trimmedToken);
             }
           }
-
-          // Join them into a single string for display
           return { ...apt, serviceTitles: titles.join(', ') };
         })
       );
 
       setAppointments(updatedAppointments);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'An unexpected error occurred while fetching appointments.'
-      );
+      console.error("Error fetching appointments:", err);
+      setError(translations.appointments?.messages?.error || 'An unexpected error occurred while fetching appointments.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [translations.appointments?.messages?.error]); // ✅ Added as dependency
 
-  // Function to delete an appointment
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
-      toast.error('Invalid appointment ID');
+      toast.error(translations.appointments?.messages?.delete_error || 'Invalid appointment ID');
       return;
     }
 
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete the appointment with ID: ${appointmentId}?`
+      `${translations.appointments?.messages?.delete_confirm?.replace('{id}', appointmentId) || `Are you sure you want to delete the appointment with ID: ${appointmentId}?`}`
     );
 
     if (!confirmDelete) return;
@@ -100,81 +87,68 @@ const Appointments = () => {
       setAppointments((prevAppointments) =>
         prevAppointments.filter((appointment) => appointment.appointmentId !== appointmentId)
       );
-      toast.success('Appointment deleted successfully.');
+      toast.success(translations.appointments?.messages?.delete_success || 'Appointment deleted successfully.');
     } catch (err) {
-      toast.success(
-        err instanceof Error
-          ? err.message
-          : 'An unexpected error occurred while deleting the appointment.'
-      );
+      console.error("Error deleting appointment:", err);
+      toast.error(translations.appointments?.messages?.delete_error || 'An unexpected error occurred while deleting the appointment.');
     }
   };
 
-  // Function to download the PDF
   const downloadPdf = async () => {
     try {
       const response = await axiosInstance.get('/appointments/pdf', {
-        responseType: 'blob', // Important to receive the PDF as a blob
+        responseType: 'blob',
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'appointments.pdf'); // Set the file name
+      link.setAttribute('download', 'appointments.pdf');
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (err) {
-      toast.error(
-        err instanceof Error
-          ? err.message
-          : 'An error occurred while downloading the PDF.'
-      );
+      console.error("Error downloading PDF:", err);
+      toast.error(translations.appointments?.messages?.pdf_download_error || 'An error occurred while downloading the PDF.');
     }
   };
 
+  // ✅ No more ESLint warning: useEffect now properly includes fetchAllAppointments
   useEffect(() => {
     fetchAllAppointments();
-    
-  }, []);
+  }, [fetchAllAppointments]);
 
   if (loading) {
-    return <div className="loading-message">Loading appointments...</div>;
+    return <div className="loading-message">{translations.appointments?.messages?.loading || 'Loading appointments...'}</div>;
   }
 
   if (error) {
-    return <div className="error-message">Error: {error}</div>;
+    return <div className="error-message">{error}</div>;
   }
 
   return (
     <div className="appointments-page">
-      <h1 className="appointments-title">Appointments Page</h1>
+      <h1 className="appointments-title">{translations.appointments?.title || 'Appointments Page'}</h1>
       <div className="appointments-actions">
-        <button
-          className="add-appointment-button"
-          onClick={() => navigate('/appointments/add')}
-        >
-          Add Appointment
+        <button className="add-appointment-button" onClick={() => navigate('/appointments/add')}>
+          {translations.appointments?.actions?.add || 'Add Appointment'}
         </button>
-        <button
-          className="download-pdf-button"
-          onClick={downloadPdf}
-        >
-          Download PDF
+        <button className="download-pdf-button" onClick={downloadPdf}>
+          {translations.appointments?.actions?.download_pdf || 'Download PDF'}
         </button>
       </div>
       <table className="appointments-table">
         <thead>
           <tr>
-            <th>Appointment ID</th>
-            <th>Customer ID</th>
-            <th>Customer First Name</th>
-            <th>Customer Last Name</th>
-            <th>Date</th>
-            <th>Services</th>
-            <th>Status</th>
-            <th>Comments</th>
-            <th>Actions</th>
+            <th>{translations.appointments?.table?.appointment_id || 'Appointment ID'}</th>
+            <th>{translations.appointments?.table?.customer_id || 'Customer ID'}</th>
+            <th>{translations.appointments?.table?.first_name || 'Customer First Name'}</th>
+            <th>{translations.appointments?.table?.last_name || 'Customer Last Name'}</th>
+            <th>{translations.appointments?.table?.date || 'Date'}</th>
+            <th>{translations.appointments?.table?.services || 'Services'}</th>
+            <th>{translations.appointments?.table?.status || 'Status'}</th>
+            <th>{translations.appointments?.table?.comments || 'Comments'}</th>
+            <th>{translations.appointments?.table?.actions || 'Actions'}</th>
           </tr>
         </thead>
         <tbody>
@@ -189,17 +163,11 @@ const Appointments = () => {
               <td>{appointment.status || 'N/A'}</td>
               <td>{appointment.comments || 'N/A'}</td>
               <td className="actions">
-                <button
-                  className="edit-button"
-                  onClick={() => navigate(`/appointments/edit/${appointment.appointmentId}`)}
-                >
-                  Edit
+                <button className="edit-button" onClick={() => navigate(`/appointments/edit/${appointment.appointmentId}`)}>
+                  {translations.appointments?.table?.edit || 'Edit'}
                 </button>
-                <button
-                  className="delete-button"
-                  onClick={() => deleteAppointment(appointment.appointmentId)}
-                >
-                  Delete
+                <button className="delete-button" onClick={() => deleteAppointment(appointment.appointmentId)}>
+                  {translations.appointments?.table?.delete || 'Delete'}
                 </button>
               </td>
             </tr>

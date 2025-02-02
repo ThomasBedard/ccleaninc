@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Calendar } from 'rsuite';
+import { useLanguage } from '../hooks/useLanguage'; // ✅ Import translations
 import 'rsuite/dist/rsuite.min.css';
 import { toast } from 'react-toastify';
 
@@ -10,10 +11,11 @@ const times = [
   '13:00', '13:30', '14:00', '14:30',
   '15:00', '15:30', '16:00', '16:30',
   '17:00', '17:30', '18:00', '18:30',
-  '19:00', '19:30', '20:00', '20:30',
+  '19:00', '19:30', '20:00', '20:30'
 ];
 
 const SelectDateTimePage: React.FC = () => {
+  const { translations } = useLanguage(); // ✅ Get translations from context
   const location = useLocation();
   const navigate = useNavigate();
   const { selectedServiceIds } = location.state as { selectedServiceIds: string[] };
@@ -26,7 +28,7 @@ const SelectDateTimePage: React.FC = () => {
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
-      toast.error('Please select both a date and a time.');
+      toast.error(translations.select_date_time?.error || 'Please select both a date and a time.');
       return;
     }
 
@@ -42,18 +44,18 @@ const SelectDateTimePage: React.FC = () => {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h1>Select Date &amp; Time</h1>
+      <h1>{translations.select_date_time?.title || 'Select Date & Time'}</h1>
       <div style={{ display: 'inline-block', padding: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderRadius: '8px' }}>
         <Calendar onSelect={handleDateChange} bordered style={{ width: '300px' }} />
         {selectedDate && (
           <div style={{ marginTop: '10px' }}>
-            Selected Date: {selectedDate.toLocaleDateString('en-US')}
+            {translations.select_date_time?.selected_date?.replace('{date}', selectedDate.toLocaleDateString()) || `Selected Date: ${selectedDate.toLocaleDateString()}`}
           </div>
         )}
       </div>
 
       <div style={{ marginTop: '20px' }}>
-        <h2>Select Time</h2>
+        <h2>{translations.select_date_time?.select_time || 'Select Time'}</h2>
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
           {times.map((time) => (
             <button
@@ -88,7 +90,7 @@ const SelectDateTimePage: React.FC = () => {
           fontSize: '16px'
         }}
       >
-        Next
+        {translations.select_date_time?.next_button || 'Next'}
       </button>
     </div>
   );

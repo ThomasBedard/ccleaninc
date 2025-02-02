@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // ✅ Import useNavigate
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAxiosWithAuth } from "../api/axios";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translations
 
 interface Service {
   serviceId: string;
@@ -12,7 +13,8 @@ interface Service {
 
 const CheckoutPage: React.FC = () => {
   const axiosInstance = useAxiosWithAuth();
-  const navigate = useNavigate(); // ✅ Initialize navigation hook
+  const navigate = useNavigate();
+  const { translations } = useLanguage(); // ✅ Get translations from context
   const location = useLocation();
   const { selectedServiceIds, appointmentDate } = location.state as {
     selectedServiceIds: string[];
@@ -39,23 +41,22 @@ const CheckoutPage: React.FC = () => {
           }
         }
         setServices(fetched);
-      } catch (err) {
-        console.error("❌ Error fetching services:", err);
+      } catch {
+        setErrorMessage(translations.checkout?.error?.fetch_services || "Error fetching services.");
       }
     };
 
     if (selectedServiceIds?.length) {
       fetchServices();
     }
-  }, [selectedServiceIds, axiosInstance]);
+  }, [selectedServiceIds, axiosInstance, translations]);
 
   const checkCustomerExists = async (id: string): Promise<boolean> => {
     try {
       const res = await axiosInstance.get(`/customers/${id}`);
       return res.status === 200;
     } catch {
-      console.error("❌ Error verifying customer.");
-      setErrorMessage("Error verifying the customer. Please try again.");
+      setErrorMessage(translations.checkout?.error?.invalid_customer || "Invalid Customer ID.");
       return false;
     }
   };
@@ -66,29 +67,25 @@ const CheckoutPage: React.FC = () => {
     setLoading(true);
 
     if (!customerId.trim() || !customerFirstName.trim() || !customerLastName.trim()) {
-      setErrorMessage("⚠️ Please enter a valid Customer ID, First Name, and Last Name.");
+      setErrorMessage(translations.checkout?.error?.invalid_fields || "Please enter valid details.");
       setLoading(false);
       return;
     }
 
     const customerExists = await checkCustomerExists(customerId.trim());
     if (!customerExists) {
-      setErrorMessage("⚠️ Invalid Customer ID. That customer does not exist.");
       setLoading(false);
       return;
     }
 
     if (!appointmentDate) {
-      setErrorMessage("⚠️ No appointment date selected.");
+      setErrorMessage(translations.checkout?.error?.no_date || "No appointment date selected.");
       setLoading(false);
       return;
     }
 
     try {
-      // ✅ Convert service names into a single comma-separated string
       const servicesString = services.map((service) => service.title).join(", ");
-
-      // ✅ Ensure appointmentDate is in correct format
       const formattedDate = appointmentDate.includes("T") ? appointmentDate : `${appointmentDate}T12:00`;
 
       const payload = {
@@ -96,12 +93,10 @@ const CheckoutPage: React.FC = () => {
         customerFirstName: customerFirstName.trim(),
         customerLastName: customerLastName.trim(),
         appointmentDate: formattedDate,
-        services: servicesString, // ✅ Send as a single string
+        services: servicesString,
         comments,
-        status: "pending", // ✅ Convert to lowercase as required by backend
+        status: "pending",
       };
-
-      console.log("📢 Sending payload:", payload);
 
       const response = await axiosInstance.post(
         `/appointments/customers/${customerId.trim()}`,
@@ -109,21 +104,14 @@ const CheckoutPage: React.FC = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("✅ Response:", response.data);
-
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage("✅ Appointment created successfully! Redirecting...");
-        
-        // ✅ Redirect user to `/services` after 2 seconds
-        setTimeout(() => {
-          navigate("/services");
-        }, 2000);
+        setSuccessMessage(translations.checkout?.success?.appointment_created || "Appointment created successfully!");
+        setTimeout(() => navigate("/services"), 2000);
       } else {
-        throw new Error("❌ Failed to create appointment.");
+        throw new Error();
       }
-    } catch (err) {
-      console.error("❌ Error creating appointment:", err);
-      setErrorMessage("❌ Error creating appointment. Please try again.");
+    } catch {
+      setErrorMessage(translations.checkout?.error?.appointment_creation || "Error creating appointment.");
     } finally {
       setLoading(false);
     }
@@ -131,61 +119,53 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <div style={{ padding: "40px", maxWidth: "600px", margin: "0 auto", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Confirm Your Appointment</h1>
+      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+        {translations.checkout?.title || "Confirm Your Appointment"}
+      </h1>
 
       <div style={{ marginBottom: "20px" }}>
-        <h2>Selected Services</h2>
-        {services.map((svc) => (
-          <div key={svc.serviceId} style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}>
-            <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
-          </div>
-        ))}
-        {services.length === 0 && <p>No service details available. (Check your IDs or backend calls.)</p>}
+        <h2>{translations.checkout?.selected_services || "Selected Services"}</h2>
+        {services.length > 0 ? (
+          services.map((svc) => (
+            <div key={svc.serviceId} style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}>
+              <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
+            </div>
+          ))
+        ) : (
+          <p>{translations.checkout?.no_services || "No service details available."}</p>
+        )}
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <h3>Date & Time:</h3>
+        <h3>{translations.checkout?.date_time || "Date & Time"}:</h3>
         <p>{appointmentDate}</p>
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>Customer ID:</label>
-        <input type="text" value={customerId} onChange={(e) => setCustomerId(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder="Enter your Customer ID" />
+        <label>{translations.checkout?.customer_id || "Customer ID"}:</label>
+        <input type="text" value={customerId} onChange={(e) => setCustomerId(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.customer_id || "Customer ID"} />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>First Name:</label>
-        <input type="text" value={customerFirstName} onChange={(e) => setCustomerFirstName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder="Enter your First Name" />
+        <label>{translations.checkout?.first_name || "First Name"}:</label>
+        <input type="text" value={customerFirstName} onChange={(e) => setCustomerFirstName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.first_name || "First Name"} />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>Last Name:</label>
-        <input type="text" value={customerLastName} onChange={(e) => setCustomerLastName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder="Enter your Last Name" />
+        <label>{translations.checkout?.last_name || "Last Name"}:</label>
+        <input type="text" value={customerLastName} onChange={(e) => setCustomerLastName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.last_name || "Last Name"} />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>Comments:</label>
-        <textarea value={comments} onChange={(e) => setComments(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder="Additional comments (optional)" />
+        <label>{translations.checkout?.comments || "Comments"}:</label>
+        <textarea value={comments} onChange={(e) => setComments(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"} />
       </div>
 
       {errorMessage && <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>}
       {successMessage && <p style={{ color: "green", textAlign: "center" }}>{successMessage}</p>}
 
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: loading ? "#ccc" : "#28a745",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: loading ? "not-allowed" : "pointer",
-          fontSize: "16px",
-        }}
-      >
-        {loading ? "Confirming..." : "Confirm Appointment"}
+      <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "10px", backgroundColor: loading ? "#ccc" : "#28a745", color: "#fff", border: "none", borderRadius: "5px", cursor: loading ? "not-allowed" : "pointer", fontSize: "16px" }}>
+        {loading ? translations.checkout?.confirming || "Confirming..." : translations.checkout?.confirm_button || "Confirm Appointment"}
       </button>
     </div>
   );
