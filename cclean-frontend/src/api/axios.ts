@@ -2,9 +2,12 @@ import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect, useState } from "react";
 
-// ✅ Create an Axios instance with default configuration
+// 🔄 Dynamically set the API base URL
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v1";
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -13,7 +16,8 @@ const axiosInstance = axios.create({
 
 // ✅ Custom hook to use Axios with Auth0 authentication
 export const useAxiosWithAuth = () => {
-  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
+  const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } =
+    useAuth0();
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,7 +46,10 @@ export const useAxiosWithAuth = () => {
       axiosInstance.interceptors.request.use(
         (config) => {
           config.headers.Authorization = `Bearer ${token}`;
-          console.log("📡 Sending Request with Token:", config.headers.Authorization);
+          console.log(
+            "📡 Sending Request with Token:",
+            config.headers.Authorization
+          );
           return config;
         },
         (error) => Promise.reject(error)
