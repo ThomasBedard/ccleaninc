@@ -32,6 +32,8 @@ import CustomerAppointmentsEditForm from "./pages/CustomerAppointmentsEditForm";
 import MyAvailabilities from "./pages/MyAvailabilities";
 import EmployeeAvailabilitiesEditForm from "./pages/EmployeeAvailabilitiesEditForm";
 import AddAvailability from "./pages/AddAvailability";
+import AssignScheduleModal from "./components/dashboards/AssignScheduleModal";
+import EmployeeSchedule from "./components/dashboards/EmployeeSchedule";
 
 import "./pages/GlobalOverride.css";
 import "./index.css";
@@ -102,6 +104,10 @@ const App = () => {
               <Route path="/my-availabilities" element={<MyAvailabilities />} />
               <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} />
               <Route path="/add-availability" element={<AddAvailability />} />
+
+              {/* Assigning Employee Schedule routes */}
+              <Route path="/assign-schedule/:availabilityId" element={<AssignScheduleModal />} />
+              <Route path="/employee-schedule" element={<EmployeeSchedule />} />
 
               {/* Profile */}
               <Route path="/profile" element={<Profile />} />
