@@ -2,6 +2,7 @@ services:
   database:
     image: mysql:8.0
     container_name: database
+    command: --skip-host-cache --skip-name-resolve
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: ccleandb
@@ -12,6 +13,7 @@ services:
     volumes:
       - ./data/database:/var/lib/mysql
       - ./data/init.d:/docker-entrypoint-initdb.d
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-uuser", "-ppwd", "-h", "localhost"]
       interval: 10s
@@ -28,7 +30,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_PROFILES_ACTIVE=dev
     depends_on:
       - database
 

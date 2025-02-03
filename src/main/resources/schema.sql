@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS customers (
     last_name VARCHAR(50),                       -- Optional last name
     company_name VARCHAR(100),                   -- Optional company name
     email VARCHAR(100) UNIQUE NOT NULL,          -- Common email field
-    phone_number VARCHAR(20) NOT NULL                    -- Common phone number field
+    phone_number VARCHAR(20) NULL,                    -- Common phone number field
+    address VARCHAR(255) DEFAULT NULL
 );
 
 -- Added an index to customer_id for foreign key references
@@ -109,6 +110,17 @@ CREATE TABLE IF NOT EXISTS employee_schedule_availabilities (
     available_date DATETIME NOT NULL,
     comments VARCHAR(255)
 );
+
+DROP TABLE IF EXISTS verification_token;
+CREATE TABLE IF NOT EXISTS  verification_token
+(
+    id          int auto_increment
+    primary key,
+    token       varchar(50)  not null,
+    email       varchar(100) not null,
+    customer_id     varchar(36)  ,
+    expiry_date datetime     not null
+    );
 
 -- Employee Schedules
 CREATE TABLE IF NOT EXISTS employee_schedules (

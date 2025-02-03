@@ -10,10 +10,21 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
+# Thymeleaf Configuration (✅ Fix for template not found)
+spring:
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    cache: false  # Disable caching for development/testing
 ---
-# for docker
 
 spring:
+  config:
+    activate:
+      on-profile: dev
+
   datasource:
     url: jdbc:mysql://database/ccleandb
     username: user
@@ -23,14 +34,19 @@ spring:
     hibernate:
       ddl-auto: none
 
-  config:
-    activate:
-      on-profile: docker
-
   sql:
     init:
       platform: mysql
       mode: always
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: viniciusvelozodesousa@gmail.com
+    password: afbalomnaskqhzrm
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 okta:
   oauth2:

@@ -8,7 +8,9 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentReq
 import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentResponseMapper;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+import com.ccleaninc.cclean.customerssubdomain.datalayer.Customer;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
+import com.ccleaninc.cclean.emailsubdomain.businesslayer.EmailService;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import com.itextpdf.text.*;
@@ -19,8 +21,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -32,6 +37,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomerRepository customerRepository;
     private final AppointmentResponseMapper appointmentResponseMapper;
     private final AppointmentRequestMapper appointmentRequestMapper;
+
+    private EmailService emailService;
 
 
     @Override
@@ -264,6 +271,43 @@ public class AppointmentServiceImpl implements AppointmentService {
         table.addCell(appointment.getStatus().toString());
         table.addCell(appointment.getServices());
         table.addCell(appointment.getComments());
+    }
+
+    @Override
+    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException, MessagingException {
+        Customer customerAccount = customerRepository.findByCustomerIdentifier_CustomerId(customerId).orElse(null);
+
+        if (customerAccount == null) {
+            log.error("❌ Customer account not found for customer ID: {}", customerId);
+            throw new RuntimeException("Customer not found with ID: " + customerId);
+        }
+
+        // ✅ Debug: Log the services being sent
+        log.info("📢 Services received: {}", appointmentRequestModel.getServices());
+
+
+
+        // ✅ Fix: Save the first and last name correctly
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentIdentifier(new AppointmentIdentifier());
+        appointment.setCustomerId(appointmentRequestModel.getCustomerId());
+        appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
+        appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
+        appointment.setAppointmentDate(appointmentRequestModel.getAppointmentDate());
+        appointment.setServices(appointmentRequestModel.getServices());
+        appointment.setComments(appointmentRequestModel.getComments());
+        appointment.setStatus(appointmentRequestModel.getStatus());
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("appointmentDate", savedAppointment.getAppointmentDate().toString());
+        parameters.put("services", savedAppointment.getServices());
+        parameters.put("comments", savedAppointment.getComments());
+
+        emailService.sendEmail(customerAccount.getEmail(),"Appointment Scheduled - ACMS","appointment.html",parameters);
+
+        return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
 

@@ -218,4 +218,29 @@ public class CustomerServiceUnitTest {
         assertThrows(NotFoundException.class, () -> customerService.deleteCustomerByCustomerId(customerId));
     }
 
+    @Test
+    void getOrCreateCustomerByEmail_ShouldReturnExistingCustomer() {
+        String email = "existing@mail.com";
+        when(customerRepository.findByEmail(email)).thenReturn(customer);
+        when(customerResponseMapper.entityToResponseModel(customer)).thenReturn(customerResponseModel);
+
+        CustomerResponseModel response = customerService.getOrCreateCustomerByEmail(email);
+
+        assertNotNull(response);
+        assertEquals(customerResponseModel.getEmail(), response.getEmail());
+    }
+
+    @Test
+    void getOrCreateCustomerByEmail_ShouldCreateAndReturnNewCustomer() {
+        String email = "new@mail.com";
+        when(customerRepository.findByEmail(email)).thenReturn(null);
+        when(customerRepository.save(any(Customer.class))).thenReturn(customer);
+        when(customerResponseMapper.entityToResponseModel(customer)).thenReturn(customerResponseModel);
+
+        CustomerResponseModel response = customerService.getOrCreateCustomerByEmail(email);
+
+        assertNotNull(response);
+        assertEquals(customerResponseModel.getEmail(), response.getEmail());
+    }
+
 }
