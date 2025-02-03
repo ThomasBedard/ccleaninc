@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../hooks/useLanguage'; // ✅ Import the language hook
-import axiosInstance from '../api/axios';
-import './Home.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import the language hook
+import axiosInstance from "../api/axios";
+import "./Home.css";
 
 interface Feedback {
   feedbackId: string;
@@ -31,16 +31,22 @@ const Home = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await axiosInstance.get<Feedback[]>('/feedbacks?status=VISIBLE');
+      const response = await axiosInstance.get<Feedback[]>(
+        "/feedbacks?status=VISIBLE"
+      );
       const feedbackData = response.data;
       setFeedbacks(feedbackData);
 
-      const uniqueCustomerIds = Array.from(new Set(feedbackData.map(f => f.customerId)));
-      const customerPromises = uniqueCustomerIds.map(id => axiosInstance.get<Customer>(`/customers/${id}`));
+      const uniqueCustomerIds = Array.from(
+        new Set(feedbackData.map((f) => f.customerId))
+      );
+      const customerPromises = uniqueCustomerIds.map((id) =>
+        axiosInstance.get<Customer>(`/customers/${id}`)
+      );
 
       const customerResponses = await Promise.all(customerPromises);
       const customerInfo: Record<string, Customer> = {};
-      customerResponses.forEach(c => {
+      customerResponses.forEach((c) => {
         customerInfo[c.data.customerId] = c.data;
       });
       setCustomerMap(customerInfo);
@@ -48,7 +54,7 @@ const Home = () => {
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to fetch feedbacks. Please try again later.'
+          : "Failed to fetch feedbacks. Please try again later."
       );
     } finally {
       setLoading(false);
@@ -63,7 +69,7 @@ const Home = () => {
     return (
       <div className="star-container">
         {[...Array(5)].map((_, i) => (
-          <span key={i} className={`star ${i < rating ? 'filled' : ''}`}>
+          <span key={i} className={`star ${i < rating ? "filled" : ""}`}>
             ★
           </span>
         ))}
@@ -86,12 +92,17 @@ const Home = () => {
     <div className="home-container">
       <header className="home-header">
         <div className="home-header-content">
-          <h1 className="home-title">{translations.home?.title || "C CLEAN inc."}</h1>
+          <h1 className="home-title">
+            {translations.home?.title || "C CLEAN inc."}
+          </h1>
           <p className="home-description">
             {translations.home?.description ||
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad."}
+              "this is to show ci / cd and deployment for teacher."}
           </p>
-          <button onClick={() => navigate('/about-us')} className="home-learn-more-button">
+          <button
+            onClick={() => navigate("/about-us")}
+            className="home-learn-more-button"
+          >
             {translations.home?.learnMore || "Learn More"}
           </button>
         </div>
@@ -105,11 +116,16 @@ const Home = () => {
         <h2 className="feedback-section-title">
           {translations.home?.customerFeedbacks || "Customer Feedbacks"}
         </h2>
-        <button onClick={() => navigate('/submit-feedback')} className="home-submit-feedback-button">
+        <button
+          onClick={() => navigate("/submit-feedback")}
+          className="home-submit-feedback-button"
+        >
           {translations.home?.submitFeedback || "Submit Feedback"}
         </button>
         {loading ? (
-          <p className="loading-text">{translations.home?.loadingFeedbacks || "Loading feedbacks..."}</p>
+          <p className="loading-text">
+            {translations.home?.loadingFeedbacks || "Loading feedbacks..."}
+          </p>
         ) : error ? (
           <p className="error-text">{error}</p>
         ) : feedbacks.length > 0 ? (
@@ -122,13 +138,17 @@ const Home = () => {
                   <span className="rating-text">{feedback.stars}/5</span>
                 </div>
                 <p className="feedback-user">
-                  {translations.home?.customer || "Customer"}: {getCustomerName(feedback.customerId)}
+                  {translations.home?.customer || "Customer"}:{" "}
+                  {getCustomerName(feedback.customerId)}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="loading-text">{translations.home?.noFeedback || "No feedback available at the moment."}</p>
+          <p className="loading-text">
+            {translations.home?.noFeedback ||
+              "No feedback available at the moment."}
+          </p>
         )}
       </section>
     </div>
