@@ -14,6 +14,7 @@ import {
   FaInfoCircle,
   FaPhone,
   FaCalendarCheck,
+  FaClock,
 } from "react-icons/fa";
 
 import LoginButton from "./buttons/LoginButton";
@@ -72,6 +73,11 @@ const Navbar = ({ children }: NavbarProps) => {
           <Link to="/contacts" className="navbar-link">
             <FaPhone style={{ marginRight: "4px" }} />
             {translations.navbar?.contacts || "Contacts"}
+          </Link>
+          {/* NEW: My Availabilities link for employees */}
+           <Link to="/my-availabilities" className="navbar-link">
+          <FaClock style={{ marginRight: "4px" }} />
+          {translations.navbar?.my_availabilities || "My Availabilities"}
           </Link>
         </div>
 
