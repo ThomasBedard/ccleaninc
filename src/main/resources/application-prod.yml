@@ -12,8 +12,8 @@ spring:
 
   datasource:
     url: ${MYSQL_URL}  # Railway's database URL (set in Railway environment variables)
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
