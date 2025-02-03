@@ -74,10 +74,15 @@ const Navbar = ({ children }: NavbarProps) => {
             <FaPhone style={{ marginRight: "4px" }} />
             {translations.navbar?.contacts || "Contacts"}
           </Link>
-          {/* NEW: My Availabilities link for employees */}
+          {/* My Availabilities link for employees */}
            <Link to="/my-availabilities" className="navbar-link">
           <FaClock style={{ marginRight: "4px" }} />
           {translations.navbar?.my_availabilities || "My Availabilities"}
+          </Link>
+          {/* My Appointments link */}
+          <Link to="/my-appointments" className="navbar-link">
+          <FaCalendarAlt style={{ marginRight: "4px" }} />
+          {translations.navbar?.my_appointments || "My Appointments"}
           </Link>
         </div>
 
