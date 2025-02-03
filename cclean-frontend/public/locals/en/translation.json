@@ -1,153 +1,153 @@
 {
-    "navbar": {
-      "brand": "C CLEAN inc.",
-      "home": "Home",
+  "navbar": {
+    "brand": "C CLEAN inc.",
+    "home": "Home",
+    "services": "Services",
+    "appointments": "Appointments",
+    "schedule": "Schedule",
+    "employees": "Employees",
+    "admin_dashboard": "Admin Dashboard",
+    "about_us": "About Us",
+    "contacts": "Contacts",
+    "my_appointments": "My Appointments",
+    "my_availabilities": "My Availabilities",
+    "language_switch": "Switched language to French (FR)",
+    "profile": "Profile"
+  },
+  "about_us": {
+    "header": "Purpose and Values",
+    "subtitle": "Founded in 2020, C CLEAN INC. is dedicated to providing exceptional cleaning services to commercial clients with a strong commitment to integrity, reliability, and customer satisfaction.",
+    "body": "Our core values emphasize professionalism and a deep respect for our clients and their spaces. We believe in creating clean and healthy environments that enhance the quality of life for everyone we serve. As we expand into residential cleaning contracts, our purpose remains steadfast: to deliver top-notch cleaning solutions that reflect our dedication to excellence and our passion for fostering a cleaner, more sustainable world."
+  },
+  "add_availability": {
+    "title": "Add Availability",
+    "employee_id_label": "Employee ID:",
+    "employee_id_placeholder": "Enter employee ID",
+    "first_name_label": "Employee First Name:",
+    "first_name_placeholder": "Enter first name",
+    "last_name_label": "Employee Last Name:",
+    "last_name_placeholder": "Enter last name",
+    "available_date_label": "Available Date:",
+    "select_shift_label": "Select Shift:",
+    "select_shift_placeholder": "Select Shift",
+    "shifts": {
+      "morning": "Morning",
+      "evening": "Evening",
+      "night": "Night"
+    },
+    "comments_label": "Comments (Optional):",
+    "comments_placeholder": "Add any additional details...",
+    "submit_button": "Add Availability",
+    "alerts": {
+      "missing_fields": "Please fill in all required fields.",
+      "success": "Availability added successfully!",
+      "error": "An unexpected error occurred while adding the availability."
+    }
+  },
+  "appointments": {
+    "title": "Appointments Page",
+    "actions": {
+      "add": "Add Appointment",
+      "download_pdf": "Download PDF"
+    },
+    "table": {
+      "appointment_id": "Appointment ID",
+      "customer_id": "Customer ID",
+      "first_name": "Customer First Name",
+      "last_name": "Customer Last Name",
+      "date": "Date",
       "services": "Services",
-      "appointments": "Appointments",
-      "schedule": "Schedule",
-      "employees": "Employees",
-      "admin_dashboard": "Admin Dashboard",
-      "about_us": "About Us",
-      "contacts": "Contacts",
-      "my_appointments": "My Appointments",
-      "my_availabilities": "My Availabilities",
-      "language_switch": "Switched language to French (FR)",
-      "profile": "Profile"
+      "status": "Status",
+      "comments": "Comments",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
     },
-    "about_us": {
-      "header": "Purpose and Values",
-      "subtitle": "Founded in 2020, C CLEAN INC. is dedicated to providing exceptional cleaning services to commercial clients with a strong commitment to integrity, reliability, and customer satisfaction.",
-      "body": "Our core values emphasize professionalism and a deep respect for our clients and their spaces. We believe in creating clean and healthy environments that enhance the quality of life for everyone we serve. As we expand into residential cleaning contracts, our purpose remains steadfast: to deliver top-notch cleaning solutions that reflect our dedication to excellence and our passion for fostering a cleaner, more sustainable world."
+    "messages": {
+      "loading": "Loading appointments...",
+      "error": "Error loading appointments.",
+      "delete_confirm": "Are you sure you want to delete the appointment with ID: {id}?",
+      "delete_success": "Appointment deleted successfully.",
+      "delete_error": "An unexpected error occurred while deleting the appointment.",
+      "pdf_download_error": "An error occurred while downloading the PDF."
+    }
+  },
+  "appointments_add_form": {
+    "title": "Add Appointment",
+    "customer_first_name_label": "Customer First Name:",
+    "customer_first_name_placeholder": "Enter customer first name",
+    "customer_last_name_label": "Customer Last Name:",
+    "customer_last_name_placeholder": "Enter customer last name",
+    "appointment_date_label": "Appointment Date:",
+    "appointment_date_placeholder": "Select appointment date",
+    "services_label": "Services:",
+    "services_placeholder": "Enter services",
+    "comments_label": "Comments (Optional):",
+    "comments_placeholder": "Enter additional comments...",
+    "status_label": "Status:",
+    "status_options": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
     },
-    "add_availability": {
-      "title": "Add Availability",
-      "employee_id_label": "Employee ID:",
-      "employee_id_placeholder": "Enter employee ID",
-      "first_name_label": "Employee First Name:",
-      "first_name_placeholder": "Enter first name",
-      "last_name_label": "Employee Last Name:",
-      "last_name_placeholder": "Enter last name",
-      "available_date_label": "Available Date:",
-      "select_shift_label": "Select Shift:",
-      "select_shift_placeholder": "Select Shift",
-      "shifts": {
-        "morning": "Morning",
-        "evening": "Evening",
-        "night": "Night"
-      },
-      "comments_label": "Comments (Optional):",
-      "comments_placeholder": "Add any additional details...",
-      "submit_button": "Add Availability",
-      "alerts": {
-        "missing_fields": "Please fill in all required fields.",
-        "success": "Availability added successfully!",
-        "error": "An unexpected error occurred while adding the availability."
-      }
+    "submit_button": "Add Appointment",
+    "alerts": {
+      "success": "Appointment added successfully!",
+      "error": "An unexpected error occurred while adding the appointment."
+    }
+  },
+  "appointments_edit_form": {
+    "title": "Edit Appointment",
+    "customer_first_name_label": "Customer First Name:",
+    "customer_first_name_placeholder": "Enter customer first name",
+    "customer_last_name_label": "Customer Last Name:",
+    "customer_last_name_placeholder": "Enter customer last name",
+    "appointment_date_label": "Appointment Date:",
+    "appointment_date_placeholder": "Select appointment date",
+    "services_label": "Services:",
+    "services_placeholder": "Enter services",
+    "comments_label": "Comments (Optional):",
+    "comments_placeholder": "Enter additional comments...",
+    "status_label": "Status:",
+    "status_options": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
     },
-    "appointments": {
-      "title": "Appointments Page",
-      "actions": {
-        "add": "Add Appointment",
-        "download_pdf": "Download PDF"
-      },
-      "table": {
-        "appointment_id": "Appointment ID",
-        "customer_id": "Customer ID",
-        "first_name": "Customer First Name",
-        "last_name": "Customer Last Name",
-        "date": "Date",
-        "services": "Services",
-        "status": "Status",
-        "comments": "Comments",
-        "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete"
-      },
-      "messages": {
-        "loading": "Loading appointments...",
-        "error": "Error loading appointments.",
-        "delete_confirm": "Are you sure you want to delete the appointment with ID: {id}?",
-        "delete_success": "Appointment deleted successfully.",
-        "delete_error": "An unexpected error occurred while deleting the appointment.",
-        "pdf_download_error": "An error occurred while downloading the PDF."
-      }
-    },
-    "appointments_add_form": {
-      "title": "Add Appointment",
-      "customer_first_name_label": "Customer First Name:",
-      "customer_first_name_placeholder": "Enter customer first name",
-      "customer_last_name_label": "Customer Last Name:",
-      "customer_last_name_placeholder": "Enter customer last name",
-      "appointment_date_label": "Appointment Date:",
-      "appointment_date_placeholder": "Select appointment date",
-      "services_label": "Services:",
-      "services_placeholder": "Enter services",
-      "comments_label": "Comments (Optional):",
-      "comments_placeholder": "Enter additional comments...",
-      "status_label": "Status:",
-      "status_options": {
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "cancelled": "Cancelled",
-        "completed": "Completed"
-      },
-      "submit_button": "Add Appointment",
-      "alerts": {
-        "success": "Appointment added successfully!",
-        "error": "An unexpected error occurred while adding the appointment."
-      }
-    },
-    "appointments_edit_form": {
-      "title": "Edit Appointment",
-      "customer_first_name_label": "Customer First Name:",
-      "customer_first_name_placeholder": "Enter customer first name",
-      "customer_last_name_label": "Customer Last Name:",
-      "customer_last_name_placeholder": "Enter customer last name",
-      "appointment_date_label": "Appointment Date:",
-      "appointment_date_placeholder": "Select appointment date",
-      "services_label": "Services:",
-      "services_placeholder": "Enter services",
-      "comments_label": "Comments (Optional):",
-      "comments_placeholder": "Enter additional comments...",
-      "status_label": "Status:",
-      "status_options": {
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "cancelled": "Cancelled",
-        "completed": "Completed"
-      },
-      "submit_button": "Update Appointment",
-      "alerts": {
-        "success": "Appointment updated successfully!",
-        "error": "An unexpected error occurred while updating the appointment."
-      }
-    },
-    "contacts": {
-      "title": "Contact Us",
-      "subtitle": "If you have a question about C CLEAN INC. services, please feel free to contact us.",
-      "companyName": "C CLEAN INC.",
-      "address": "3042 RUE MASSON, QUEBEC",
-      "phone": "TEL: 514-555-5555",
-      "email": "EMAIL: fffffff@gmail.com"
-    },
-    "select_date_time": {
+    "submit_button": "Update Appointment",
+    "alerts": {
+      "success": "Appointment updated successfully!",
+      "error": "An unexpected error occurred while updating the appointment."
+    }
+  },
+  "contacts": {
+    "title": "Contact Us",
+    "subtitle": "If you have a question about C CLEAN INC. services, please feel free to contact us.",
+    "companyName": "C CLEAN INC.",
+    "address": "3042 RUE MASSON, QUEBEC",
+    "phone": "TEL: 514-555-5555",
+    "email": "EMAIL: fffffff@gmail.com"
+  },
+  "select_date_time": {
     "title": "Select Date & Time",
     "selected_date": "Selected Date: {date}",
     "select_time": "Select Time",
     "error": "Please select both a date and a time.",
     "next_button": "Next"
   },
-    "home": {
-      "title": "C CLEAN inc.",
-      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad.",
-      "learnMore": "Learn More",
-      "customerFeedbacks": "Customer Feedbacks",
-      "submitFeedback": "Submit Feedback",
-      "loadingFeedbacks": "Loading feedbacks...",
-      "noFeedback": "No feedback available at the moment.",
-      "customer": "Customer"
-    },
-    "checkout": {
+  "home": {
+    "title": "C CLEAN inc.",
+    "description": "this is to show ci / cd and deployment for teacher.",
+    "learnMore": "Learn More",
+    "customerFeedbacks": "Customer Feedbacks",
+    "submitFeedback": "Submit Feedback",
+    "loadingFeedbacks": "Loading feedbacks...",
+    "noFeedback": "No feedback available at the moment.",
+    "customer": "Customer"
+  },
+  "checkout": {
     "title": "Confirm Your Appointment",
     "selected_services": "Selected Services",
     "no_services": "No service details available. (Check your IDs or backend calls.)",
@@ -170,23 +170,22 @@
     "confirm_button": "Confirm Appointment",
     "confirming": "Confirming..."
   },
-    "services": {
-      "title": "Residential and Commercial Cleaning Services",
-      "searchPlaceholder": "Search services by title...",
-      "searchButton": "Search",
-      "loading": "Loading...",
-      "errorMessage": "An error occurred. Please try again later.",
-      "noServicesFound": "No services found. Try another search.",
-      "pricing": "Contact for pricing",
-      "availability": {
-        "available": "Available",
-        "unavailable": "Not Available"
-      },
-      "select": "Select",
-      "delete": "Delete",
-      "editService": "Edit Service",
-      "addService": "Add Service",
-      "continueWithSelected": "Continue with Selected Services"
-    }
+  "services": {
+    "title": "Residential and Commercial Cleaning Services",
+    "searchPlaceholder": "Search services by title...",
+    "searchButton": "Search",
+    "loading": "Loading...",
+    "errorMessage": "An error occurred. Please try again later.",
+    "noServicesFound": "No services found. Try another search.",
+    "pricing": "Contact for pricing",
+    "availability": {
+      "available": "Available",
+      "unavailable": "Not Available"
+    },
+    "select": "Select",
+    "delete": "Delete",
+    "editService": "Edit Service",
+    "addService": "Add Service",
+    "continueWithSelected": "Continue with Selected Services"
   }
-  
+}
