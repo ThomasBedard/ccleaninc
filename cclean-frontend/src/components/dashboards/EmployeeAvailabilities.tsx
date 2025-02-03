@@ -30,7 +30,7 @@ const EmployeeAvailabilities: React.FC = () => {
     fetchAvailabilities();
   }, []);
 
-  const handleAssignSchedule = (availability) => {
+  const handleAssignSchedule = (availability: Availability) => {
     navigate(`/assign-schedule/${availability.availabilityId}`, {
       state: {
         employeeId: availability.employeeId,
