@@ -1,8 +1,7 @@
-# Default Spring Profile (No database, useful for local development)
+# Default Spring Profile
 server:
   error:
     include-message: always
-
 logging:
   level:
     root: INFO
@@ -18,21 +17,20 @@ spring:
     suffix: .html
     check-template-location: true
     cache: false  # Disable caching for development/testing
-
 ---
-# Docker Profile (This only activates if SPRING_PROFILES_ACTIVE=docker)
+# for docker
+
 spring:
-  config:
-    activate:
-      on-profile: docker
-
   datasource:
-    url: ${MYSQL_URL}
-
+    url: jdbc:mysql://database/ccleandb
+    username: user
+    password: pwd
   jpa:
     hibernate:
       ddl-auto: none
-
+  config:
+    activate:
+      on-profile: docker
   sql:
     init:
       platform: mysql
@@ -51,7 +49,5 @@ okta:
   oauth2:
     issuer: ${OKTA_OAUTH2_ISSUER}
     audience: ${OKTA_OAUTH2_AUDIENCE}
-
 server.port: 8080
-
 spring.datasource.hikari.initializationFailTimeout: 60000
