@@ -22,8 +22,7 @@ spring:
 
   sql:
     init:
-      platform: mysql
-      mode: always
+      mode: never  # Prevents SQL scripts from running on startup
 
   mail:
     host: smtp.gmail.com
