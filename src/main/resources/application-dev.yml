@@ -21,16 +21,18 @@ spring:
 ---
 
 spring:
+  config:
+    activate:
+      on-profile: dev
+
   datasource:
-    url: ${MYSQL_URL}
+    url: jdbc:mysql://database/ccleandb
+    username: user
+    password: pwd
 
   jpa:
     hibernate:
       ddl-auto: none
-
-  config:
-    activate:
-      on-profile: docker
 
   sql:
     init:
