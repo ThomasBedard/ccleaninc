@@ -29,7 +29,7 @@ const EmployeeSchedule: React.FC = () => {
         const response = await axiosInstance.get("/schedules");
         setSchedules(response.data);
       } catch (err) {
-        setError("Failed to fetch schedules. Please try again later.");
+        setError("Failed to fetch schedules. Please try again later." + err);
       }
     };
 
