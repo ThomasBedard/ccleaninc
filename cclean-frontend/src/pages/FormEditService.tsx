@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import './FormAddService.css';
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 const FormEditService = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // Track loading state
   const [serviceData, setServiceData] = useState({
     title: '',
     description: '',
@@ -15,16 +16,41 @@ const FormEditService = () => {
     durationMinutes: '',
   });
 
+  // Fetch service details when component mounts
+  useEffect(() => {
+    const fetchServiceDetails = async () => {
+      if (!serviceId) return;
+
+      try {
+        const response = await axiosInstance.get(`/services/${serviceId}`);
+        const { title, description, pricing, category, durationMinutes } = response.data;
+
+        setServiceData({
+          title,
+          description,
+          pricing: pricing.toString(), // Ensure it's a string for input
+          category,
+          durationMinutes: durationMinutes.toString(),
+        });
+        setLoading(false);
+      } catch (error) {
+        toast.error('Failed to fetch service details.');
+        console.error("Error fetching service:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchServiceDetails();
+  }, [serviceId]);
+
+  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setServiceData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setServiceData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
-    // Validation: Ensure all fields are filled
     if (
       !serviceData.title.trim() ||
       !serviceData.description.trim() ||
@@ -44,6 +70,7 @@ const FormEditService = () => {
         category: serviceData.category,
         durationMinutes: parseInt(serviceData.durationMinutes, 10),
       });
+
       toast.success('Service updated successfully!');
       navigate('/services');
     } catch {
@@ -54,51 +81,58 @@ const FormEditService = () => {
   return (
     <div className="form-add-service">
       <h2>Edit Service</h2>
-      <div>
-        <label>Title:</label>
-        <input
-          type="text"
-          name="title"
-          value={serviceData.title}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Description:</label>
-        <textarea
-          name="description"
-          value={serviceData.description}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Pricing:</label>
-        <input
-          type="number"
-          name="pricing"
-          value={serviceData.pricing}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Category:</label>
-        <input
-          type="text"
-          name="category"
-          value={serviceData.category}
-          onChange={handleInputChange}
-        />
-      </div>
-      <div>
-        <label>Duration (Minutes):</label>
-        <input
-          type="number"
-          name="durationMinutes"
-          value={serviceData.durationMinutes}
-          onChange={handleInputChange}
-        />
-      </div>
-      <button onClick={handleSubmit}>Submit</button>
+
+      {loading ? (
+        <p>Loading service details...</p>
+      ) : (
+        <>
+          <div>
+            <label>Title:</label>
+            <input
+              type="text"
+              name="title"
+              value={serviceData.title}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Description:</label>
+            <textarea
+              name="description"
+              value={serviceData.description}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Pricing:</label>
+            <input
+              type="number"
+              name="pricing"
+              value={serviceData.pricing}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Category:</label>
+            <input
+              type="text"
+              name="category"
+              value={serviceData.category}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Duration (Minutes):</label>
+            <input
+              type="number"
+              name="durationMinutes"
+              value={serviceData.durationMinutes}
+              onChange={handleInputChange}
+            />
+          </div>
+          <button onClick={handleSubmit}>Submit</button>
+        </>
+      )}
     </div>
   );
 };
