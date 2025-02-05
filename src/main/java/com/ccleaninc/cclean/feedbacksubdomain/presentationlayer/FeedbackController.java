@@ -40,7 +40,7 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/feedback")
+    @PostMapping("/feedbacks")
     public ResponseEntity<FeedbackResponseModel> addFeedback(@RequestBody FeedbackRequestModel feedbackRequestModel) {
         try {
             FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel);
@@ -51,6 +51,7 @@ public class FeedbackController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
     @DeleteMapping("/feedbacks/{feedbackId}")
     public ResponseEntity<Void> deleteFeedbackById(@PathVariable String feedbackId) {
