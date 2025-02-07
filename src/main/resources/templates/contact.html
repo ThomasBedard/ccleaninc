@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${language == 'fr' ? 'Nouvelle soumission de formulaire de contact' : 'New Contact Form Submission'}"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333333;
+        }
+        p {
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- English Section -->
+    <div th:if="${language == 'en'}">
+        <h2>New Contact Message from <span th:text="${senderName}"></span></h2>
+        <p><strong>Email:</strong> <span th:text="${senderEmail}"></span></p>
+
+        <div th:if="${companyName}">
+            <p><strong>Company Name:</strong> <span th:text="${companyName}"></span></p>
+        </div>
+
+        <p><strong>Message:</strong></p>
+        <p th:text="${message}"></p>
+        <br>
+        <p>Best regards,</p>
+        <p>C CLEAN INC.</p>
+    </div>
+
+    <!-- French Section -->
+    <div th:if="${language == 'fr'}">
+        <h2>Nouveau message de contact de <span th:text="${senderName}"></span></h2>
+        <p><strong>Email :</strong> <span th:text="${senderEmail}"></span></p>
+
+        <div th:if="${companyName}">
+            <p><strong>Nom de l'entreprise :</strong> <span th:text="${companyName}"></span></p>
+        </div>
+
+        <p><strong>Message :</strong></p>
+        <p th:text="${message}"></p>
+        <br>
+        <p>Cordialement,</p>
+        <p>C CLEAN INC.</p>
+    </div>
+
+</div>
+</body>
+</html>

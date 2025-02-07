@@ -15,31 +15,46 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/test-email")
+@RequestMapping("/api/v1/contact")
 @Generated
 public class EmailController {
 
     private final EmailService emailService;
 
     @PostMapping("/send")
-    public ResponseEntity<Void> sendTestEmail(@RequestBody Map<String, String> payload) throws MessagingException {
-        String recipient = payload.get("recipient");
-        String subject = "Test Email";
-        String template = "appointment.html";
+    public ResponseEntity<Map<String, String>> sendContactEmail(@RequestBody Map<String, String> payload) {
+        try {
+            String recipient = "viniciusvelozodesousa@gmail.com";
+            String subject = payload.getOrDefault("subject", "New Contact Message from Website");
 
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("appointmentDate", "2025-02-01T14:00");
-        parameters.put("services", "Cleaning");
-        parameters.put("comments", "Please arrive on time");
+            // ✅ Extract user details
+            String senderName = payload.get("name");
+            String senderEmail = payload.get("email");
+            String messageBody = payload.get("message");
+            String language = payload.getOrDefault("language", "en"); // Default to English
 
-        int status = emailService.sendEmail(recipient, subject, template, parameters);
+            if (senderName == null || senderEmail == null || messageBody == null) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
+            }
 
-        if (status == 200) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(status).build();
+            // ✅ Email content parameters
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("senderName", senderName);
+            parameters.put("senderEmail", senderEmail);
+            parameters.put("message", messageBody);
+            parameters.put("language", language); // ✅ Ensure the language is passed
+
+            // ✅ Send email
+            int status = emailService.sendEmail(recipient, subject, "contact.html", parameters);
+
+            if (status == 200) {
+                return ResponseEntity.ok(Map.of("message", "Email sent successfully"));
+            } else {
+                return ResponseEntity.status(status).body(Map.of("error", "Failed to send email"));
+            }
+        } catch (MessagingException e) {
+            log.error("Error sending contact email", e);
+            return ResponseEntity.status(500).body(Map.of("error", "Internal Server Error"));
         }
     }
-
 }
-
