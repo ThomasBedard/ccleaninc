@@ -5,6 +5,9 @@ import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -150,6 +153,17 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(appointment);
+    }
+
+    @GetMapping("/appointments/paged")
+    public ResponseEntity<Page<AppointmentResponseModel>> getAllAppointmentsPagination(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "7") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AppointmentResponseModel> appointments = appointmentService.getAllAppointmentsPagination(pageable);
+
+        return ResponseEntity.ok(appointments);
     }
 
 

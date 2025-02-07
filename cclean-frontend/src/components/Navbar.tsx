@@ -3,7 +3,6 @@ import "./Navbarcss.css";
 import { ReactNode } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 
-
 import { toast } from "react-toastify";
 import {
   FaHome,
@@ -15,6 +14,7 @@ import {
   FaPhone,
   FaCalendarCheck,
   FaClock,
+  FaUserCircle, 
 } from "react-icons/fa";
 
 import LoginButton from "./buttons/LoginButton";
@@ -27,13 +27,15 @@ interface NavbarProps {
 const Navbar = ({ children }: NavbarProps) => {
   const { language, translations, toggleLanguage } = useLanguage(); // Get translations from context
 
-  const handleLanguageSwitch = () => {
-    toggleLanguage();
-    toast.info(
-      language === "en"
-        ? "Langue changée en Français (FR)"
-        : "Switched language to English (EN)"
-    );
+  const handleLanguageSwitch = (newLanguage: string) => {
+    if (newLanguage !== language) {
+      toggleLanguage();
+      toast.info(
+        newLanguage === "en"
+          ? "Switched language to English (EN)"
+          : "Langue changée en Français (FR)"
+      );
+    }
   };
 
   return (
@@ -75,25 +77,32 @@ const Navbar = ({ children }: NavbarProps) => {
             {translations.navbar?.contacts || "Contacts"}
           </Link>
           {/* My Availabilities link for employees */}
-           <Link to="/my-availabilities" className="navbar-link">
-          <FaClock style={{ marginRight: "4px" }} />
-          {translations.navbar?.my_availabilities || "My Availabilities"}
+          <Link to="/my-availabilities" className="navbar-link">
+            <FaClock style={{ marginRight: "4px" }} />
+            {translations.navbar?.my_availabilities || "My Availabilities"}
           </Link>
           {/* My Appointments link */}
           <Link to="/my-appointments" className="navbar-link">
-          <FaCalendarAlt style={{ marginRight: "4px" }} />
-          {translations.navbar?.my_appointments || "My Appointments"}
+            <FaCalendarAlt style={{ marginRight: "4px" }} />
+            {translations.navbar?.my_appointments || "My Appointments"}
           </Link>
         </div>
 
         <div className="navbar-actions">
-          <button className="navbar-button" onClick={handleLanguageSwitch}>
-            {language === "en" ? "FR" : "EN"}
-          </button>
+          {/* Language Selector Dropdown */}
+          <select
+            className="language-selector"
+            onChange={(e) => handleLanguageSwitch(e.target.value)}
+            value={language}
+          >
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+          </select>
+
           <LoginButton />
           <LogoutButton />
-          <Link to="/profile" className="navbar-link">
-            {translations.navbar?.profile || "Profile"}
+          <Link to="/profile" className="navbar-link profile-icon">
+            <FaUserCircle size={24} />
           </Link>
         </div>
       </nav>

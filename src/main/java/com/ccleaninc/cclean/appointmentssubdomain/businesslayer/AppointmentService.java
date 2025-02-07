@@ -2,6 +2,8 @@ package com.ccleaninc.cclean.appointmentssubdomain.businesslayer;
 
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
@@ -29,4 +31,5 @@ public interface AppointmentService {
 
     AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException;
 
+    Page<AppointmentResponseModel> getAllAppointmentsPagination (Pageable pageable);
 }

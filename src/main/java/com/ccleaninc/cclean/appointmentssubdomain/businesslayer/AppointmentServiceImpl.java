@@ -19,6 +19,8 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -308,6 +310,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         emailService.sendEmail(customerAccount.getEmail(),"Appointment Scheduled - ACMS","appointment.html",parameters);
 
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
+    }
+
+    @Override
+    public Page<AppointmentResponseModel> getAllAppointmentsPagination (Pageable pageable) {
+        Page<Appointment> appointmentPage = appointmentRepository.findAll(pageable);
+        return appointmentPage.map(appointmentResponseMapper::entityToResponseModel);
+
     }
 
 

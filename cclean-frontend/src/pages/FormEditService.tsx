@@ -46,6 +46,16 @@ const FormEditService = () => {
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+
+    // Prevent negative pricing
+    if (name === "pricing") {
+      const numericValue = parseFloat(value);
+      if (numericValue < 0 || isNaN(numericValue)) {
+        toast.error("Price cannot be negative.");
+        return;
+      }
+    }
+
     setServiceData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -62,11 +72,18 @@ const FormEditService = () => {
       return;
     }
 
+    // Final validation to prevent negative values
+    const pricingValue = parseFloat(serviceData.pricing);
+    if (pricingValue < 0) {
+      toast.error("Price cannot be negative.");
+      return;
+    }
+
     try {
       await axiosInstance.put(`/services/${serviceId}`, {
         title: serviceData.title,
         description: serviceData.description,
-        pricing: parseFloat(serviceData.pricing),
+        pricing: pricingValue,
         category: serviceData.category,
         durationMinutes: parseInt(serviceData.durationMinutes, 10),
       });
@@ -110,6 +127,7 @@ const FormEditService = () => {
               name="pricing"
               value={serviceData.pricing}
               onChange={handleInputChange}
+              min="0" // Prevent negative values at the UI level
             />
           </div>
           <div>

@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../api/axios';
-import { useLanguage } from '../hooks/useLanguage'; // ✅ Import translations
-import './Appointments.css';
+import { useLanguage } from '../hooks/useLanguage';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Appointments.css';
 
 interface Appointment {
   appointmentId?: string;
@@ -17,83 +18,71 @@ interface Appointment {
   comments?: string;
 }
 
-// Add a helper for checking UUID format
-const isUuidFormat = (str: string): boolean =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-
 const Appointments = () => {
-  const { translations } = useLanguage(); // ✅ Get translations from context
+  const { translations } = useLanguage();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const pageSize = 6; // ✅ Each page contains 6 appointments
 
-  // ✅ Memoized fetch function to avoid unnecessary re-renders
+  // ✅ Fetch paginated appointments
   const fetchAllAppointments = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axiosInstance.get<Appointment[]>('/appointments');
-      const fetchedAppointments = response.data;
+  
+      const response = await axiosInstance.get(`/appointments/paged`, {
+        params: { page: currentPage, size: pageSize },
+      });
 
-      const updatedAppointments = await Promise.all(
-        fetchedAppointments.map(async (apt) => {
-          if (!apt.services) return { ...apt, serviceTitles: '' };
+      console.log("API Response:", response.data); // Debugging log
 
-          const serviceTokens = apt.services.split(',');
-          const titles: string[] = [];
-
-          for (const token of serviceTokens) {
-            const trimmedToken = token.trim();
-            if (isUuidFormat(trimmedToken)) {
-              try {
-                const serviceRes = await axiosInstance.get(`/services/${trimmedToken}`);
-                titles.push(serviceRes.data.title || translations.appointments?.messages?.error || 'Unknown Service');
-              } catch (err) {
-                console.error("Error fetching service:", err);
-                titles.push(translations.appointments?.messages?.error || 'Unknown Service');
-              }
-            } else {
-              titles.push(trimmedToken);
-            }
-          }
-          return { ...apt, serviceTitles: titles.join(', ') };
-        })
-      );
-
-      setAppointments(updatedAppointments);
+      if (response.data && response.data.content) {
+        setAppointments(response.data.content);
+        setTotalPages(Math.min(response.data.totalPages, 99)); // ✅ Limit to max 99 pages
+      } else {
+        setAppointments([]);
+        setTotalPages(1);
+      }
     } catch (err) {
       console.error("Error fetching appointments:", err);
-      setError(translations.appointments?.messages?.error || 'An unexpected error occurred while fetching appointments.');
+      setError("An error occurred while fetching appointments.");
     } finally {
       setLoading(false);
     }
-  }, [translations.appointments?.messages?.error]); // ✅ Added as dependency
+  }, [currentPage]);
 
+  useEffect(() => {
+    fetchAllAppointments();
+  }, [fetchAllAppointments]);
+
+  // ✅ Delete an appointment and update pagination
   const deleteAppointment = async (appointmentId: string | undefined) => {
     if (!appointmentId) {
-      toast.error(translations.appointments?.messages?.delete_error || 'Invalid appointment ID');
+      toast.error('Invalid appointment ID');
       return;
     }
 
-    const confirmDelete = window.confirm(
-      `${translations.appointments?.messages?.delete_confirm?.replace('{id}', appointmentId) || `Are you sure you want to delete the appointment with ID: ${appointmentId}?`}`
-    );
-
+    const confirmDelete = window.confirm(`Are you sure you want to delete the appointment with ID: ${appointmentId}?`);
     if (!confirmDelete) return;
 
     try {
       await axiosInstance.delete(`/appointments/${appointmentId}`);
-      setAppointments((prevAppointments) =>
-        prevAppointments.filter((appointment) => appointment.appointmentId !== appointmentId)
-      );
-      toast.success(translations.appointments?.messages?.delete_success || 'Appointment deleted successfully.');
+      toast.success('Appointment deleted successfully.');
+
+      // ✅ Fetch updated appointments after deletion
+      fetchAllAppointments();
     } catch (err) {
       console.error("Error deleting appointment:", err);
-      toast.error(translations.appointments?.messages?.delete_error || 'An unexpected error occurred while deleting the appointment.');
+      toast.error('An unexpected error occurred while deleting the appointment.');
     }
   };
 
+  // ✅ Download PDF function
   const downloadPdf = async () => {
     try {
       const response = await axiosInstance.get('/appointments/pdf', {
@@ -109,71 +98,88 @@ const Appointments = () => {
       link.remove();
     } catch (err) {
       console.error("Error downloading PDF:", err);
-      toast.error(translations.appointments?.messages?.pdf_download_error || 'An error occurred while downloading the PDF.');
+      toast.error('An error occurred while downloading the PDF.');
     }
   };
 
-  // ✅ No more ESLint warning: useEffect now properly includes fetchAllAppointments
-  useEffect(() => {
-    fetchAllAppointments();
-  }, [fetchAllAppointments]);
-
-  if (loading) {
-    return <div className="loading-message">{translations.appointments?.messages?.loading || 'Loading appointments...'}</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
+  if (loading) return <div className="loading-message">Loading appointments...</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="appointments-page">
       <h1 className="appointments-title">{translations.appointments?.title || 'Appointments Page'}</h1>
+      
       <div className="appointments-actions">
         <button className="add-appointment-button" onClick={() => navigate('/appointments/add')}>
           {translations.appointments?.actions?.add || 'Add Appointment'}
         </button>
+        
+        {/* ✅ Re-added the Download PDF button */}
         <button className="download-pdf-button" onClick={downloadPdf}>
           {translations.appointments?.actions?.download_pdf || 'Download PDF'}
         </button>
       </div>
+
       <table className="appointments-table">
         <thead>
           <tr>
-            <th>{translations.appointments?.table?.appointment_id || 'Appointment ID'}</th>
-            <th>{translations.appointments?.table?.customer_id || 'Customer ID'}</th>
-            <th>{translations.appointments?.table?.first_name || 'Customer First Name'}</th>
-            <th>{translations.appointments?.table?.last_name || 'Customer Last Name'}</th>
-            <th>{translations.appointments?.table?.date || 'Date'}</th>
-            <th>{translations.appointments?.table?.services || 'Services'}</th>
-            <th>{translations.appointments?.table?.status || 'Status'}</th>
-            <th>{translations.appointments?.table?.comments || 'Comments'}</th>
-            <th>{translations.appointments?.table?.actions || 'Actions'}</th>
+            <th>Appointment ID</th>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date</th>
+            <th>Services</th>
+            <th>Status</th>
+            <th>Comments</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {appointments.map((appointment, index) => (
-            <tr key={appointment.appointmentId || index}>
-              <td>{appointment.appointmentId || 'N/A'}</td>
-              <td>{appointment.customerId || 'N/A'}</td>
-              <td>{appointment.customerFirstName || 'N/A'}</td>
-              <td>{appointment.customerLastName || 'N/A'}</td>
-              <td>{appointment.appointmentDate || 'N/A'}</td>
-              <td>{appointment.serviceTitles || 'N/A'}</td>
-              <td>{appointment.status || 'N/A'}</td>
-              <td>{appointment.comments || 'N/A'}</td>
-              <td className="actions">
-                <button className="edit-button" onClick={() => navigate(`/appointments/edit/${appointment.appointmentId}`)}>
-                  {translations.appointments?.table?.edit || 'Edit'}
-                </button>
-                <button className="delete-button" onClick={() => deleteAppointment(appointment.appointmentId)}>
-                  {translations.appointments?.table?.delete || 'Delete'}
-                </button>
-              </td>
+          {appointments.length > 0 ? (
+            appointments.map((appointment, index) => (
+              <tr key={appointment.appointmentId || index}>
+                <td>{appointment.appointmentId || 'N/A'}</td>
+                <td>{appointment.customerId || 'N/A'}</td>
+                <td>{appointment.customerFirstName || 'N/A'}</td>
+                <td>{appointment.customerLastName || 'N/A'}</td>
+                <td>{appointment.appointmentDate || 'N/A'}</td>
+                <td>{appointment.services || 'N/A'}</td> 
+                <td>{appointment.status || 'N/A'}</td>
+                <td>{appointment.comments || 'N/A'}</td>
+                <td className="actions">
+                  <button className="edit-button" onClick={() => navigate(`/appointments/edit/${appointment.appointmentId}`)}>
+                    Edit
+                  </button>
+                  <button className="delete-button" onClick={() => deleteAppointment(appointment.appointmentId)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={9} className="no-data">No appointments available</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
+      {/* ✅ Pagination Controls */}
+      <div className="pagination">
+        <button 
+          disabled={currentPage === 0} 
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+        >
+          ← Previous
+        </button>
+        <span> Page {currentPage + 1} of {totalPages} </span>
+        <button 
+          disabled={currentPage >= totalPages - 1} 
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))}
+        >
+          Next →
+        </button>
+      </div>
     </div>
   );
 };

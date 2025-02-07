@@ -114,3 +114,39 @@
 .navbar-burger:hover div {
   background-color: #2ecc71;
 }
+
+/* Profile Icon */
+.profile-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #34495e;
+  font-size: 1.5rem; /* Adjust icon size */
+  transition: color 0.3s ease, transform 0.2s ease;
+  padding: 0.5rem;
+}
+
+.profile-icon:hover {
+  color: #2ecc71; /* Vibrant green on hover */
+  transform: scale(1.1); /* Slight zoom effect */
+}
+
+.language-selector {
+  font-size: 1rem;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #34495e;
+  background-color: #ffffff;
+  color: #34495e;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.language-selector:hover {
+  border-color: #2ecc71;
+}
+
+.language-selector:focus {
+  outline: none;
+  border-color: #2ecc71;
+}
