@@ -55,6 +55,21 @@ export interface Translations {
     address?: string;
     phone?: string;
     email?: string;
+    form?: {  // ✅ Fix: Added missing 'form' definition
+      title?: string;
+      name?: string;
+      namePlaceholder?: string;
+      email?: string;
+      emailPlaceholder?: string;
+      subject?: string;
+      subjectPlaceholder?: string;
+      message?: string;
+      messagePlaceholder?: string;
+      submit?: string;
+      sending?: string;
+      success?: string;
+      error?: string;
+    };
   };
   about_us?: {
     header?: string;
@@ -96,7 +111,7 @@ export interface Translations {
     error?: string;
     next_button?: string;
   };
-  checkout?: {  // ✅ NEWLY ADDED SECTION
+  checkout?: {  
     title?: string;
     selected_services?: string;
     no_services?: string;
