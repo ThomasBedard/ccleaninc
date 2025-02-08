@@ -22,4 +22,6 @@ public interface EmployeeService {
 
     // 5. Update existing employee
     EmployeeResponseModel updateEmployee(String employeeId, EmployeeRequestModel employeeRequestModel);
+
+    EmployeeResponseModel getEmployeeByEmail(String email);
 }

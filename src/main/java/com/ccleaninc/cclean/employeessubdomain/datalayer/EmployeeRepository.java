@@ -15,6 +15,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
         Optional<Employee> findByEmployeeIdentifier_EmployeeId(String employeeId);
 
         // 2. Find employee by exact email (unique)
+        // Employee findByEmail(String email);
+
         Employee findByEmail(String email);
     
         // 3. Find employees by phone number, allowing partial matches

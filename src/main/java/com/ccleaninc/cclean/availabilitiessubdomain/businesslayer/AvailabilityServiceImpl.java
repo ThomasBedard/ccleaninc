@@ -7,6 +7,8 @@ import com.ccleaninc.cclean.availabilitiessubdomain.datamapperlayer.Availability
 import com.ccleaninc.cclean.availabilitiessubdomain.datamapperlayer.AvailabilityResponseMapper;
 import com.ccleaninc.cclean.availabilitiessubdomain.presentationlayer.AvailabilityRequestModel;
 import com.ccleaninc.cclean.availabilitiessubdomain.presentationlayer.AvailabilityResponseModel;
+import com.ccleaninc.cclean.employeessubdomain.businesslayer.EmployeeService;
+import com.ccleaninc.cclean.employeessubdomain.presentationlayer.EmployeeResponseModel;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import com.itextpdf.text.*;
@@ -62,7 +64,8 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         if (availabilityId == null || availabilityId.length() != 36) {
             throw new InvalidInputException("Availability ID must be a valid 36-character string.");
         }
-        Availability availability = availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
+        Availability availability = availabilityRepository
+                .findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
         if (availability == null) {
             throw new NotFoundException("Availability with ID " + availabilityId + " was not found.");
         }
@@ -78,7 +81,8 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             throw new InvalidInputException("Availability request model cannot be null.");
         }
 
-        Availability availability = availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
+        Availability availability = availabilityRepository
+                .findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
         if (availability == null) {
             throw new NotFoundException("Availability with ID " + availabilityId + " was not found.");
         }
@@ -97,7 +101,8 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         if (availabilityId == null || availabilityId.length() != 36) {
             throw new InvalidInputException("Availability ID must be a valid 36-character string.");
         }
-        Availability availability = availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
+        Availability availability = availabilityRepository
+                .findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
         if (availability == null) {
             throw new NotFoundException("Availability with ID " + availabilityId + " was not found.");
         }
@@ -110,6 +115,21 @@ public class AvailabilityServiceImpl implements AvailabilityService {
             throw new InvalidInputException("Employee ID cannot be null or empty.");
         }
         List<Availability> availabilities = availabilityRepository.findAllByEmployeeId(employeeId);
+        return availabilityResponseMapper.entityToResponseModelList(availabilities);
+    }
+
+    private final EmployeeService employeeService; // Inject EmployeeService
+
+    @Override
+    public List<AvailabilityResponseModel> getAvailabilitiesByEmployeeEmail(String email) {
+        // Lookup Employee by Email
+        EmployeeResponseModel employee = employeeService.getEmployeeByEmail(email);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found for email: " + email);
+        }
+
+        // Fetch availabilities using Employee ID
+        List<Availability> availabilities = availabilityRepository.findAllByEmployeeId(employee.getEmployeeId());
         return availabilityResponseMapper.entityToResponseModelList(availabilities);
     }
 

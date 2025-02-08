@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("api/v1/availabilities")
 @AllArgsConstructor
@@ -31,9 +35,22 @@ public class AvailabilityController {
         return ResponseEntity.ok(availabilities);
     }
 
+    @GetMapping("/my-availabilities")
+    @PreAuthorize("hasAuthority('employee')")
+    public ResponseEntity<List<AvailabilityResponseModel>> getMyAvailabilities(@AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getClaim("email"); // Extract email from JWT token
+
+        List<AvailabilityResponseModel> availabilities = availabilityService.getAvailabilitiesByEmployeeEmail(email);
+        if (availabilities.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(availabilities);
+    }
+
     // Create a new availability
     @PostMapping
-    public ResponseEntity<AvailabilityResponseModel> createAvailability(@RequestBody AvailabilityRequestModel requestModel) {
+    public ResponseEntity<AvailabilityResponseModel> createAvailability(
+            @RequestBody AvailabilityRequestModel requestModel) {
         try {
             AvailabilityResponseModel createdAvailability = availabilityService.createAvailability(requestModel);
             return new ResponseEntity<>(createdAvailability, HttpStatus.CREATED);
@@ -44,9 +61,11 @@ public class AvailabilityController {
 
     // Get availability by ID
     @GetMapping("/{availabilityId}")
-    public ResponseEntity<AvailabilityResponseModel> getAvailabilityByAvailabilityId(@PathVariable String availabilityId) {
+    public ResponseEntity<AvailabilityResponseModel> getAvailabilityByAvailabilityId(
+            @PathVariable String availabilityId) {
         try {
-            AvailabilityResponseModel availability = availabilityService.getAvailabilityByAvailabilityId(availabilityId);
+            AvailabilityResponseModel availability = availabilityService
+                    .getAvailabilityByAvailabilityId(availabilityId);
             return ResponseEntity.ok(availability);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -61,7 +80,8 @@ public class AvailabilityController {
             @PathVariable String availabilityId,
             @RequestBody AvailabilityRequestModel requestModel) {
         try {
-            AvailabilityResponseModel updatedAvailability = availabilityService.updateAvailability(availabilityId, requestModel);
+            AvailabilityResponseModel updatedAvailability = availabilityService.updateAvailability(availabilityId,
+                    requestModel);
             return ResponseEntity.ok(updatedAvailability);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -81,13 +101,15 @@ public class AvailabilityController {
         } catch (InvalidInputException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-    }    
+    }
 
     // Get availabilities by employee ID
     @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<AvailabilityResponseModel>> getAvailabilitiesByEmployeeId(@PathVariable String employeeId) {
+    public ResponseEntity<List<AvailabilityResponseModel>> getAvailabilitiesByEmployeeId(
+            @PathVariable String employeeId) {
         try {
-            List<AvailabilityResponseModel> availabilities = availabilityService.getAvailabilitiesByEmployeeId(employeeId);
+            List<AvailabilityResponseModel> availabilities = availabilityService
+                    .getAvailabilitiesByEmployeeId(employeeId);
             if (availabilities.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
