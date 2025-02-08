@@ -25,7 +25,11 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
     @Query("SELECT a FROM Availability a WHERE a.employeeId = :employeeId")
     List<Availability> findAllByEmployeeId(@Param("employeeId") String employeeId);
 
-    @Query("SELECT a FROM Availability a WHERE a.employeeId = (SELECT e.employeeId FROM Employee e WHERE e.email = :email)")
+    // @Query("SELECT a FROM Availability a WHERE a.employeeId = (SELECT e.employeeId FROM Employee e WHERE e.email = :email)")
+    // List<Availability> findAllByEmployeeEmail(@Param("email") String email);
+
+    @Query("SELECT a FROM Availability a WHERE a.employeeId = (SELECT e.employeeIdentifier.employeeId FROM Employee e WHERE e.email = :email)")
     List<Availability> findAllByEmployeeEmail(@Param("email") String email);
+
 
 }
