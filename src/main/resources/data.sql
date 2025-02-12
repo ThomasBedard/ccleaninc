@@ -20,7 +20,7 @@ INSERT INTO customers (
 INSERT INTO employees (employee_id, first_name, last_name, email, phone_number, is_active, role) 
 VALUES 
 ('c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'Alice', 'Johnson', 'alice.johnson@example.com', '123-456-7892', TRUE, 'cleaner'),
-('d3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'Bob', 'Williams', 'bob.williams@example.com', '123-456-7893', TRUE, 'supervisor');
+('d3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'Bob', 'Williams', 'employee@gmail.com', '123-456-7893', TRUE, 'supervisor');
 
 
 -- Insert Admins
