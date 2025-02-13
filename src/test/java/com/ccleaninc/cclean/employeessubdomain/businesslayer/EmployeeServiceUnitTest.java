@@ -26,235 +26,286 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceUnitTest {
 
-    @Mock
-    private EmployeeRepository employeeRepository;
+        @Mock
+        private EmployeeRepository employeeRepository;
 
-    @Mock
-    private EmployeeResponseMapper employeeResponseMapper;
+        @Mock
+        private EmployeeResponseMapper employeeResponseMapper;
 
-    @Mock
-    private EmployeeRequestMapper employeeRequestMapper;
+        @Mock
+        private EmployeeRequestMapper employeeRequestMapper;
 
-    @InjectMocks
-    private EmployeeServiceImpl employeeService;
+        @InjectMocks
+        private EmployeeServiceImpl employeeService;
 
-    private Employee employee;
-    private EmployeeResponseModel employeeResponseModel;
+        private Employee employee;
+        private EmployeeResponseModel employeeResponseModel;
 
-    @BeforeEach
-    void setUp() {
-        // Create a sample Employee entity
-        employee = Employee.builder()
-                .id(1)
-                .employeeIdentifier(
-                    new EmployeeIdentifier("emp-1234-5678")
-                )
-                .firstName("Jane")
-                .lastName("Doe")
-                .email("jane.doe@example.com")
-                .phoneNumber("555-1234")
-                .isActive(true)
-                .role("Technician")
-                .build();
+        @BeforeEach
+        void setUp() {
+                // Create a sample Employee entity
+                employee = Employee.builder()
+                                .id(1)
+                                .employeeIdentifier(
+                                                new EmployeeIdentifier("emp-1234-5678"))
+                                .firstName("Jane")
+                                .lastName("Doe")
+                                .email("jane.doe@example.com")
+                                .phoneNumber("555-1234")
+                                .isActive(true)
+                                .role("Technician")
+                                .build();
 
-        // Create the corresponding EmployeeResponseModel
-        employeeResponseModel = EmployeeResponseModel.builder()
-                .employeeId("emp-1234-5678")
-                .firstName("Jane")
-                .lastName("Doe")
-                .email("jane.doe@example.com")
-                .phoneNumber("555-1234")
-                .isActive(true)
-                .role("Technician")
-                .build();
-    }
+                // Create the corresponding EmployeeResponseModel
+                employeeResponseModel = EmployeeResponseModel.builder()
+                                .employeeId("emp-1234-5678")
+                                .firstName("Jane")
+                                .lastName("Doe")
+                                .email("jane.doe@example.com")
+                                .phoneNumber("555-1234")
+                                .isActive(true)
+                                .role("Technician")
+                                .build();
+        }
 
-    @Test
-    void getAllEmployees_ShouldReturnEmployees() {
-        // Arrange
-        when(employeeRepository.findAll()).thenReturn(List.of(employee));
-        when(employeeResponseMapper.entityToResponseModelList(List.of(employee)))
-                .thenReturn(List.of(employeeResponseModel));
+        @Test
+        void getAllEmployees_ShouldReturnEmployees() {
+                // Arrange
+                when(employeeRepository.findAll()).thenReturn(List.of(employee));
+                when(employeeResponseMapper.entityToResponseModelList(List.of(employee)))
+                                .thenReturn(List.of(employeeResponseModel));
 
-        // Act
-        List<EmployeeResponseModel> response = employeeService.getAllEmployees();
+                // Act
+                List<EmployeeResponseModel> response = employeeService.getAllEmployees();
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(1, response.size());
-        assertEquals("emp-1234-5678", response.get(0).getEmployeeId());
-        assertEquals("Jane", response.get(0).getFirstName());
-        assertEquals("Doe", response.get(0).getLastName());
-        assertEquals("jane.doe@example.com", response.get(0).getEmail());
-        assertEquals("555-1234", response.get(0).getPhoneNumber());
-        assertTrue(response.get(0).getIsActive());
-        assertEquals("Technician", response.get(0).getRole());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(1, response.size());
+                assertEquals("emp-1234-5678", response.get(0).getEmployeeId());
+                assertEquals("Jane", response.get(0).getFirstName());
+                assertEquals("Doe", response.get(0).getLastName());
+                assertEquals("jane.doe@example.com", response.get(0).getEmail());
+                assertEquals("555-1234", response.get(0).getPhoneNumber());
+                assertTrue(response.get(0).getIsActive());
+                assertEquals("Technician", response.get(0).getRole());
+        }
 
-    @Test
-    void getAllEmployees_NoEmployeesFound_ShouldReturnEmptyList() {
-        // Arrange
-        when(employeeRepository.findAll()).thenReturn(Collections.emptyList());
+        @Test
+        void getAllEmployees_NoEmployeesFound_ShouldReturnEmptyList() {
+                // Arrange
+                when(employeeRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // Act
-        List<EmployeeResponseModel> response = employeeService.getAllEmployees();
+                // Act
+                List<EmployeeResponseModel> response = employeeService.getAllEmployees();
 
-        // Assert
-        assertNotNull(response);
-        assertTrue(response.isEmpty());
-    }
+                // Assert
+                assertNotNull(response);
+                assertTrue(response.isEmpty());
+        }
 
-    @Test
-    void getEmployeeByEmployeeId_ShouldReturnEmployee() {
-        // Arrange
-        String employeeId = "emp-1234-5678";
-        when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
-                .thenReturn(Optional.of(employee));
-        when(employeeResponseMapper.entityToResponseModel(employee))
-                .thenReturn(employeeResponseModel);
+        @Test
+        void getEmployeeByEmployeeId_ShouldReturnEmployee() {
+                // Arrange
+                String employeeId = "emp-1234-5678";
+                when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
+                                .thenReturn(Optional.of(employee));
+                when(employeeResponseMapper.entityToResponseModel(employee))
+                                .thenReturn(employeeResponseModel);
 
-        // Act
-        EmployeeResponseModel response = employeeService.getEmployeeByEmployeeId(employeeId);
+                // Act
+                EmployeeResponseModel response = employeeService.getEmployeeByEmployeeId(employeeId);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("emp-1234-5678", response.getEmployeeId());
-        assertEquals("Jane", response.getFirstName());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals("emp-1234-5678", response.getEmployeeId());
+                assertEquals("Jane", response.getFirstName());
+        }
 
-    @Test
-    void getEmployeeByEmployeeId_EmployeeNotFound_ShouldThrowNotFoundException() {
-        // Arrange
-        String employeeId = "emp-invalid";
-        when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
-                .thenReturn(Optional.empty());
+        @Test
+        void getEmployeeByEmployeeId_EmployeeNotFound_ShouldThrowNotFoundException() {
+                // Arrange
+                String employeeId = "emp-invalid";
+                when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
+                                .thenReturn(Optional.empty());
 
-        // Act & Assert
-        assertThrows(NotFoundException.class, 
-            () -> employeeService.getEmployeeByEmployeeId(employeeId)
-        );
-    }
+                // Act & Assert
+                assertThrows(NotFoundException.class,
+                                () -> employeeService.getEmployeeByEmployeeId(employeeId));
+        }
 
-    @Test
-    void searchEmployees_ShouldReturnEmployees() {
-        // Arrange
-        String searchTerm = "Jane";
-        when(employeeRepository.searchByNameOrEmail(searchTerm))
-                .thenReturn(List.of(employee));
-        when(employeeResponseMapper.entityToResponseModelList(List.of(employee)))
-                .thenReturn(List.of(employeeResponseModel));
+        @Test
+        void searchEmployees_ShouldReturnEmployees() {
+                // Arrange
+                String searchTerm = "Jane";
+                when(employeeRepository.searchByNameOrEmail(searchTerm))
+                                .thenReturn(List.of(employee));
+                when(employeeResponseMapper.entityToResponseModelList(List.of(employee)))
+                                .thenReturn(List.of(employeeResponseModel));
 
-        // Act
-        List<EmployeeResponseModel> response = employeeService.searchEmployees(searchTerm);
+                // Act
+                List<EmployeeResponseModel> response = employeeService.searchEmployees(searchTerm);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(1, response.size());
-        assertEquals("Jane", response.get(0).getFirstName());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals(1, response.size());
+                assertEquals("Jane", response.get(0).getFirstName());
+        }
 
-    @Test
-    void searchEmployees_NoEmployeesFound_ShouldReturnEmptyList() {
-        // Arrange
-        String searchTerm = "NonExistent";
-        when(employeeRepository.searchByNameOrEmail(searchTerm))
-                .thenReturn(Collections.emptyList());
+        @Test
+        void searchEmployees_NoEmployeesFound_ShouldReturnEmptyList() {
+                // Arrange
+                String searchTerm = "NonExistent";
+                when(employeeRepository.searchByNameOrEmail(searchTerm))
+                                .thenReturn(Collections.emptyList());
 
-        // Act
-        List<EmployeeResponseModel> response = employeeService.searchEmployees(searchTerm);
+                // Act
+                List<EmployeeResponseModel> response = employeeService.searchEmployees(searchTerm);
 
-        // Assert
-        assertNotNull(response);
-        assertTrue(response.isEmpty());
-    }
+                // Assert
+                assertNotNull(response);
+                assertTrue(response.isEmpty());
+        }
 
-    @Test
-    void addEmployee_ShouldReturnCreatedEmployee() {
-        // Arrange
-        // Suppose your request model doesn't have the employeeId (auto-set)
-        EmployeeRequestModel requestModel = EmployeeRequestModel.builder()
-                .firstName("Jane")
-                .lastName("Doe")
-                .email("jane.doe@example.com")
-                .phoneNumber("555-1234")
-                .isActive(true)
-                .role("Technician")
-                .build();
+        @Test
+        void addEmployee_ShouldReturnCreatedEmployee() {
+                // Arrange
+                // Suppose your request model doesn't have the employeeId (auto-set)
+                EmployeeRequestModel requestModel = EmployeeRequestModel.builder()
+                                .firstName("Jane")
+                                .lastName("Doe")
+                                .email("jane.doe@example.com")
+                                .phoneNumber("555-1234")
+                                .isActive(true)
+                                .role("Technician")
+                                .build();
 
-        // The mapper converts EmployeeRequestModel to an Employee entity
-        when(employeeRequestMapper.employeeModelToEntity(any(EmployeeRequestModel.class)))
-                .thenReturn(employee);
+                // The mapper converts EmployeeRequestModel to an Employee entity
+                when(employeeRequestMapper.employeeModelToEntity(any(EmployeeRequestModel.class)))
+                                .thenReturn(employee);
 
-        // The repository returns the same employee after saving
-        when(employeeRepository.save(any(Employee.class)))
-                .thenReturn(employee);
+                // The repository returns the same employee after saving
+                when(employeeRepository.save(any(Employee.class)))
+                                .thenReturn(employee);
 
-        // The response mapper converts the saved employee to EmployeeResponseModel
-        when(employeeResponseMapper.entityToResponseModel(employee))
-                .thenReturn(employeeResponseModel);
+                // The response mapper converts the saved employee to EmployeeResponseModel
+                when(employeeResponseMapper.entityToResponseModel(employee))
+                                .thenReturn(employeeResponseModel);
 
-        // Act
-        EmployeeResponseModel response = employeeService.addEmployee(requestModel);
+                // Act
+                EmployeeResponseModel response = employeeService.addEmployee(requestModel);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("emp-1234-5678", response.getEmployeeId());
-    }
+                // Assert
+                assertNotNull(response);
+                assertEquals("emp-1234-5678", response.getEmployeeId());
+        }
 
-    @Test
-    void updateEmployee_ShouldUpdateAndReturnEmployee() {
-        // Arrange
-        String employeeId = "emp-1234-5678";
-        EmployeeRequestModel requestModel = EmployeeRequestModel.builder()
-                .firstName("Janet")
-                .lastName("Smith")
-                .email("janet.smith@example.com")
-                .phoneNumber("555-9876")
-                .isActive(false)
-                .role("Manager")
-                .build();
+        @Test
+        void updateEmployee_ShouldUpdateAndReturnEmployee() {
+                // Arrange
+                String employeeId = "emp-1234-5678";
+                EmployeeRequestModel requestModel = EmployeeRequestModel.builder()
+                                .firstName("Janet")
+                                .lastName("Smith")
+                                .email("janet.smith@example.com")
+                                .phoneNumber("555-9876")
+                                .isActive(false)
+                                .role("Manager")
+                                .build();
 
-        when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
-                .thenReturn(Optional.of(employee));
-        when(employeeRepository.save(any(Employee.class)))
-                .thenReturn(employee);
+                when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
+                                .thenReturn(Optional.of(employee));
+                when(employeeRepository.save(any(Employee.class)))
+                                .thenReturn(employee);
 
-        // The updated employee might have different fields
-        // but in this simple test, we just return the same `employee`.
-        // Realistically, you'd reflect updated fields here.
-        when(employeeResponseMapper.entityToResponseModel(employee))
-                .thenReturn(employeeResponseModel);
+                // The updated employee might have different fields
+                // but in this simple test, we just return the same `employee`.
+                // Realistically, you'd reflect updated fields here.
+                when(employeeResponseMapper.entityToResponseModel(employee))
+                                .thenReturn(employeeResponseModel);
 
-        // Act
-        EmployeeResponseModel response = employeeService.updateEmployee(employeeId, requestModel);
+                // Act
+                EmployeeResponseModel response = employeeService.updateEmployee(employeeId, requestModel);
 
-        // Assert
-        assertNotNull(response);
-        // Expect the same employeeId
-        assertEquals("emp-1234-5678", response.getEmployeeId());
-    }
+                // Assert
+                assertNotNull(response);
+                // Expect the same employeeId
+                assertEquals("emp-1234-5678", response.getEmployeeId());
+        }
 
-    @Test
-    void deleteEmployee_ShouldDeleteEmployee() {
-        // Arrange
-        String employeeId = "emp-1234-5678";
-        when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
-                .thenReturn(Optional.of(employee));
+        @Test
+        void deleteEmployee_ShouldDeleteEmployee() {
+                // Arrange
+                String employeeId = "emp-1234-5678";
+                when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
+                                .thenReturn(Optional.of(employee));
 
-        // Act & Assert
-        assertDoesNotThrow(() -> employeeService.deleteEmployeeByEmployeeId(employeeId));
-        // If no exception is thrown, the test passes
-    }
+                // Act & Assert
+                assertDoesNotThrow(() -> employeeService.deleteEmployeeByEmployeeId(employeeId));
+                // If no exception is thrown, the test passes
+        }
 
-    @Test
-    void deleteEmployee_EmployeeNotFound_ShouldThrowNotFoundException() {
-        // Arrange
-        String employeeId = "emp-invalid";
-        when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
-                .thenReturn(Optional.empty());
+        @Test
+        void deleteEmployee_EmployeeNotFound_ShouldThrowNotFoundException() {
+                // Arrange
+                String employeeId = "emp-invalid";
+                when(employeeRepository.findByEmployeeIdentifier_EmployeeId(employeeId))
+                                .thenReturn(Optional.empty());
 
-        // Act & Assert
-        assertThrows(NotFoundException.class,
-                () -> employeeService.deleteEmployeeByEmployeeId(employeeId));
-    }
+                // Act & Assert
+                assertThrows(NotFoundException.class,
+                                () -> employeeService.deleteEmployeeByEmployeeId(employeeId));
+        }
+
+        @Test
+        void getEmployeeByEmail_ShouldReturnEmployee() {
+                // Arrange
+                String email = "john.doe@example.com";
+                Employee employee = new Employee(
+                                1, // id (dummy integer)
+                                new EmployeeIdentifier("emp-001"),
+                                "John",
+                                "Doe",
+                                email,
+                                "1234567890", // phone number
+                                true, // isActive
+                                "employee" // role
+                );
+
+                EmployeeResponseModel expectedResponse = new EmployeeResponseModel(
+                                "emp-001", // employeeId
+                                "John", // firstName
+                                "Doe", // lastName
+                                email, // email
+                                "1234567890", // phoneNumber
+                                "employee", // role
+                                true // isActive
+                );
+
+                when(employeeRepository.findByEmail(email)).thenReturn(employee);
+                when(employeeResponseMapper.entityToResponseModel(employee)).thenReturn(expectedResponse);
+
+                // Act
+                EmployeeResponseModel response = employeeService.getEmployeeByEmail(email);
+
+                // Assert
+                assertNotNull(response);
+                assertEquals("emp-001", response.getEmployeeId());
+                assertEquals("John", response.getFirstName());
+                assertEquals("Doe", response.getLastName());
+                assertEquals(email, response.getEmail());
+                assertEquals("1234567890", response.getPhoneNumber());
+                assertEquals("employee", response.getRole());
+                assertTrue(response.getIsActive());
+        }
+
+        @Test
+        void getEmployeeByEmail_EmployeeNotFound_ShouldThrowNotFoundException() {
+                // Arrange
+                String email = "unknown@example.com";
+                when(employeeRepository.findByEmail(email)).thenReturn(null);
+
+                // Act & Assert
+                assertThrows(NotFoundException.class, () -> employeeService.getEmployeeByEmail(email));
+        }
+
 }

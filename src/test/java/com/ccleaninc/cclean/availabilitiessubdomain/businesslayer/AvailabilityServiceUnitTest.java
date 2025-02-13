@@ -17,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.ccleaninc.cclean.employeessubdomain.businesslayer.EmployeeService;
+import com.ccleaninc.cclean.employeessubdomain.presentationlayer.EmployeeResponseModel;
+
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -43,6 +46,9 @@ public class AvailabilityServiceUnitTest {
 
     private Availability availability;
     private AvailabilityResponseModel availabilityResponseModel;
+
+    @Mock
+    private EmployeeService employeeService;
 
     @BeforeEach
     void setUp() {
@@ -71,7 +77,8 @@ public class AvailabilityServiceUnitTest {
     void getAllAvailabilities_ShouldReturnAvailabilities() {
         // Arrange
         when(availabilityRepository.findAll()).thenReturn(List.of(availability));
-        when(availabilityResponseMapper.entityToResponseModelList(List.of(availability))).thenReturn(List.of(availabilityResponseModel));
+        when(availabilityResponseMapper.entityToResponseModelList(List.of(availability)))
+                .thenReturn(List.of(availabilityResponseModel));
 
         // Act
         List<AvailabilityResponseModel> response = availabilityService.getAllAvailabilities();
@@ -99,7 +106,8 @@ public class AvailabilityServiceUnitTest {
     void getAvailabilityByAvailabilityId_ShouldReturnAvailability() {
         // Arrange
         String availabilityId = "123e4567-e89b-12d3-a456-426614174000";
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(availability);
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId))
+                .thenReturn(availability);
         when(availabilityResponseMapper.entityToResponseModel(availability)).thenReturn(availabilityResponseModel);
 
         // Act
@@ -114,10 +122,12 @@ public class AvailabilityServiceUnitTest {
     void getAvailabilityByAvailabilityId_NotFound_ShouldThrowNotFoundException() {
         // Arrange
         String availabilityId = "123e4567-e89b-12d3-a456-426614174001";
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(null);
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId))
+                .thenReturn(null);
 
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> availabilityService.getAvailabilityByAvailabilityId(availabilityId));
+        assertThrows(NotFoundException.class,
+                () -> availabilityService.getAvailabilityByAvailabilityId(availabilityId));
     }
 
     @Test
@@ -158,7 +168,8 @@ public class AvailabilityServiceUnitTest {
     void deleteAvailabilityByAvailabilityId_ShouldSucceed() {
         // Arrange
         String availabilityId = "123e4567-e89b-12d3-a456-426614174000";
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(availability);
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId))
+                .thenReturn(availability);
 
         // Act
         availabilityService.deleteAvailabilityByAvailabilityId(availabilityId);
@@ -171,10 +182,12 @@ public class AvailabilityServiceUnitTest {
     void deleteAvailabilityByAvailabilityId_NotFound_ShouldThrowNotFoundException() {
         // Arrange
         String availabilityId = "123e4567-e89b-12d3-a456-426614174001";
-        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId)).thenReturn(null);
+        when(availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId))
+                .thenReturn(null);
 
         // Act & Assert
-        assertThrows(NotFoundException.class, () -> availabilityService.deleteAvailabilityByAvailabilityId(availabilityId));
+        assertThrows(NotFoundException.class,
+                () -> availabilityService.deleteAvailabilityByAvailabilityId(availabilityId));
     }
 
     @Test
@@ -188,4 +201,45 @@ public class AvailabilityServiceUnitTest {
         // Assert
         assertNotNull(pdfData);
     }
+
+    @Test
+    void getAvailabilitiesByEmployeeEmail_ShouldReturnAvailabilities() {
+        // Arrange
+        String email = "john.doe@example.com";
+
+        // Corrected EmployeeResponseModel instantiation
+        EmployeeResponseModel employee = new EmployeeResponseModel(
+                "emp-001", // employeeId
+                "John", // firstName
+                "Doe", // lastName
+                email, // email
+                "1234567890", // phoneNumber
+                "employee", // role
+                true // isActive
+        );
+
+        when(employeeService.getEmployeeByEmail(email)).thenReturn(employee);
+        when(availabilityRepository.findAllByEmployeeId("emp-001")).thenReturn(List.of(availability));
+        when(availabilityResponseMapper.entityToResponseModelList(List.of(availability)))
+                .thenReturn(List.of(availabilityResponseModel));
+
+        // Act
+        List<AvailabilityResponseModel> response = availabilityService.getAvailabilitiesByEmployeeEmail(email);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(availabilityResponseModel.getAvailabilityId(), response.get(0).getAvailabilityId());
+    }
+
+    @Test
+    void getAvailabilitiesByEmployeeEmail_EmployeeNotFound_ShouldThrowNotFoundException() {
+        // Arrange
+        String email = "nonexistent@example.com";
+        when(employeeService.getEmployeeByEmail(email)).thenThrow(new NotFoundException("Employee not found"));
+
+        // Act & Assert
+        assertThrows(NotFoundException.class, () -> availabilityService.getAvailabilitiesByEmployeeEmail(email));
+    }
+
 }

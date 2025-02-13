@@ -20,8 +20,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRequestMapper employeeRequestMapper;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
-                               EmployeeResponseMapper employeeResponseMapper,
-                               EmployeeRequestMapper employeeRequestMapper) {
+            EmployeeResponseMapper employeeResponseMapper,
+            EmployeeRequestMapper employeeRequestMapper) {
         this.employeeRepository = employeeRepository;
         this.employeeResponseMapper = employeeResponseMapper;
         this.employeeRequestMapper = employeeRequestMapper;
@@ -33,8 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeResponseModel> getAllEmployees() {
         return employeeResponseMapper.entityToResponseModelList(
-                employeeRepository.findAll()
-        );
+                employeeRepository.findAll());
     }
 
     /**
@@ -43,8 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeResponseModel> searchEmployees(String searchTerm) {
         return employeeResponseMapper.entityToResponseModelList(
-                employeeRepository.searchByNameOrEmail(searchTerm)
-        );
+                employeeRepository.searchByNameOrEmail(searchTerm));
     }
 
     /**
@@ -102,5 +100,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
         return employeeResponseMapper.entityToResponseModel(updatedEmployee);
+    }
+
+    @Override
+    public EmployeeResponseModel getEmployeeByEmail(String email) {
+        Employee employee = employeeRepository.findByEmail(email);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found for email: " + email);
+        }
+        return employeeResponseMapper.entityToResponseModel(employee);
     }
 }

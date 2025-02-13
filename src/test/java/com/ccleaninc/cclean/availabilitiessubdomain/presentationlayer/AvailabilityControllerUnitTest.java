@@ -20,129 +20,165 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @ExtendWith(MockitoExtension.class)
 public class AvailabilityControllerUnitTest {
 
-    @Mock
-    private AvailabilityService availabilityService;
+        @Mock
+        private AvailabilityService availabilityService;
 
-    @InjectMocks
-    private AvailabilityController availabilityController;
+        @InjectMocks
+        private AvailabilityController availabilityController;
 
-    private AvailabilityResponseModel availabilityResponseModel;
-    private AvailabilityRequestModel availabilityRequestModel;
+        private AvailabilityResponseModel availabilityResponseModel;
+        private AvailabilityRequestModel availabilityRequestModel;
 
-    @BeforeEach
-    void setUp() {
-        availabilityResponseModel = AvailabilityResponseModel.builder()
-                .availabilityId("123e4567-e89b-12d3-a456-426614174000")
-                .employeeId("emp-001")
-                .employeeFirstName("John")
-                .employeeLastName("Doe")
-                .availableDate(LocalDateTime.now())
-                .shift(com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift.MORNING)
-                .comments("Available for morning shift")
-                .build();
+        @BeforeEach
+        void setUp() {
+                availabilityResponseModel = AvailabilityResponseModel.builder()
+                                .availabilityId("123e4567-e89b-12d3-a456-426614174000")
+                                .employeeId("emp-001")
+                                .employeeFirstName("John")
+                                .employeeLastName("Doe")
+                                .availableDate(LocalDateTime.now())
+                                .shift(com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift.MORNING)
+                                .comments("Available for morning shift")
+                                .build();
 
-        availabilityRequestModel = AvailabilityRequestModel.builder()
-                .employeeId("emp-001")
-                .employeeFirstName("John")
-                .employeeLastName("Doe")
-                .availableDate(LocalDateTime.now())
-                .shift(com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift.MORNING)
-                .comments("Available for morning shift")
-                .build();
-    }
+                availabilityRequestModel = AvailabilityRequestModel.builder()
+                                .employeeId("emp-001")
+                                .employeeFirstName("John")
+                                .employeeLastName("Doe")
+                                .availableDate(LocalDateTime.now())
+                                .shift(com.ccleaninc.cclean.availabilitiessubdomain.datalayer.Shift.MORNING)
+                                .comments("Available for morning shift")
+                                .build();
+        }
 
-    @Test
-    void getAllAvailabilities_ShouldSucceed() {
-        when(availabilityService.getAllAvailabilities()).thenReturn(List.of(availabilityResponseModel));
+        @Test
+        void getAllAvailabilities_ShouldSucceed() {
+                when(availabilityService.getAllAvailabilities()).thenReturn(List.of(availabilityResponseModel));
 
-        ResponseEntity<List<AvailabilityResponseModel>> response = availabilityController.getAllAvailabilities();
+                ResponseEntity<List<AvailabilityResponseModel>> response = availabilityController
+                                .getAllAvailabilities();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        assertEquals(availabilityResponseModel, response.getBody().get(0));
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+                assertEquals(1, response.getBody().size());
+                assertEquals(availabilityResponseModel, response.getBody().get(0));
+        }
 
-    @Test
-    void getAllAvailabilities_NoAvailabilitiesFound_ShouldReturnNotFound() {
-        when(availabilityService.getAllAvailabilities()).thenReturn(List.of());
+        @Test
+        void getAllAvailabilities_NoAvailabilitiesFound_ShouldReturnNotFound() {
+                when(availabilityService.getAllAvailabilities()).thenReturn(List.of());
 
-        ResponseEntity<List<AvailabilityResponseModel>> response = availabilityController.getAllAvailabilities();
+                ResponseEntity<List<AvailabilityResponseModel>> response = availabilityController
+                                .getAllAvailabilities();
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        }
 
-    @Test
-    void createAvailability_ShouldSucceed() {
-        when(availabilityService.createAvailability(availabilityRequestModel)).thenReturn(availabilityResponseModel);
+        @Test
+        void createAvailability_ShouldSucceed() {
+                when(availabilityService.createAvailability(availabilityRequestModel))
+                                .thenReturn(availabilityResponseModel);
 
-        ResponseEntity<AvailabilityResponseModel> response = availabilityController.createAvailability(availabilityRequestModel);
+                ResponseEntity<AvailabilityResponseModel> response = availabilityController
+                                .createAvailability(availabilityRequestModel);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(availabilityResponseModel, response.getBody());
-    }
+                assertEquals(HttpStatus.CREATED, response.getStatusCode());
+                assertNotNull(response.getBody());
+                assertEquals(availabilityResponseModel, response.getBody());
+        }
 
-    @Test
-    void createAvailability_InvalidInput_ShouldReturnBadRequest() {
-        when(availabilityService.createAvailability(availabilityRequestModel))
-                .thenThrow(new InvalidInputException("Invalid input"));
+        @Test
+        void createAvailability_InvalidInput_ShouldReturnBadRequest() {
+                when(availabilityService.createAvailability(availabilityRequestModel))
+                                .thenThrow(new InvalidInputException("Invalid input"));
 
-        ResponseEntity<AvailabilityResponseModel> response = availabilityController.createAvailability(availabilityRequestModel);
+                ResponseEntity<AvailabilityResponseModel> response = availabilityController
+                                .createAvailability(availabilityRequestModel);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        }
 
-    @Test
-    void getAvailabilityByAvailabilityId_ShouldSucceed() {
-        when(availabilityService.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000"))
-                .thenReturn(availabilityResponseModel);
+        @Test
+        void getAvailabilityByAvailabilityId_ShouldSucceed() {
+                when(availabilityService.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000"))
+                                .thenReturn(availabilityResponseModel);
 
-        ResponseEntity<AvailabilityResponseModel> response = availabilityController.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
+                ResponseEntity<AvailabilityResponseModel> response = availabilityController
+                                .getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(availabilityResponseModel, response.getBody());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+                assertEquals(availabilityResponseModel, response.getBody());
+        }
 
-    @Test
-    void getAvailabilityByAvailabilityId_NotFound_ShouldReturnNotFound() {
-        when(availabilityService.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000"))
-                .thenThrow(new NotFoundException("Availability not found."));
+        @Test
+        void getAvailabilityByAvailabilityId_NotFound_ShouldReturnNotFound() {
+                when(availabilityService.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000"))
+                                .thenThrow(new NotFoundException("Availability not found."));
 
-        ResponseEntity<AvailabilityResponseModel> response = availabilityController.getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
+                ResponseEntity<AvailabilityResponseModel> response = availabilityController
+                                .getAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        }
 
-    @Test
-    void deleteAvailabilityByAvailabilityId_ShouldSucceed() {
-        ResponseEntity<Void> response = availabilityController.deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
+        @Test
+        void deleteAvailabilityByAvailabilityId_ShouldSucceed() {
+                ResponseEntity<Void> response = availabilityController
+                                .deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
 
-    @Test
-    void deleteAvailabilityByAvailabilityId_NotFound_ShouldReturnNotFound() {
-        doThrow(new NotFoundException("Availability not found."))
-                .when(availabilityService).deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
+        @Test
+        void deleteAvailabilityByAvailabilityId_NotFound_ShouldReturnNotFound() {
+                doThrow(new NotFoundException("Availability not found."))
+                                .when(availabilityService)
+                                .deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
 
-        ResponseEntity<Void> response = availabilityController.deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
+                ResponseEntity<Void> response = availabilityController
+                                .deleteAvailabilityByAvailabilityId("123e4567-e89b-12d3-a456-426614174000");
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        }
 
-    @Test
-    void generateAvailabilitiesPdf_ShouldSucceed() {
-        when(availabilityService.generateAvailabilitiesPdf()).thenReturn(new ByteArrayOutputStream());
+        @Test
+        void generateAvailabilitiesPdf_ShouldSucceed() {
+                when(availabilityService.generateAvailabilitiesPdf()).thenReturn(new ByteArrayOutputStream());
 
-        ResponseEntity<byte[]> response = availabilityController.generateAvailabilitiesPdf();
+                ResponseEntity<byte[]> response = availabilityController.generateAvailabilitiesPdf();
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
+
+        @Test
+        void getMyAvailabilities_ShouldReturnAvailabilities() {
+                // Arrange
+                String email = "john.doe@example.com";
+                Jwt mockJwt = mock(Jwt.class);
+                // Match the real code’s claim name:
+                when(mockJwt.getClaim("https://ccleaninc.com/email")).thenReturn(email);
+
+                when(availabilityService.getAvailabilitiesByEmployeeEmail(email))
+                                .thenReturn(List.of(availabilityResponseModel));
+
+                // Act
+                ResponseEntity<List<AvailabilityResponseModel>> response = availabilityController
+                                .getMyAvailabilities(mockJwt);
+
+                // Assert
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+                assertEquals(1, response.getBody().size());
+                assertEquals(availabilityResponseModel, response.getBody().get(0));
+        }
+
 }

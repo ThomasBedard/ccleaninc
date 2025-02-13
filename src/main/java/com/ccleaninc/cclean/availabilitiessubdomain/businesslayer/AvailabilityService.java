@@ -28,5 +28,8 @@ public interface AvailabilityService {
     
         // Export all availability records to a PDF
         ByteArrayOutputStream generateAvailabilitiesPdf();
+
+        List<AvailabilityResponseModel> getAvailabilitiesByEmployeeEmail(String email);
+
     
 }
