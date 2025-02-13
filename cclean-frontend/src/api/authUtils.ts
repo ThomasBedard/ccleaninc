@@ -3,7 +3,8 @@ import { jwtDecode } from "jwt-decode";
 interface DecodedToken {
   "https://ccleaninc.com/email"?: string;
   sub?: string; 
-  [key: string]: any; 
+  // [key: string]: any;
+  [key: string]: unknown; 
 }
 
 export const extractEmailFromToken = (token: string): string | null => {
