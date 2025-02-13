@@ -1,19 +1,20 @@
 import { jwtDecode } from "jwt-decode";
 
-// Define the expected JWT structure
 interface DecodedToken {
-  email: string;
-  sub?: string; // Auth0 user ID
+  "https://ccleaninc.com/email"?: string;
+  sub?: string; 
+  [key: string]: any; 
 }
 
-// Extract email from the Auth0 token
 export const extractEmailFromToken = (token: string): string | null => {
   try {
     const decoded: DecodedToken = jwtDecode(token);
-    return decoded.email || null;
+    console.log("Decoded token:", decoded); 
+
+    // Return the custom claim
+    return decoded["https://ccleaninc.com/email"] || null;
   } catch (error) {
     console.error("❌ Failed to decode JWT token:", error);
     return null;
   }
 };
-

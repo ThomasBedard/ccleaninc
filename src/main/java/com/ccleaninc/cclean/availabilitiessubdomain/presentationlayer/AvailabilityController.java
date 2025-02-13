@@ -16,6 +16,8 @@ import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+
 
 @RestController
 @RequestMapping("api/v1/availabilities")
@@ -38,7 +40,7 @@ public class AvailabilityController {
     @GetMapping("/my-availabilities")
     @PreAuthorize("hasAuthority('employee')")
     public ResponseEntity<List<AvailabilityResponseModel>> getMyAvailabilities(@AuthenticationPrincipal Jwt jwt) {
-        String email = jwt.getClaim("email"); // Extract email from JWT token
+        String email = jwt.getClaim("https://ccleaninc.com/email"); // Extract email from JWT token
 
         List<AvailabilityResponseModel> availabilities = availabilityService.getAvailabilitiesByEmployeeEmail(email);
         if (availabilities.isEmpty()) {
