@@ -45,9 +45,13 @@ const App = () => {
   }
 
   return (
-    <LanguageProvider> {/* ✅ Wrap the entire app with LanguageProvider */}
+    <LanguageProvider>
+      {" "}
+      {/* ✅ Wrap the entire app with LanguageProvider */}
       <Router>
-        <Navbar>  {/* ✅ Pass Routes as children to Navbar */}
+        <Navbar>
+          {" "}
+          {/* ✅ Pass Routes as children to Navbar */}
           {/* Framer Motion fade animation wrapper */}
           <motion.div
             className="global-page-wrapper"
@@ -60,23 +64,38 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
               <Route path="/appointments" element={<Appointments />} />
-              <Route path="/appointments/add" element={<AppointmentsAddForm />} />
-              <Route path="/appointments/edit/:appointmentId" element={<AppointmentsEditForm />} />
+              <Route
+                path="/appointments/add"
+                element={<AppointmentsAddForm />}
+              />
+              <Route
+                path="/appointments/edit/:appointmentId"
+                element={<AppointmentsEditForm />}
+              />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/employees" element={<EmployeesList />} />
               <Route path="/add-employee" element={<CreateEmployee />} />
-              <Route path="/edit-employee/:employeeId" element={<EditEmployee />} />
+              <Route
+                path="/edit-employee/:employeeId"
+                element={<EditEmployee />}
+              />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/schedule" element={<Schedule />} />
 
               {/* Services CRUD */}
               <Route path="/add-service" element={<FormAddService />} />
-              <Route path="/edit-service/:serviceId" element={<FormEditService />} />
+              <Route
+                path="/edit-service/:serviceId"
+                element={<FormEditService />}
+              />
 
               {/* Customer CRUD */}
               <Route path="/add-customer" element={<CreateCustomer />} />
-              <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
+              <Route
+                path="/edit-customer/:customerId"
+                element={<EditCustomer />}
+              />
 
               {/* Feedback/Calendar/Checkout */}
               <Route path="/submit-feedback" element={<SubmitFeedback />} />
@@ -98,23 +117,32 @@ const App = () => {
               />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/my-appointments" element={<MyAppointments />} />
-              <Route path="/my-appointments/edit/:appointmentId" element={<CustomerAppointmentsEditForm />} />
+              <Route
+                path="/my-appointments/edit/:appointmentId"
+                element={<CustomerAppointmentsEditForm />}
+              />
 
               {/* Availabilities routes */}
               <Route path="/my-availabilities" element={<MyAvailabilities />} />
-              <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} />
+              <Route
+                path="/my-availabilities/edit/:availabilityId"
+                element={<EmployeeAvailabilitiesEditForm />}
+              />
               <Route path="/add-availability" element={<AddAvailability />} />
 
               {/* Assigning Employee Schedule routes */}
-              <Route path="/assign-schedule/:availabilityId" element={<AssignScheduleModal />} />
+              <Route
+                path="/assign-schedule/:availabilityId"
+                element={<AssignScheduleModal />}
+              />
               <Route path="/employee-schedule" element={<EmployeeSchedule />} />
 
               {/* Profile */}
               <Route path="/profile" element={<Profile />} />
             </Routes>
           </motion.div>
-        </Navbar> {/* ✅ Closing Navbar tag */}
-        
+        </Navbar>{" "}
+        {/* ✅ Closing Navbar tag */}
         {/* Toast notifications */}
         <ToastContainer
           position="top-right"

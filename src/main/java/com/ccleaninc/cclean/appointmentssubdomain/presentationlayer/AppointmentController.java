@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -25,6 +26,7 @@ public class AppointmentController {
     private final CustomerRepository customerRepository;
 
     @GetMapping("/appointments")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<List<AppointmentResponseModel>> getAllAppointments() {
         List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
         if (appointments == null || appointments.isEmpty()) {
@@ -34,6 +36,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments/with-customerid")
+    @PreAuthorize("hasAuthority('customer') or hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<AppointmentResponseModel> createAppointment(@RequestBody AppointmentRequestModel requestModel) {
         // This method requires requestModel.getCustomerId() to exist
         try {
@@ -45,6 +48,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments/{appointmentId}")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<AppointmentResponseModel> getAppointmentByAppointmentId(@PathVariable String appointmentId) {
         try {
             AppointmentResponseModel appointment = appointmentService.getAppointmentByAppointmentId(appointmentId);
@@ -58,6 +62,7 @@ public class AppointmentController {
 
 
     @PostMapping("/appointments")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AppointmentResponseModel> addAppointment(@RequestBody AppointmentRequestModel appointmentRequestModel) {
 
         AppointmentResponseModel appointment = appointmentService.addAppointment(appointmentRequestModel);
@@ -69,6 +74,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/appointments/{appointmentId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AppointmentResponseModel> updateAppointment(
             @PathVariable String appointmentId,
             @RequestBody AppointmentRequestModel appointmentRequestModel
@@ -84,6 +90,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/appointments/{appointmentId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Void> deleteAppointmentByAppointmentId(@PathVariable String appointmentId) {
         try {
             appointmentService.deleteAppointmentByAppointmentId(appointmentId);
@@ -95,6 +102,7 @@ public class AppointmentController {
         }
     }
     @GetMapping("/appointments/by-customer/{customerId}")
+    @PreAuthorize("hasAuthority('customer') or hasAuthority('admin') or hasAuthority('employee')")
     public ResponseEntity<List<AppointmentResponseModel>> getAppointmentsByCustomerId(@PathVariable String customerId) {
         try {
             List<AppointmentResponseModel> appointments = appointmentService.getAppointmentsByCustomerId(customerId);
@@ -110,6 +118,7 @@ public class AppointmentController {
         }
     }
     @PutMapping("/appointments/customer/{appointmentId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AppointmentResponseModel> updateAppointmentCustomer(
             @PathVariable String appointmentId,
             @RequestBody AppointmentRequestModel appointmentRequestModel) {
@@ -130,6 +139,7 @@ public class AppointmentController {
 
 
     @GetMapping("/appointments/pdf")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<byte[]> generateAppointmentsPdf() {
         ByteArrayOutputStream pdfData = appointmentService.generateAppointmentsPdf();
 
@@ -143,6 +153,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments/customers/{customerId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<AppointmentResponseModel> addAppointmentToCustomerAccount (@PathVariable String customerId,@RequestBody AppointmentRequestModel appointmentRequestModel) throws MessagingException {
 
         AppointmentResponseModel appointment = appointmentService.addAppointmentToCustomerAccount(customerId, appointmentRequestModel);

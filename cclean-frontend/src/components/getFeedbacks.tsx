@@ -1,11 +1,17 @@
-import axiosInstance from "../api/axios";
+import { useAxiosWithAuth } from "../api/axios"; // Use the authenticated instance
 
-export const getFeedbacks = async () => {
-  try {
-    const response = await axiosInstance.get("/feedbacks"); // No need to specify the full URL
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching feedbacks:", error);
-    throw error;
-  }
+export const useFeedbacks = () => {
+  const axiosInstance = useAxiosWithAuth();
+
+  const getFeedbacks = async () => {
+    try {
+      const response = await axiosInstance.get("/feedbacks");
+      return response.data;
+    } catch (error) {
+      console.error("❌ Error fetching feedbacks:", error);
+      throw error;
+    }
+  };
+
+  return { getFeedbacks };
 };
