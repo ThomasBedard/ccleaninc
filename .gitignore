@@ -57,5 +57,4 @@ data/database/
 # Ignore Docker-specific files
 .dockerignore
 
-cclean-frontend/package.json
-cclean-frontend/package-lock.json
+
