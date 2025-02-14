@@ -23,18 +23,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
-
-
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentServiceUnitTest {
@@ -54,7 +45,6 @@ public class AppointmentServiceUnitTest {
     private Appointment appointment;
 
     private AppointmentResponseModel appointmentResponseModel;
-
 
     @BeforeEach
     void setUp() {
@@ -81,7 +71,8 @@ public class AppointmentServiceUnitTest {
     @Test
     void GetAllAppointments_shouldSucceed() {
         when(appointmentRepository.findAll()).thenReturn(List.of(appointment));
-        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment))).thenReturn(List.of(appointmentResponseModel));
+        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment)))
+                .thenReturn(List.of(appointmentResponseModel));
 
         List<AppointmentResponseModel> appointments = appointmentService.getAllAppointments();
 
@@ -103,14 +94,18 @@ public class AppointmentServiceUnitTest {
 
         assertTrue(appointments.isEmpty());
     }
+
     @Test
     void GetAppointmentByAppointmentId_shouldSucceed() {
         // Arrange
-        when(appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointment);
+        when(appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(appointment);
         when(appointmentResponseMapper.entityToResponseModel(appointment)).thenReturn(appointmentResponseModel);
 
         // Act
-        AppointmentResponseModel appointment = appointmentService.getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
+        AppointmentResponseModel appointment = appointmentService
+                .getAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
 
         // Assert
         assertEquals(appointmentResponseModel.getId(), appointment.getId());
@@ -124,7 +119,9 @@ public class AppointmentServiceUnitTest {
     @Test
     void GetAppointmentByAppointmentId_shouldThrowInvalidInputException() {
         // Arrange
-        when(appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(null);
+        when(appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(null);
 
         // Act & Assert
         try {
@@ -137,7 +134,9 @@ public class AppointmentServiceUnitTest {
     @Test
     void deleteAppointmentByAppointmentId_shouldSucceed() {
         // Arrange
-        when(appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointment);
+        when(appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(appointment);
 
         // Act
         appointmentService.deleteAppointmentByAppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000");
@@ -147,7 +146,9 @@ public class AppointmentServiceUnitTest {
     @Test
     void deleteAppointmentByAppointmentId_shouldThrowNotFoundException() {
         // Arrange
-        when(appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(null);
+        when(appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(null);
 
         // Act & Assert
         try {
@@ -230,12 +231,15 @@ public class AppointmentServiceUnitTest {
                 .status(Status.pending)
                 .build();
 
-        when(appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000")).thenReturn(appointment);
+        when(appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId("a1b2c3d4-e5f6-11ec-82a8-0242ac130000"))
+                .thenReturn(appointment);
         when(appointmentRepository.save(any(Appointment.class))).thenReturn(expectedAppointment);
         when(appointmentResponseMapper.entityToResponseModel(expectedAppointment)).thenReturn(appointmentResponseModel);
 
         // Act
-        AppointmentResponseModel response = appointmentService.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000", appointmentRequestModel);
+        AppointmentResponseModel response = appointmentService.updateAppointment("a1b2c3d4-e5f6-11ec-82a8-0242ac130000",
+                appointmentRequestModel);
 
         // Assert
         assertEquals(appointmentResponseModel.getId(), response.getId());
@@ -259,43 +263,50 @@ public class AppointmentServiceUnitTest {
         }
     }
 
-
-    /*@Test
-    void CreateAppointment_shouldSucceed() {
-        AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
-                .customerId("1")
-                .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
-                .services("services")
-                .comments("comments")
-                .status(Status.pending)
-                .build();
-
-        when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
-        when(appointmentResponseMapper.entityToResponseModel(any(Appointment.class))).thenReturn(appointmentResponseModel);
-
-        AppointmentResponseModel response = appointmentService.createAppointment(requestModel);
-
-        assertNotNull(response);
-        assertEquals(appointmentResponseModel.getId(), response.getId());
-        assertEquals(appointmentResponseModel.getCustomerId(), response.getCustomerId());
-    }
-
-    @Test
-    void CreateAppointment_shouldThrowInvalidInputException_whenCustomerIdIsNull() {
-        AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
-                .customerId(null)
-                .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
-                .services("services")
-                .comments("comments")
-                .status(Status.pending)
-                .build();
-
-        InvalidInputException exception = assertThrows(InvalidInputException.class, () -> {
-            appointmentService.createAppointment(requestModel);
-        });
-
-        assertEquals("Customer ID is required.", exception.getMessage());
-    } */
+    /*
+     * @Test
+     * void CreateAppointment_shouldSucceed() {
+     * AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
+     * .customerId("1")
+     * .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
+     * .services("services")
+     * .comments("comments")
+     * .status(Status.pending)
+     * .build();
+     * 
+     * when(appointmentRepository.save(any(Appointment.class))).thenReturn(
+     * appointment);
+     * when(appointmentResponseMapper.entityToResponseModel(any(Appointment.class)))
+     * .thenReturn(appointmentResponseModel);
+     * 
+     * AppointmentResponseModel response =
+     * appointmentService.createAppointment(requestModel);
+     * 
+     * assertNotNull(response);
+     * assertEquals(appointmentResponseModel.getId(), response.getId());
+     * assertEquals(appointmentResponseModel.getCustomerId(),
+     * response.getCustomerId());
+     * }
+     * 
+     * @Test
+     * void
+     * CreateAppointment_shouldThrowInvalidInputException_whenCustomerIdIsNull() {
+     * AppointmentRequestModel requestModel = AppointmentRequestModel.builder()
+     * .customerId(null)
+     * .appointmentDate(LocalDateTime.parse("2021-08-01T10:00"))
+     * .services("services")
+     * .comments("comments")
+     * .status(Status.pending)
+     * .build();
+     * 
+     * InvalidInputException exception = assertThrows(InvalidInputException.class,
+     * () -> {
+     * appointmentService.createAppointment(requestModel);
+     * });
+     * 
+     * assertEquals("Customer ID is required.", exception.getMessage());
+     * }
+     */
 
     @Test
     void CreateAppointment_shouldThrowInvalidInputException_whenAppointmentDateIsNull() {
@@ -315,9 +326,10 @@ public class AppointmentServiceUnitTest {
     }
 
     @Test
-            void getAppointmentsByCustomerId_ShouldSucceed() {
+    void getAppointmentsByCustomerId_ShouldSucceed() {
         // Setup
-        when(customerRepository.findByCustomerIdentifier_CustomerId("c1d2e3f4")).thenReturn(Optional.of(new Customer()));
+        when(customerRepository.findByCustomerIdentifier_CustomerId("c1d2e3f4"))
+                .thenReturn(Optional.of(new Customer()));
         when(appointmentRepository.findAllByCustomerId("c1d2e3f4")).thenReturn(List.of(appointment));
         when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment)))
                 .thenReturn(List.of(appointmentResponseModel));
@@ -338,8 +350,7 @@ public class AppointmentServiceUnitTest {
 
         NotFoundException ex = assertThrows(
                 NotFoundException.class,
-                () -> appointmentService.getAppointmentsByCustomerId("c1d2e3f4")
-        );
+                () -> appointmentService.getAppointmentsByCustomerId("c1d2e3f4"));
         assertEquals("No customer found for ID: c1d2e3f4", ex.getMessage());
     }
 
@@ -347,8 +358,7 @@ public class AppointmentServiceUnitTest {
     void getAppointmentsByCustomerId_ShouldThrowInvalidInput_WhenCustomerIdIsBlank() {
         InvalidInputException ex = assertThrows(
                 InvalidInputException.class,
-                () -> appointmentService.getAppointmentsByCustomerId("   ")
-        );
+                () -> appointmentService.getAppointmentsByCustomerId("   "));
         assertEquals("Customer ID cannot be null or empty.", ex.getMessage());
     }
 
@@ -357,8 +367,7 @@ public class AppointmentServiceUnitTest {
         // e.g. wrong length or null
         InvalidInputException ex = assertThrows(
                 InvalidInputException.class,
-                () -> appointmentService.updateAppointmentForCustomer(null, AppointmentRequestModel.builder().build())
-        );
+                () -> appointmentService.updateAppointmentForCustomer(null, AppointmentRequestModel.builder().build()));
         assertEquals("Appointment ID must be a valid 36-character string.", ex.getMessage());
     }
 
@@ -416,7 +425,8 @@ public class AppointmentServiceUnitTest {
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
             appointmentService.updateAppointment(invalidAppointmentId, appointmentRequestModel);
         });
-        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId,
+                invalidIdException.getMessage());
     }
 
     @Test
@@ -433,7 +443,8 @@ public class AppointmentServiceUnitTest {
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
             appointmentService.getAppointmentByAppointmentId(invalidAppointmentId);
         });
-        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId,
+                invalidIdException.getMessage());
     }
 
     @Test
@@ -450,7 +461,59 @@ public class AppointmentServiceUnitTest {
         Exception invalidIdException = assertThrows(InvalidInputException.class, () -> {
             appointmentService.deleteAppointmentByAppointmentId(invalidAppointmentId);
         });
-        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId, invalidIdException.getMessage());
+        assertEquals("Appointment ID must be a valid 36-character string: " + invalidAppointmentId,
+                invalidIdException.getMessage());
+    }
+
+    @Test
+    void getAppointmentsByCustomerId_ShouldSucceed2() {
+        // Arrange
+        String customerId = "c1d2e3f4";
+        String jwtToken = "mock-jwt-token"; // Simulated JWT token
+
+        when(customerRepository.findByCustomerIdentifier_CustomerId(customerId))
+                .thenReturn(Optional.of(new Customer()));
+
+        when(appointmentRepository.findAllByCustomerId(customerId))
+                .thenReturn(List.of(appointment));
+
+        when(appointmentResponseMapper.entityToResponseModelList(List.of(appointment)))
+                .thenReturn(List.of(appointmentResponseModel));
+
+        // Act
+        List<AppointmentResponseModel> result = appointmentService.getAppointmentsByCustomerId(customerId);
+
+        // Assert
+        assertEquals(1, result.size());
+        assertEquals(appointmentResponseModel, result.get(0));
+        verify(customerRepository).findByCustomerIdentifier_CustomerId(customerId);
+        verify(appointmentRepository).findAllByCustomerId(customerId);
+    }
+
+    @Test
+    void getAppointmentsByCustomerId_ShouldThrowNotFound_WhenCustomerNotFound2() {
+        // Arrange
+        String customerId = "c1d2e3f4";
+
+        when(customerRepository.findByCustomerIdentifier_CustomerId(customerId))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        NotFoundException ex = assertThrows(
+                NotFoundException.class,
+                () -> appointmentService.getAppointmentsByCustomerId(customerId));
+
+        assertEquals("No customer found for ID: " + customerId, ex.getMessage());
+    }
+
+    @Test
+    void getAppointmentsByCustomerId_ShouldThrowInvalidInput_WhenCustomerIdIsBlank2() {
+        // Act & Assert
+        InvalidInputException ex = assertThrows(
+                InvalidInputException.class,
+                () -> appointmentService.getAppointmentsByCustomerId("   "));
+
+        assertEquals("Customer ID cannot be null or empty.", ex.getMessage());
     }
 
 }
