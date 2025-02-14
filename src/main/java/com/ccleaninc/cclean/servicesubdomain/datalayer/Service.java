@@ -39,7 +39,10 @@ public class Service {
     @Column(name = "duration_minutes")
     private Integer durationMinutes;
 
-    public Service(String title, String description, BigDecimal pricing, Boolean isAvailable, String category, Integer durationMinutes) {
+    @Column(name = "image", columnDefinition = "TEXT")
+    private String image;
+
+    public Service(String title, String description, BigDecimal pricing, Boolean isAvailable, String category, Integer durationMinutes, String image) {
         this.serviceIdentifier = new ServiceIdentifier();
         this.title = title;
         this.description = description;
@@ -47,5 +50,6 @@ public class Service {
         this.isAvailable = isAvailable;
         this.category = category;
         this.durationMinutes = durationMinutes;
+        this.image = image;
     }
 }

@@ -18,7 +18,6 @@ public class ServiceController {
 
     private final ServiceService serviceService;
 
-
     @GetMapping("/services")
     public ResponseEntity<List<ServiceResponseModel>> getAllServices() {
         List<ServiceResponseModel> services = serviceService.getAllServices();
@@ -35,6 +34,8 @@ public class ServiceController {
             return ResponseEntity.ok().body(service);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -45,8 +46,9 @@ public class ServiceController {
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
-
     }
 
     @GetMapping("/services/search")
@@ -57,13 +59,12 @@ public class ServiceController {
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InvalidInputException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @PostMapping("/services")
     public ResponseEntity<ServiceResponseModel> addService(@RequestBody ServiceRequestModel serviceRequestModel) {
-
         ServiceResponseModel service = serviceService.addService(serviceRequestModel);
         if (service != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(service);
@@ -73,7 +74,9 @@ public class ServiceController {
     }
 
     @PutMapping("/services/{serviceId}")
-    public ResponseEntity<ServiceResponseModel> updateService(@PathVariable String serviceId, @RequestBody ServiceRequestModel serviceRequestModel) {
+    public ResponseEntity<ServiceResponseModel> updateService(
+            @PathVariable String serviceId,
+            @RequestBody ServiceRequestModel serviceRequestModel) {
         try {
             ServiceResponseModel service = serviceService.updateService(serviceId, serviceRequestModel);
             return ResponseEntity.ok().body(service);
@@ -84,5 +87,3 @@ public class ServiceController {
         }
     }
 }
-
-

@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS services (
     pricing DECIMAL(10, 2) NOT NULL,
     is_available BOOLEAN DEFAULT TRUE,
     category VARCHAR(50),
-    duration_minutes INT
+    duration_minutes INT,
+    image MEDIUMTEXT
     );
 
 -- Schedule Table

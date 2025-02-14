@@ -18,6 +18,6 @@ public class ServiceResponseModel {
     private Boolean isAvailable;
     private String category;
     private Integer durationMinutes;
-
+    private String image;
 
 }

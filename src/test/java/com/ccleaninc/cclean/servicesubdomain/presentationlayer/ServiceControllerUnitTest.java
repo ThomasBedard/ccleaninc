@@ -70,9 +70,31 @@ public class ServiceControllerUnitTest {
     void getAllServices_servicesFound_shouldReturnOkWithServices() {
         // Arrange
         List<ServiceResponseModel> mockServices = List.of(
-                new ServiceResponseModel(1,"7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 1", "Description 1", BigDecimal.valueOf(100.00), true, "Category 1", 60),
-                new ServiceResponseModel(2, "7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 2", "Description 2", BigDecimal.valueOf(200.00), false, "Category 2", 30)
+                // Pass 9 parameters (including image) and use Boolean.TRUE/Boolean.FALSE
+                new ServiceResponseModel(
+                        1,
+                        "7cb4e475-b787-11ef-94fe-0242ac1a0003",
+                        "Service 1",
+                        "Description 1",
+                        BigDecimal.valueOf(100.00),
+                        Boolean.TRUE,          // Instead of true
+                        "Category 1",
+                        60,
+                        null                   // image = null (or some base64 string)
+                ),
+                new ServiceResponseModel(
+                        2,
+                        "7cb4e475-b787-11ef-94fe-0242ac1a0003",
+                        "Service 2",
+                        "Description 2",
+                        BigDecimal.valueOf(200.00),
+                        Boolean.FALSE,         // Instead of false
+                        "Category 2",
+                        30,
+                        null
+                )
         );
+
         when(serviceService.getAllServices()).thenReturn(mockServices);
 
         // Act
@@ -144,9 +166,31 @@ public class ServiceControllerUnitTest {
         // Arrange
         String title = "Test Service";
         List<ServiceResponseModel> mockServices = List.of(
-                new ServiceResponseModel(1,"7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 1", "Description 1", BigDecimal.valueOf(100.00), true, "Category 1", 60),
-                new ServiceResponseModel(2, "7cb4e475-b787-11ef-94fe-0242ac1a0003" ,"Service 2", "Description 2", BigDecimal.valueOf(200.00), false, "Category 2", 30)
+                // Pass 9 parameters (including image) and use Boolean.TRUE/Boolean.FALSE
+                new ServiceResponseModel(
+                        1,
+                        "7cb4e475-b787-11ef-94fe-0242ac1a0003",
+                        "Service 1",
+                        "Description 1",
+                        BigDecimal.valueOf(100.00),
+                        Boolean.TRUE,          // Instead of true
+                        "Category 1",
+                        60,
+                        null                   // image = null (or some base64 string)
+                ),
+                new ServiceResponseModel(
+                        2,
+                        "7cb4e475-b787-11ef-94fe-0242ac1a0003",
+                        "Service 2",
+                        "Description 2",
+                        BigDecimal.valueOf(200.00),
+                        Boolean.FALSE,         // Instead of false
+                        "Category 2",
+                        30,
+                        null
+                )
         );
+
         when(serviceService.searchServiceByServiceTitle(title)).thenReturn(mockServices);
 
         // Act
