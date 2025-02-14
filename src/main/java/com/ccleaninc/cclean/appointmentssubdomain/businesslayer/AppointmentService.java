@@ -32,4 +32,6 @@ public interface AppointmentService {
     AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException;
 
     Page<AppointmentResponseModel> getAllAppointmentsPagination (Pageable pageable);
+
+    List<AppointmentResponseModel> getAppointmentsByCustomerEmail(String email);
 }

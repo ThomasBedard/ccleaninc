@@ -5,7 +5,7 @@ INSERT INTO customers (
 -- Residential Customers
 ('c1d2e3f4-a5b6-11ec-82a8-0242ac130003', 'Vinicius', 'Velozo', NULL, 'viniciusvelozodesousa@gmail.com', '514-555-0101'),
 ('d3e4f5g6-b7c8-11ec-82a8-0242ac130003', 'Thomas', 'Bedard', NULL, 'champlaintbed@gmail.com', '514-555-0202'),
-('e4f5g6h7-c8d9-11ec-82a8-0242ac130003', 'Paul', 'Lavoie', NULL, 'paul.lavoie@mail.com', '514-555-0303'),
+('e4f5g6h7-c8d9-11ec-82a8-0242ac130003', 'Paul', 'Lavoie', NULL, 'customer@gmail.com', '514-555-0303'),
 ('f5g6h7i8-d9e0-11ec-82a8-0242ac130003', 'Sophie', 'Girard', NULL, 'sophie.girard@mail.com', '514-555-0404'),
 ('g6h7i8j9-e0f1-11ec-82a8-0242ac130003', 'Lucas', 'Fortin', NULL, 'lucas.fortin@mail.com', '514-555-0505'),
 ('h7i8j9k0-f1g2-11ec-82a8-0242ac130003', 'John', 'Doe', NULL, 'john.doe@mail.com', '514-555-0606'),

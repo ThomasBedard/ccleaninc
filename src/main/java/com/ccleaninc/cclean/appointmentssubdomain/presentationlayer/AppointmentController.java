@@ -5,6 +5,7 @@ import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -37,7 +43,8 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments/with-customerid")
-    public ResponseEntity<AppointmentResponseModel> createAppointment(@RequestBody AppointmentRequestModel requestModel) {
+    public ResponseEntity<AppointmentResponseModel> createAppointment(
+            @RequestBody AppointmentRequestModel requestModel) {
         // This method requires requestModel.getCustomerId() to exist
         try {
             AppointmentResponseModel createdAppointment = appointmentService.createAppointment(requestModel);
@@ -59,9 +66,9 @@ public class AppointmentController {
         }
     }
 
-
     @PostMapping("/appointments")
-    public ResponseEntity<AppointmentResponseModel> addAppointment(@RequestBody AppointmentRequestModel appointmentRequestModel) {
+    public ResponseEntity<AppointmentResponseModel> addAppointment(
+            @RequestBody AppointmentRequestModel appointmentRequestModel) {
 
         AppointmentResponseModel appointment = appointmentService.addAppointment(appointmentRequestModel);
         if (appointment != null) {
@@ -74,10 +81,10 @@ public class AppointmentController {
     @PutMapping("/appointments/{appointmentId}")
     public ResponseEntity<AppointmentResponseModel> updateAppointment(
             @PathVariable String appointmentId,
-            @RequestBody AppointmentRequestModel appointmentRequestModel
-    ) {
+            @RequestBody AppointmentRequestModel appointmentRequestModel) {
         try {
-            AppointmentResponseModel appointment = appointmentService.updateAppointment(appointmentId, appointmentRequestModel);
+            AppointmentResponseModel appointment = appointmentService.updateAppointment(appointmentId,
+                    appointmentRequestModel);
             return ResponseEntity.ok().body(appointment);
         } catch (InvalidInputException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -97,6 +104,7 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
     @GetMapping("/appointments/by-customer/{customerId}")
     public ResponseEntity<List<AppointmentResponseModel>> getAppointmentsByCustomerId(@PathVariable String customerId) {
         try {
@@ -112,6 +120,7 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
     @PutMapping("/appointments/customer/{appointmentId}")
     public ResponseEntity<AppointmentResponseModel> updateAppointmentCustomer(
             @PathVariable String appointmentId,
@@ -119,8 +128,7 @@ public class AppointmentController {
 
         // This calls a new method that does NOT overwrite the customerId
         AppointmentResponseModel appointment = appointmentService.updateAppointmentForCustomer(
-                appointmentId, appointmentRequestModel
-        );
+                appointmentId, appointmentRequestModel);
 
         if (appointment != null) {
             return ResponseEntity.ok().body(appointment);
@@ -128,9 +136,6 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-
-
-
 
     @GetMapping("/appointments/pdf")
     public ResponseEntity<byte[]> generateAppointmentsPdf() {
@@ -146,10 +151,12 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments/customers/{customerId}")
-    public ResponseEntity<AppointmentResponseModel> addAppointmentToCustomerAccount (@PathVariable String customerId,@RequestBody AppointmentRequestModel appointmentRequestModel) throws MessagingException {
+    public ResponseEntity<AppointmentResponseModel> addAppointmentToCustomerAccount(@PathVariable String customerId,
+            @RequestBody AppointmentRequestModel appointmentRequestModel) throws MessagingException {
 
-        AppointmentResponseModel appointment = appointmentService.addAppointmentToCustomerAccount(customerId, appointmentRequestModel);
-        if(appointment == null) {
+        AppointmentResponseModel appointment = appointmentService.addAppointmentToCustomerAccount(customerId,
+                appointmentRequestModel);
+        if (appointment == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(appointment);
@@ -166,5 +173,16 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
+    @GetMapping("/appointments/my-appointments")
+    @PreAuthorize("hasAuthority('customer')")
+    public ResponseEntity<List<AppointmentResponseModel>> getMyAppointments(@AuthenticationPrincipal Jwt jwt) {
+        String email = jwt.getClaim("https://ccleaninc.com/email"); // Extract email from JWT token
+
+        List<AppointmentResponseModel> appointments = appointmentService.getAppointmentsByCustomerEmail(email);
+        if (appointments.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(appointments);
+    }
 
 }
