@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAxiosWithAuth } from "../api/axios";
-import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translations
+import { useAuth0 } from "@auth0/auth0-react";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface Service {
   serviceId: string;
@@ -14,15 +15,16 @@ interface Service {
 const CheckoutPage: React.FC = () => {
   const axiosInstance = useAxiosWithAuth();
   const navigate = useNavigate();
-  const { translations } = useLanguage(); // ✅ Get translations from context
+  const { translations } = useLanguage();
   const location = useLocation();
+  const { getAccessTokenSilently, user } = useAuth0(); // ✅ Moved user inside component
+
   const { selectedServiceIds, appointmentDate } = location.state as {
     selectedServiceIds: string[];
     appointmentDate: string;
   };
 
   const [services, setServices] = useState<Service[]>([]);
-  const [customerId, setCustomerId] = useState("");
   const [customerFirstName, setCustomerFirstName] = useState("");
   const [customerLastName, setCustomerLastName] = useState("");
   const [comments, setComments] = useState("");
@@ -31,6 +33,30 @@ const CheckoutPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const fetchCustomerDetails = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        
+        if (!user || !user.email) {
+          throw new Error("No email found in Auth0 user object.");
+        }
+    
+        const userEmail = user.email;  // ✅ Extract email safely
+    
+        const res = await axiosInstance.get(`/customers/byEmail?email=${encodeURIComponent(userEmail)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        if (res.status === 200) {
+          setCustomerFirstName(res.data.firstName);
+          setCustomerLastName(res.data.lastName);
+        }
+      } catch (error) {
+        console.error("Error fetching customer details:", error);
+        setErrorMessage("Error fetching customer details.");
+      }
+    };
+
     const fetchServices = async () => {
       try {
         const fetched: Service[] = [];
@@ -49,31 +75,17 @@ const CheckoutPage: React.FC = () => {
     if (selectedServiceIds?.length) {
       fetchServices();
     }
-  }, [selectedServiceIds, axiosInstance, translations]);
-
-  const checkCustomerExists = async (id: string): Promise<boolean> => {
-    try {
-      const res = await axiosInstance.get(`/customers/${id}`);
-      return res.status === 200;
-    } catch {
-      setErrorMessage(translations.checkout?.error?.invalid_customer || "Invalid Customer ID.");
-      return false;
-    }
-  };
+    
+    fetchCustomerDetails();
+  }, [selectedServiceIds, getAccessTokenSilently, axiosInstance, translations]);
 
   const handleSubmit = async () => {
     setSuccessMessage("");
     setErrorMessage("");
     setLoading(true);
 
-    if (!customerId.trim() || !customerFirstName.trim() || !customerLastName.trim()) {
+    if (!customerFirstName.trim() || !customerLastName.trim()) {
       setErrorMessage(translations.checkout?.error?.invalid_fields || "Please enter valid details.");
-      setLoading(false);
-      return;
-    }
-
-    const customerExists = await checkCustomerExists(customerId.trim());
-    if (!customerExists) {
       setLoading(false);
       return;
     }
@@ -89,7 +101,6 @@ const CheckoutPage: React.FC = () => {
       const formattedDate = appointmentDate.includes("T") ? appointmentDate : `${appointmentDate}T12:00`;
 
       const payload = {
-        customerId: customerId.trim(),
         customerFirstName: customerFirstName.trim(),
         customerLastName: customerLastName.trim(),
         appointmentDate: formattedDate,
@@ -98,11 +109,9 @@ const CheckoutPage: React.FC = () => {
         status: "pending",
       };
 
-      const response = await axiosInstance.post(
-        `/appointments/customers/${customerId.trim()}`,
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await axiosInstance.post("/appointments", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.status === 200 || response.status === 201) {
         setSuccessMessage(translations.checkout?.success?.appointment_created || "Appointment created successfully!");
@@ -142,18 +151,13 @@ const CheckoutPage: React.FC = () => {
       </div>
 
       <div style={{ marginBottom: "20px" }}>
-        <label>{translations.checkout?.customer_id || "Customer ID"}:</label>
-        <input type="text" value={customerId} onChange={(e) => setCustomerId(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.customer_id || "Customer ID"} />
-      </div>
-
-      <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.first_name || "First Name"}:</label>
-        <input type="text" value={customerFirstName} onChange={(e) => setCustomerFirstName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.first_name || "First Name"} />
+        <input type="text" value={customerFirstName} readOnly style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc", backgroundColor: "#f2f2f2" }} />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.last_name || "Last Name"}:</label>
-        <input type="text" value={customerLastName} onChange={(e) => setCustomerLastName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.last_name || "Last Name"} />
+        <input type="text" value={customerLastName} readOnly style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc", backgroundColor: "#f2f2f2" }} />
       </div>
 
       <div style={{ marginBottom: "20px" }}>

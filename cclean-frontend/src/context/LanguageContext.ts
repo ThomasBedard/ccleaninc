@@ -126,6 +126,7 @@ export interface Translations {
       invalid_customer?: string;
       no_date?: string;
       fetch_services?: string;
+      fetch_customer?: string;
       appointment_creation?: string;
     };
     success?: {
