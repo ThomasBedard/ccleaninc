@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { motion } from "framer-motion"; // For global animations
+import { motion } from "framer-motion";
 import { useAuth0 } from "@auth0/auth0-react";
-import { LanguageProvider } from "./context/LanguageProvider"; // Import LanguageProvider
-import Navbar from "./components/Navbar"; // Import Navbar
+import { LanguageProvider } from "./context/LanguageProvider";
+import Navbar from "./components/Navbar";
 
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";
@@ -38,6 +37,8 @@ import EmployeeSchedule from "./components/dashboards/EmployeeSchedule";
 import "./pages/GlobalOverride.css";
 import "./index.css";
 
+import PrivateRoute from "./pages/PrivateRoute";
+
 const App = () => {
   const { isLoading } = useAuth0();
   if (isLoading) {
@@ -45,10 +46,9 @@ const App = () => {
   }
 
   return (
-    <LanguageProvider> {/* ✅ Wrap the entire app with LanguageProvider */}
+    <LanguageProvider>
       <Router>
-        <Navbar>  {/* ✅ Pass Routes as children to Navbar */}
-          {/* Framer Motion fade animation wrapper */}
+        <Navbar>
           <motion.div
             className="global-page-wrapper"
             initial={{ opacity: 0 }}
@@ -56,33 +56,93 @@ const App = () => {
             transition={{ duration: 0.4 }}
           >
             <Routes>
-              {/* Common routes */}
+              {/* Public routes (Accessible to all users) */}
               <Route path="/" element={<Home />} />
               <Route path="/services" element={<Services />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/appointments/add" element={<AppointmentsAddForm />} />
-              <Route path="/appointments/edit/:appointmentId" element={<AppointmentsEditForm />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/contacts" element={<Contacts />} />
-              <Route path="/employees" element={<EmployeesList />} />
-              <Route path="/add-employee" element={<CreateEmployee />} />
-              <Route path="/edit-employee/:employeeId" element={<EditEmployee />} />
-              <Route path="/admin-dashboard" element={<AdminDashboard />} />
-              <Route path="/schedule" element={<Schedule />} />
 
-              {/* Services CRUD */}
-              <Route path="/add-service" element={<FormAddService />} />
-              <Route path="/edit-service/:serviceId" element={<FormEditService />} />
+              {/* 🔐 Protected Routes */}
+              {/* Admin & Employee Routes */}
+              <Route
+                element={
+                  <PrivateRoute requiredPermissions={["admin", "employee"]} />
+                }
+              >
+                <Route path="/appointments" element={<Appointments />} />
+                <Route
+                  path="/appointments/add"
+                  element={<AppointmentsAddForm />}
+                />
+                <Route
+                  path="/appointments/edit/:appointmentId"
+                  element={<AppointmentsEditForm />}
+                />
+                <Route path="/schedule" element={<Schedule />} />
+                <Route
+                  path="/my-availabilities"
+                  element={<MyAvailabilities />}
+                />
+                <Route
+                  path="/my-availabilities/edit/:availabilityId"
+                  element={<EmployeeAvailabilitiesEditForm />}
+                />
+                <Route path="/add-availability" element={<AddAvailability />} />
+                <Route
+                  path="/assign-schedule/:availabilityId"
+                  element={<AssignScheduleModal />}
+                />
+                <Route
+                  path="/employee-schedule"
+                  element={<EmployeeSchedule />}
+                />
+              </Route>
 
-              {/* Customer CRUD */}
-              <Route path="/add-customer" element={<CreateCustomer />} />
-              <Route path="/edit-customer/:customerId" element={<EditCustomer />} />
+              {/* 🔐 Admin-Only Routes */}
+              <Route element={<PrivateRoute requiredPermissions={["admin"]} />}>
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/employees" element={<EmployeesList />} />
+                <Route path="/add-employee" element={<CreateEmployee />} />
+                <Route
+                  path="/edit-employee/:employeeId"
+                  element={<EditEmployee />}
+                />
+                <Route path="/add-service" element={<FormAddService />} />
+                <Route
+                  path="/edit-service/:serviceId"
+                  element={<FormEditService />}
+                />
+                <Route path="/add-customer" element={<CreateCustomer />} />
+                <Route
+                  path="/edit-customer/:customerId"
+                  element={<EditCustomer />}
+                />
+              </Route>
 
-              {/* Feedback/Calendar/Checkout */}
-              <Route path="/submit-feedback" element={<SubmitFeedback />} />
+              {/* 🔐 Routes for All Authenticated Users (Admin, Employee, Customer) */}
+              <Route
+                element={
+                  <PrivateRoute
+                    requiredPermissions={["admin", "employee", "customer"]}
+                  />
+                }
+              >
+                <Route path="/my-appointments" element={<MyAppointments />} />
+                <Route
+                  path="/my-appointments/edit/:appointmentId"
+                  element={<CustomerAppointmentsEditForm />}
+                />
+                <Route path="/submit-feedback" element={<SubmitFeedback />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route
+                  path="/calendar-select"
+                  element={<SelectDateTimePage />}
+                />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+
               <Route path="/calendar-test" element={<CalendarTestPage />} />
 
-              {/* Keep the motion fade specifically for calendar-select */}
               <Route
                 path="/calendar-select"
                 element={
@@ -96,25 +156,10 @@ const App = () => {
                   </motion.div>
                 }
               />
-              <Route path="/checkout" element={<CheckoutPage />} />
-              <Route path="/my-appointments" element={<MyAppointments />} />
-              <Route path="/my-appointments/edit/:appointmentId" element={<CustomerAppointmentsEditForm />} />
-
-              {/* Availabilities routes */}
-              <Route path="/my-availabilities" element={<MyAvailabilities />} />
-              <Route path="/my-availabilities/edit/:availabilityId" element={<EmployeeAvailabilitiesEditForm />} />
-              <Route path="/add-availability" element={<AddAvailability />} />
-
-              {/* Assigning Employee Schedule routes */}
-              <Route path="/assign-schedule/:availabilityId" element={<AssignScheduleModal />} />
-              <Route path="/employee-schedule" element={<EmployeeSchedule />} />
-
-              {/* Profile */}
-              <Route path="/profile" element={<Profile />} />
             </Routes>
           </motion.div>
-        </Navbar> {/* ✅ Closing Navbar tag */}
-        
+        </Navbar>
+
         {/* Toast notifications */}
         <ToastContainer
           position="top-right"

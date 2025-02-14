@@ -22,7 +22,6 @@ public class EmployeeController {
 
     // Get all employees
     @GetMapping
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<EmployeeResponseModel>> getAllEmployees() {
         List<EmployeeResponseModel> employees = employeeService.getAllEmployees();
         if (employees == null || employees.isEmpty()) {
@@ -33,7 +32,6 @@ public class EmployeeController {
 
     // Get an employee by employee ID
     @GetMapping("/{employeeId}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<EmployeeResponseModel> getEmployeeByEmployeeId(@PathVariable String employeeId) {
         try {
             EmployeeResponseModel employee = employeeService.getEmployeeByEmployeeId(employeeId);
@@ -45,7 +43,6 @@ public class EmployeeController {
 
     // Add a new employee
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<EmployeeResponseModel> addEmployee(@RequestBody EmployeeRequestModel employeeRequestModel) {
         try {
             EmployeeResponseModel newEmployee = employeeService.addEmployee(employeeRequestModel);
@@ -57,7 +54,6 @@ public class EmployeeController {
 
     // Update an existing employee
     @PutMapping("/{employeeId}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<EmployeeResponseModel> updateEmployee(
             @PathVariable String employeeId,
             @RequestBody EmployeeRequestModel employeeRequestModel) {
@@ -72,7 +68,6 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{employeeId}")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Void> deleteEmployee(@PathVariable String employeeId) {
         try {
             employeeService.deleteEmployeeByEmployeeId(employeeId);
@@ -85,7 +80,6 @@ public class EmployeeController {
 
     // Search employees by term
     @GetMapping("/search")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<EmployeeResponseModel>> searchEmployees(@RequestParam String searchTerm) {
         List<EmployeeResponseModel> employees = employeeService.searchEmployees(searchTerm);
         if (employees == null || employees.isEmpty()) {

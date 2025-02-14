@@ -1,10 +1,12 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axios';
-import { useLanguage } from '../hooks/useLanguage';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import './Appointments.css';
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axios";
+import { useLanguage } from "../hooks/useLanguage";
+import { useAuth0 } from "@auth0/auth0-react"; // ✅ Import Auth0
+import { jwtDecode } from "jwt-decode"; // ✅ Import jwtDecode
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./Appointments.css";
 
 interface Appointment {
   appointmentId?: string;
@@ -18,23 +20,48 @@ interface Appointment {
   comments?: string;
 }
 
+interface DecodedToken {
+  permissions: string[];
+}
+
 const Appointments = () => {
   const { translations } = useLanguage();
+  const { isAuthenticated, getAccessTokenSilently } = useAuth0(); // ✅ Get authentication status
+  const [permissions, setPermissions] = useState<string[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  
+
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const pageSize = 6; // ✅ Each page contains 6 appointments
+
+  // ✅ Fetch user permissions
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      try {
+        if (!isAuthenticated) return;
+        const token = await getAccessTokenSilently();
+        const decodedToken: DecodedToken = jwtDecode<DecodedToken>(token);
+        setPermissions(decodedToken.permissions || []);
+      } catch (error) {
+        console.error("Error fetching permissions:", error);
+      }
+    };
+
+    fetchPermissions();
+  }, [isAuthenticated, getAccessTokenSilently]);
+
+  // ✅ Check if user is an admin
+  const isAdmin = permissions.includes("admin");
 
   // ✅ Fetch paginated appointments
   const fetchAllAppointments = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-  
+
       const response = await axiosInstance.get(`/appointments/paged`, {
         params: { page: currentPage, size: pageSize },
       });
@@ -60,63 +87,83 @@ const Appointments = () => {
     fetchAllAppointments();
   }, [fetchAllAppointments]);
 
-  // ✅ Delete an appointment and update pagination
+  // ✅ Delete an appointment (Admins Only)
   const deleteAppointment = async (appointmentId: string | undefined) => {
-    if (!appointmentId) {
-      toast.error('Invalid appointment ID');
+    if (!isAdmin) {
+      toast.error("You do not have permission to delete appointments.");
       return;
     }
 
-    const confirmDelete = window.confirm(`Are you sure you want to delete the appointment with ID: ${appointmentId}?`);
+    if (!appointmentId) {
+      toast.error("Invalid appointment ID");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the appointment with ID: ${appointmentId}?`
+    );
     if (!confirmDelete) return;
 
     try {
       await axiosInstance.delete(`/appointments/${appointmentId}`);
-      toast.success('Appointment deleted successfully.');
+      toast.success("Appointment deleted successfully.");
 
       // ✅ Fetch updated appointments after deletion
       fetchAllAppointments();
     } catch (err) {
       console.error("Error deleting appointment:", err);
-      toast.error('An unexpected error occurred while deleting the appointment.');
+      toast.error(
+        "An unexpected error occurred while deleting the appointment."
+      );
     }
   };
 
   // ✅ Download PDF function
   const downloadPdf = async () => {
     try {
-      const response = await axiosInstance.get('/appointments/pdf', {
-        responseType: 'blob',
+      const response = await axiosInstance.get("/appointments/pdf", {
+        responseType: "blob",
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const link = document.createElement('a');
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', 'appointments.pdf');
+      link.setAttribute("download", "appointments.pdf");
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (err) {
       console.error("Error downloading PDF:", err);
-      toast.error('An error occurred while downloading the PDF.');
+      toast.error("An error occurred while downloading the PDF.");
     }
   };
 
-  if (loading) return <div className="loading-message">Loading appointments...</div>;
+  if (loading)
+    return <div className="loading-message">Loading appointments...</div>;
   if (error) return <div className="error-message">{error}</div>;
 
   return (
     <div className="appointments-page">
-      <h1 className="appointments-title">{translations.appointments?.title || 'Appointments Page'}</h1>
-      
+      <h1 className="appointments-title">
+        {translations.appointments?.title || "Appointments Page"}
+      </h1>
+
       <div className="appointments-actions">
-        <button className="add-appointment-button" onClick={() => navigate('/appointments/add')}>
-          {translations.appointments?.actions?.add || 'Add Appointment'}
-        </button>
-        
+        {/* ✅ Only admins can add appointments */}
+        {isAdmin && (
+          <button
+            className="add-appointment-button"
+            onClick={() => navigate("/appointments/add")}
+          >
+            {translations.appointments?.actions?.add || "Add Appointment"}
+          </button>
+        )}
+
         {/* ✅ Re-added the Download PDF button */}
         <button className="download-pdf-button" onClick={downloadPdf}>
-          {translations.appointments?.actions?.download_pdf || 'Download PDF'}
+          {translations.appointments?.actions?.download_pdf || "Download PDF"}
         </button>
       </div>
 
@@ -138,27 +185,46 @@ const Appointments = () => {
           {appointments.length > 0 ? (
             appointments.map((appointment, index) => (
               <tr key={appointment.appointmentId || index}>
-                <td>{appointment.appointmentId || 'N/A'}</td>
-                <td>{appointment.customerId || 'N/A'}</td>
-                <td>{appointment.customerFirstName || 'N/A'}</td>
-                <td>{appointment.customerLastName || 'N/A'}</td>
-                <td>{appointment.appointmentDate || 'N/A'}</td>
-                <td>{appointment.services || 'N/A'}</td> 
-                <td>{appointment.status || 'N/A'}</td>
-                <td>{appointment.comments || 'N/A'}</td>
+                <td>{appointment.appointmentId || "N/A"}</td>
+                <td>{appointment.customerId || "N/A"}</td>
+                <td>{appointment.customerFirstName || "N/A"}</td>
+                <td>{appointment.customerLastName || "N/A"}</td>
+                <td>{appointment.appointmentDate || "N/A"}</td>
+                <td>{appointment.services || "N/A"}</td>
+                <td>{appointment.status || "N/A"}</td>
+                <td>{appointment.comments || "N/A"}</td>
                 <td className="actions">
-                  <button className="edit-button" onClick={() => navigate(`/appointments/edit/${appointment.appointmentId}`)}>
-                    Edit
-                  </button>
-                  <button className="delete-button" onClick={() => deleteAppointment(appointment.appointmentId)}>
-                    Delete
-                  </button>
+                  {/* ✅ Only admins can edit or delete */}
+                  {isAdmin && (
+                    <>
+                      <button
+                        className="edit-button"
+                        onClick={() =>
+                          navigate(
+                            `/appointments/edit/${appointment.appointmentId}`
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() =>
+                          deleteAppointment(appointment.appointmentId)
+                        }
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={9} className="no-data">No appointments available</td>
+              <td colSpan={9} className="no-data">
+                No appointments available
+              </td>
             </tr>
           )}
         </tbody>
@@ -166,16 +232,21 @@ const Appointments = () => {
 
       {/* ✅ Pagination Controls */}
       <div className="pagination">
-        <button 
-          disabled={currentPage === 0} 
+        <button
+          disabled={currentPage === 0}
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
         >
           ← Previous
         </button>
-        <span> Page {currentPage + 1} of {totalPages} </span>
-        <button 
-          disabled={currentPage >= totalPages - 1} 
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))}
+        <span>
+          {" "}
+          Page {currentPage + 1} of {totalPages}{" "}
+        </span>
+        <button
+          disabled={currentPage >= totalPages - 1}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1))
+          }
         >
           Next →
         </button>
