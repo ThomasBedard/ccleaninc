@@ -1,41 +1,61 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axios';
-import './FormAddService.css';
-import { toast } from 'react-toastify';
+import { useState, useEffect, ChangeEvent } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axiosInstance from "../api/axios";
+import "./FormAddService.css";
+import { toast } from "react-toastify";
 
 const FormEditService = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // Track loading state
+
+  const [loading, setLoading] = useState(true);
   const [serviceData, setServiceData] = useState({
-    title: '',
-    description: '',
-    pricing: '',
-    category: '',
-    durationMinutes: '',
+    title: "",
+    description: "",
+    pricing: "",
+    category: "",
+    durationMinutes: "",
+    // NEW: Image base64 string from the DB or from a local file input
+    image: "",
   });
 
-  // Fetch service details when component mounts
+  // Preview for newly selected file
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Fetch service details on mount
   useEffect(() => {
     const fetchServiceDetails = async () => {
       if (!serviceId) return;
 
       try {
+        setLoading(true);
         const response = await axiosInstance.get(`/services/${serviceId}`);
-        const { title, description, pricing, category, durationMinutes } = response.data;
+        const {
+          title,
+          description,
+          pricing,
+          category,
+          durationMinutes,
+          image,
+        } = response.data;
 
         setServiceData({
           title,
           description,
-          pricing: pricing.toString(), // Ensure it's a string for input
+          pricing: pricing?.toString() || "",
           category,
-          durationMinutes: durationMinutes.toString(),
+          durationMinutes: durationMinutes?.toString() || "",
+          image: image || "",
         });
-        setLoading(false);
+
+        // If service already has an image in the database, show it in a preview
+        if (image) {
+          setImagePreview(image); // image is base64 from server
+        }
       } catch (error) {
-        toast.error('Failed to fetch service details.');
+        toast.error("Failed to fetch service details.");
         console.error("Error fetching service:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -43,20 +63,43 @@ const FormEditService = () => {
     fetchServiceDetails();
   }, [serviceId]);
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Handle text/number input changes
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
-    // Prevent negative pricing
+    // Quick check for negative pricing
     if (name === "pricing") {
       const numericValue = parseFloat(value);
-      if (numericValue < 0 || isNaN(numericValue)) {
+      if (numericValue < 0) {
         toast.error("Price cannot be negative.");
         return;
       }
     }
 
     setServiceData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle file input (image)
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional: double-check MIME type
+    if (!(file.type === "image/jpeg" || file.type === "image/png")) {
+      toast.error("Only JPEG or PNG files are allowed.");
+      return;
+    }
+
+    // Convert to Base64 and store
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setServiceData((prev) => ({ ...prev, image: base64String }));
+      setImagePreview(base64String);
+    };
+    reader.readAsDataURL(file);
   };
 
   // Handle form submission
@@ -68,11 +111,11 @@ const FormEditService = () => {
       !serviceData.category.trim() ||
       !serviceData.durationMinutes.trim()
     ) {
-      toast.error('All fields must be filled to submit the form.');
+      toast.error("All fields must be filled to submit the form.");
       return;
     }
 
-    // Final validation to prevent negative values
+    // Final check for negative pricing
     const pricingValue = parseFloat(serviceData.pricing);
     if (pricingValue < 0) {
       toast.error("Price cannot be negative.");
@@ -86,12 +129,15 @@ const FormEditService = () => {
         pricing: pricingValue,
         category: serviceData.category,
         durationMinutes: parseInt(serviceData.durationMinutes, 10),
+        image: serviceData.image, // Include the base64 image in the update
       });
 
-      toast.success('Service updated successfully!');
-      navigate('/services');
-    } catch {
-      toast.error('Failed to update service. Please try again.');
+      toast.success("Service updated successfully!");
+      // Navigate back to the services list or wherever appropriate
+      navigate("/services");
+    } catch (error) {
+      toast.error("Failed to update service. Please try again.");
+      console.error("Error updating service:", error);
     }
   };
 
@@ -103,6 +149,7 @@ const FormEditService = () => {
         <p>Loading service details...</p>
       ) : (
         <>
+          {/* Title */}
           <div>
             <label>Title:</label>
             <input
@@ -112,6 +159,8 @@ const FormEditService = () => {
               onChange={handleInputChange}
             />
           </div>
+
+          {/* Description */}
           <div>
             <label>Description:</label>
             <textarea
@@ -120,6 +169,8 @@ const FormEditService = () => {
               onChange={handleInputChange}
             />
           </div>
+
+          {/* Pricing */}
           <div>
             <label>Pricing:</label>
             <input
@@ -127,9 +178,11 @@ const FormEditService = () => {
               name="pricing"
               value={serviceData.pricing}
               onChange={handleInputChange}
-              min="0" // Prevent negative values at the UI level
+              min="0"
             />
           </div>
+
+          {/* Category */}
           <div>
             <label>Category:</label>
             <input
@@ -139,6 +192,8 @@ const FormEditService = () => {
               onChange={handleInputChange}
             />
           </div>
+
+          {/* Duration */}
           <div>
             <label>Duration (Minutes):</label>
             <input
@@ -146,9 +201,31 @@ const FormEditService = () => {
               name="durationMinutes"
               value={serviceData.durationMinutes}
               onChange={handleInputChange}
+              min="1"
             />
           </div>
-          <button onClick={handleSubmit}>Submit</button>
+
+          {/* NEW: Image Upload */}
+          <div style={{ marginTop: "20px" }}>
+            <label>Service Image:</label>
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+
+            {/* Preview existing or newly chosen image */}
+            {imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <img
+                  src={imagePreview}
+                  alt="Service Preview"
+                  style={{ maxWidth: "300px", maxHeight: "300px" }}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Submit button */}
+          <button style={{ marginTop: "20px" }} onClick={handleSubmit}>
+            Submit
+          </button>
         </>
       )}
     </div>
