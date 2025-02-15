@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAxiosWithAuth } from "../api/axios";
-import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translations
+import { useAuth0 } from "@auth0/auth0-react";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface Service {
   serviceId: string;
@@ -14,8 +15,11 @@ interface Service {
 const CheckoutPage: React.FC = () => {
   const axiosInstance = useAxiosWithAuth();
   const navigate = useNavigate();
-  const { translations } = useLanguage(); // ✅ Get translations from context
+  const { translations } = useLanguage();
   const location = useLocation();
+  const { getAccessTokenSilently, user } = useAuth0();
+  
+  // We pull these from the page that navigated us here (Booking page, etc.)
   const { selectedServiceIds, appointmentDate } = location.state as {
     selectedServiceIds: string[];
     appointmentDate: string;
@@ -31,6 +35,33 @@ const CheckoutPage: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const fetchCustomerDetails = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        
+        if (!user || !user.email) {
+          throw new Error("No email found in Auth0 user object.");
+        }
+
+        // 1) Get the user's customer info from your backend:
+        const userEmail = user.email;
+        const res = await axiosInstance.get(
+          `/customers/byEmail?email=${encodeURIComponent(userEmail)}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.status === 200) {
+          // 2) Store the ID so we can use it in our POST
+          setCustomerId(res.data.customerId);
+          setCustomerFirstName(res.data.firstName || "");
+          setCustomerLastName(res.data.lastName || "");
+        }
+      } catch (error) {
+        console.error("Error fetching customer details:", error);
+        setErrorMessage("Error fetching customer details.");
+      }
+    };
+
     const fetchServices = async () => {
       try {
         const fetched: Service[] = [];
@@ -42,38 +73,25 @@ const CheckoutPage: React.FC = () => {
         }
         setServices(fetched);
       } catch {
-        setErrorMessage(translations.checkout?.error?.fetch_services || "Error fetching services.");
+        setErrorMessage(
+          translations.checkout?.error?.fetch_services || "Error fetching services."
+        );
       }
     };
 
+    fetchCustomerDetails();
     if (selectedServiceIds?.length) {
       fetchServices();
     }
-  }, [selectedServiceIds, axiosInstance, translations]);
-
-  const checkCustomerExists = async (id: string): Promise<boolean> => {
-    try {
-      const res = await axiosInstance.get(`/customers/${id}`);
-      return res.status === 200;
-    } catch {
-      setErrorMessage(translations.checkout?.error?.invalid_customer || "Invalid Customer ID.");
-      return false;
-    }
-  };
+  }, [getAccessTokenSilently, axiosInstance, translations, selectedServiceIds, user]);
 
   const handleSubmit = async () => {
     setSuccessMessage("");
     setErrorMessage("");
     setLoading(true);
 
-    if (!customerId.trim() || !customerFirstName.trim() || !customerLastName.trim()) {
+    if (!customerFirstName.trim() || !customerLastName.trim()) {
       setErrorMessage(translations.checkout?.error?.invalid_fields || "Please enter valid details.");
-      setLoading(false);
-      return;
-    }
-
-    const customerExists = await checkCustomerExists(customerId.trim());
-    if (!customerExists) {
       setLoading(false);
       return;
     }
@@ -85,11 +103,15 @@ const CheckoutPage: React.FC = () => {
     }
 
     try {
+      // Combine all selected services into a single comma-separated string
       const servicesString = services.map((service) => service.title).join(", ");
-      const formattedDate = appointmentDate.includes("T") ? appointmentDate : `${appointmentDate}T12:00`;
+      const formattedDate = appointmentDate.includes("T")
+        ? appointmentDate
+        : `${appointmentDate}T12:00`;
 
+      // 3) Include the actual customerId in the payload
       const payload = {
-        customerId: customerId.trim(),
+        customerId,
         customerFirstName: customerFirstName.trim(),
         customerLastName: customerLastName.trim(),
         appointmentDate: formattedDate,
@@ -98,27 +120,49 @@ const CheckoutPage: React.FC = () => {
         status: "pending",
       };
 
-      const response = await axiosInstance.post(
-        `/appointments/customers/${customerId.trim()}`,
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      // 4) Call the endpoint that expects `customerId` in the body
+      //    (Typically /appointments/with-customerid if that's what your backend uses)
+      const response = await axiosInstance.post("/appointments/with-customerid", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage(translations.checkout?.success?.appointment_created || "Appointment created successfully!");
-        setTimeout(() => navigate("/services"), 2000);
-      } else {
-        throw new Error();
+        setSuccessMessage(
+          translations.checkout?.success?.appointment_created || "Appointment created successfully!"
+        );
+
+        // 5) Redirect to My Appointments and pass the new appointment in state
+        navigate("/my-appointments", {
+          state: {
+            newAppointment: response.data,
+            timestamp: new Date().getTime(),
+          },
+        });
       }
-    } catch {
-      setErrorMessage(translations.checkout?.error?.appointment_creation || "Error creating appointment.");
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      setErrorMessage(
+        translations.checkout?.error?.appointment_creation || "Error creating appointment."
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  // Just a convenience to sum up the service prices
+  const totalPrice = services.reduce((sum, service) => sum + service.pricing, 0);
+
   return (
-    <div style={{ padding: "40px", maxWidth: "600px", margin: "0 auto", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
+    <div
+      style={{
+        padding: "40px",
+        maxWidth: "600px",
+        margin: "0 auto",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        borderRadius: "10px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
         {translations.checkout?.title || "Confirm Your Appointment"}
       </h1>
@@ -126,11 +170,19 @@ const CheckoutPage: React.FC = () => {
       <div style={{ marginBottom: "20px" }}>
         <h2>{translations.checkout?.selected_services || "Selected Services"}</h2>
         {services.length > 0 ? (
-          services.map((svc) => (
-            <div key={svc.serviceId} style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}>
-              <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
+          <>
+            {services.map((svc) => (
+              <div
+                key={svc.serviceId}
+                style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}
+              >
+                <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
+              </div>
+            ))}
+            <div style={{ marginTop: "10px", textAlign: "right" }}>
+              <strong>Total: ${totalPrice.toFixed(2)}</strong>
             </div>
-          ))
+          </>
         ) : (
           <p>{translations.checkout?.no_services || "No service details available."}</p>
         )}
@@ -138,34 +190,103 @@ const CheckoutPage: React.FC = () => {
 
       <div style={{ marginBottom: "20px" }}>
         <h3>{translations.checkout?.date_time || "Date & Time"}:</h3>
-        <p>{appointmentDate}</p>
-      </div>
-
-      <div style={{ marginBottom: "20px" }}>
-        <label>{translations.checkout?.customer_id || "Customer ID"}:</label>
-        <input type="text" value={customerId} onChange={(e) => setCustomerId(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.customer_id || "Customer ID"} />
+        <p>{new Date(appointmentDate).toLocaleString()}</p>
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.first_name || "First Name"}:</label>
-        <input type="text" value={customerFirstName} onChange={(e) => setCustomerFirstName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.first_name || "First Name"} />
+        <input
+          type="text"
+          value={customerFirstName}
+          readOnly
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f2f2f2",
+          }}
+        />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.last_name || "Last Name"}:</label>
-        <input type="text" value={customerLastName} onChange={(e) => setCustomerLastName(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.last_name || "Last Name"} />
+        <input
+          type="text"
+          value={customerLastName}
+          readOnly
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f2f2f2",
+          }}
+        />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.comments || "Comments"}:</label>
-        <textarea value={comments} onChange={(e) => setComments(e.target.value)} style={{ width: "100%", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }} placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"} />
+        <textarea
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            minHeight: "100px",
+          }}
+          placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"}
+        />
       </div>
 
-      {errorMessage && <p style={{ color: "red", textAlign: "center" }}>{errorMessage}</p>}
-      {successMessage && <p style={{ color: "green", textAlign: "center" }}>{successMessage}</p>}
+      {errorMessage && (
+        <p
+          style={{
+            color: "red",
+            textAlign: "center",
+            padding: "10px",
+            backgroundColor: "#ffe6e6",
+            borderRadius: "5px",
+          }}
+        >
+          {errorMessage}
+        </p>
+      )}
 
-      <button onClick={handleSubmit} disabled={loading} style={{ width: "100%", padding: "10px", backgroundColor: loading ? "#ccc" : "#28a745", color: "#fff", border: "none", borderRadius: "5px", cursor: loading ? "not-allowed" : "pointer", fontSize: "16px" }}>
-        {loading ? translations.checkout?.confirming || "Confirming..." : translations.checkout?.confirm_button || "Confirm Appointment"}
+      {successMessage && (
+        <p
+          style={{
+            color: "green",
+            textAlign: "center",
+            padding: "10px",
+            backgroundColor: "#e6ffe6",
+            borderRadius: "5px",
+          }}
+        >
+          {successMessage}
+        </p>
+      )}
+
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        style={{
+          width: "100%",
+          padding: "12px",
+          backgroundColor: loading ? "#ccc" : "#28a745",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: loading ? "not-allowed" : "pointer",
+          fontSize: "16px",
+          transition: "background-color 0.3s ease",
+        }}
+      >
+        {loading
+          ? translations.checkout?.confirming || "Confirming..."
+          : translations.checkout?.confirm_button || "Confirm Appointment"}
       </button>
     </div>
   );
