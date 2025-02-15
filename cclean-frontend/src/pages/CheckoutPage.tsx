@@ -19,12 +19,14 @@ const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const { getAccessTokenSilently, user } = useAuth0();
   
+  // We pull these from the page that navigated us here (Booking page, etc.)
   const { selectedServiceIds, appointmentDate } = location.state as {
     selectedServiceIds: string[];
     appointmentDate: string;
   };
 
   const [services, setServices] = useState<Service[]>([]);
+  const [customerId, setCustomerId] = useState("");
   const [customerFirstName, setCustomerFirstName] = useState("");
   const [customerLastName, setCustomerLastName] = useState("");
   const [comments, setComments] = useState("");
@@ -40,16 +42,19 @@ const CheckoutPage: React.FC = () => {
         if (!user || !user.email) {
           throw new Error("No email found in Auth0 user object.");
         }
-    
+
+        // 1) Get the user's customer info from your backend:
         const userEmail = user.email;
-    
-        const res = await axiosInstance.get(`/customers/byEmail?email=${encodeURIComponent(userEmail)}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-    
+        const res = await axiosInstance.get(
+          `/customers/byEmail?email=${encodeURIComponent(userEmail)}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
         if (res.status === 200) {
-          setCustomerFirstName(res.data.firstName);
-          setCustomerLastName(res.data.lastName);
+          // 2) Store the ID so we can use it in our POST
+          setCustomerId(res.data.customerId);
+          setCustomerFirstName(res.data.firstName || "");
+          setCustomerLastName(res.data.lastName || "");
         }
       } catch (error) {
         console.error("Error fetching customer details:", error);
@@ -68,7 +73,9 @@ const CheckoutPage: React.FC = () => {
         }
         setServices(fetched);
       } catch {
-        setErrorMessage(translations.checkout?.error?.fetch_services || "Error fetching services.");
+        setErrorMessage(
+          translations.checkout?.error?.fetch_services || "Error fetching services."
+        );
       }
     };
 
@@ -96,10 +103,15 @@ const CheckoutPage: React.FC = () => {
     }
 
     try {
+      // Combine all selected services into a single comma-separated string
       const servicesString = services.map((service) => service.title).join(", ");
-      const formattedDate = appointmentDate.includes("T") ? appointmentDate : `${appointmentDate}T12:00`;
+      const formattedDate = appointmentDate.includes("T")
+        ? appointmentDate
+        : `${appointmentDate}T12:00`;
 
+      // 3) Include the actual customerId in the payload
       const payload = {
+        customerId,
         customerFirstName: customerFirstName.trim(),
         customerLastName: customerLastName.trim(),
         appointmentDate: formattedDate,
@@ -108,32 +120,49 @@ const CheckoutPage: React.FC = () => {
         status: "pending",
       };
 
-      const response = await axiosInstance.post("/appointments", payload, {
+      // 4) Call the endpoint that expects `customerId` in the body
+      //    (Typically /appointments/with-customerid if that's what your backend uses)
+      const response = await axiosInstance.post("/appointments/with-customerid", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage(translations.checkout?.success?.appointment_created || "Appointment created successfully!");
-        
-        // Navigate immediately with the new appointment data
-        navigate("/my-appointments", { 
-          state: { 
+        setSuccessMessage(
+          translations.checkout?.success?.appointment_created || "Appointment created successfully!"
+        );
+
+        // 5) Redirect to My Appointments and pass the new appointment in state
+        navigate("/my-appointments", {
+          state: {
             newAppointment: response.data,
-            timestamp: new Date().getTime()
-          } 
+            timestamp: new Date().getTime(),
+          },
         });
       }
     } catch (error) {
-      setErrorMessage(translations.checkout?.error?.appointment_creation || "Error creating appointment.");
+      console.error("Error creating appointment:", error);
+      setErrorMessage(
+        translations.checkout?.error?.appointment_creation || "Error creating appointment."
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  // Just a convenience to sum up the service prices
   const totalPrice = services.reduce((sum, service) => sum + service.pricing, 0);
 
   return (
-    <div style={{ padding: "40px", maxWidth: "600px", margin: "0 auto", boxShadow: "0 2px 10px rgba(0,0,0,0.1)", borderRadius: "10px", backgroundColor: "#f9f9f9" }}>
+    <div
+      style={{
+        padding: "40px",
+        maxWidth: "600px",
+        margin: "0 auto",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+        borderRadius: "10px",
+        backgroundColor: "#f9f9f9",
+      }}
+    >
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
         {translations.checkout?.title || "Confirm Your Appointment"}
       </h1>
@@ -143,7 +172,10 @@ const CheckoutPage: React.FC = () => {
         {services.length > 0 ? (
           <>
             {services.map((svc) => (
-              <div key={svc.serviceId} style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}>
+              <div
+                key={svc.serviceId}
+                style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}
+              >
                 <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
               </div>
             ))}
@@ -163,84 +195,98 @@ const CheckoutPage: React.FC = () => {
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.first_name || "First Name"}:</label>
-        <input 
-          type="text" 
-          value={customerFirstName} 
-          readOnly 
-          style={{ 
-            width: "100%", 
-            padding: "8px", 
-            borderRadius: "5px", 
-            border: "1px solid #ccc", 
-            backgroundColor: "#f2f2f2" 
-          }} 
+        <input
+          type="text"
+          value={customerFirstName}
+          readOnly
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f2f2f2",
+          }}
         />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.last_name || "Last Name"}:</label>
-        <input 
-          type="text" 
-          value={customerLastName} 
-          readOnly 
-          style={{ 
-            width: "100%", 
-            padding: "8px", 
-            borderRadius: "5px", 
-            border: "1px solid #ccc", 
-            backgroundColor: "#f2f2f2" 
-          }} 
+        <input
+          type="text"
+          value={customerLastName}
+          readOnly
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f2f2f2",
+          }}
         />
       </div>
 
       <div style={{ marginBottom: "20px" }}>
         <label>{translations.checkout?.comments || "Comments"}:</label>
-        <textarea 
-          value={comments} 
-          onChange={(e) => setComments(e.target.value)} 
-          style={{ 
-            width: "100%", 
-            padding: "8px", 
-            borderRadius: "5px", 
+        <textarea
+          value={comments}
+          onChange={(e) => setComments(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px",
+            borderRadius: "5px",
             border: "1px solid #ccc",
-            minHeight: "100px"
-          }} 
-          placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"} 
+            minHeight: "100px",
+          }}
+          placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"}
         />
       </div>
 
       {errorMessage && (
-        <p style={{ color: "red", textAlign: "center", padding: "10px", backgroundColor: "#ffe6e6", borderRadius: "5px" }}>
+        <p
+          style={{
+            color: "red",
+            textAlign: "center",
+            padding: "10px",
+            backgroundColor: "#ffe6e6",
+            borderRadius: "5px",
+          }}
+        >
           {errorMessage}
         </p>
       )}
-      
+
       {successMessage && (
-        <p style={{ color: "green", textAlign: "center", padding: "10px", backgroundColor: "#e6ffe6", borderRadius: "5px" }}>
+        <p
+          style={{
+            color: "green",
+            textAlign: "center",
+            padding: "10px",
+            backgroundColor: "#e6ffe6",
+            borderRadius: "5px",
+          }}
+        >
           {successMessage}
         </p>
       )}
 
-      <button 
-        onClick={handleSubmit} 
-        disabled={loading} 
-        style={{ 
-          width: "100%", 
-          padding: "12px", 
-          backgroundColor: loading ? "#ccc" : "#28a745", 
-          color: "#fff", 
-          border: "none", 
-          borderRadius: "5px", 
-          cursor: loading ? "not-allowed" : "pointer", 
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        style={{
+          width: "100%",
+          padding: "12px",
+          backgroundColor: loading ? "#ccc" : "#28a745",
+          color: "#fff",
+          border: "none",
+          borderRadius: "5px",
+          cursor: loading ? "not-allowed" : "pointer",
           fontSize: "16px",
-          transition: "background-color 0.3s ease"
+          transition: "background-color 0.3s ease",
         }}
       >
-        {loading ? (
-          translations.checkout?.confirming || "Confirming..."
-        ) : (
-          translations.checkout?.confirm_button || "Confirm Appointment"
-        )}
+        {loading
+          ? translations.checkout?.confirming || "Confirming..."
+          : translations.checkout?.confirm_button || "Confirm Appointment"}
       </button>
     </div>
   );
