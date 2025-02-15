@@ -8,8 +8,10 @@ import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentReq
 import com.ccleaninc.cclean.appointmentssubdomain.datamapperlayer.AppointmentResponseMapper;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentRequestModel;
 import com.ccleaninc.cclean.appointmentssubdomain.presentationlayer.AppointmentResponseModel;
+import com.ccleaninc.cclean.customerssubdomain.businesslayer.CustomerService;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.Customer;
 import com.ccleaninc.cclean.customerssubdomain.datalayer.CustomerRepository;
+import com.ccleaninc.cclean.customerssubdomain.presentationlayer.CustomerResponseModel;
 import com.ccleaninc.cclean.emailsubdomain.businesslayer.EmailService;
 import com.ccleaninc.cclean.utils.exceptions.InvalidInputException;
 import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
@@ -39,15 +41,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final CustomerRepository customerRepository;
     private final AppointmentResponseMapper appointmentResponseMapper;
     private final AppointmentRequestMapper appointmentRequestMapper;
+    private final CustomerService customerService;
 
     private EmailService emailService;
-
 
     @Override
     public List<AppointmentResponseModel> getAllAppointments() {
         return appointmentResponseMapper.entityToResponseModelList(appointmentRepository.findAll());
     }
-
 
     @Override
     public AppointmentResponseModel createAppointment(AppointmentRequestModel requestModel) {
@@ -66,11 +67,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment newAppointment = Appointment.builder()
                 .appointmentIdentifier(new AppointmentIdentifier()) // auto-generated UUID
-                .customerId(foundCustomer.getCustomerIdentifier().getCustomerId())  // store the actual ID
+                .customerId(foundCustomer.getCustomerIdentifier().getCustomerId()) // store the actual ID
                 .customerFirstName(foundCustomer.getFirstName())
                 .customerLastName(foundCustomer.getLastName())
                 .appointmentDate(requestModel.getAppointmentDate())
-                .services(requestModel.getServices())   // e.g. "id1,id2"
+                .services(requestModel.getServices()) // e.g. "id1,id2"
                 .comments(requestModel.getComments())
                 .status(requestModel.getStatus() == null ? Status.pending : requestModel.getStatus())
                 .build();
@@ -79,19 +80,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
-
     @Override
     public AppointmentResponseModel getAppointmentByAppointmentId(String appointmentId) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string: " + appointmentId);
         }
-        Appointment appointment = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
+        Appointment appointment = appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
         if (appointment == null) {
             throw new NotFoundException("Appointment with ID " + appointmentId + " was not found.");
         }
         return appointmentResponseMapper.entityToResponseModel(appointment);
     }
-
 
     @Override
     public AppointmentResponseModel addAppointment(AppointmentRequestModel appointmentRequestModel) {
@@ -105,7 +105,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
         appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
 
-
         appointment.setCustomerId(UUID.randomUUID().toString());
 
         appointment.setAppointmentDate(appointmentRequestModel.getAppointmentDate());
@@ -117,9 +116,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
-
     @Override
-    public AppointmentResponseModel updateAppointment(String appointmentId, AppointmentRequestModel appointmentRequestModel) {
+    public AppointmentResponseModel updateAppointment(String appointmentId,
+            AppointmentRequestModel appointmentRequestModel) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string: " + appointmentId);
         }
@@ -127,8 +126,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new InvalidInputException("Appointment request model cannot be null.");
         }
 
-        Appointment appointment = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
-
+        Appointment appointment = appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
 
         appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
         appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
@@ -144,13 +143,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
-
     @Override
     public void deleteAppointmentByAppointmentId(String appointmentId) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string: " + appointmentId);
         }
-        Appointment existing = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
+        Appointment existing = appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
         if (existing == null) {
             throw new NotFoundException("Appointment with ID " + appointmentId + " was not found.");
         }
@@ -175,12 +174,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseModel updateAppointmentForCustomer(String appointmentId, AppointmentRequestModel requestModel) {
+    public AppointmentResponseModel updateAppointmentForCustomer(String appointmentId,
+            AppointmentRequestModel requestModel) {
         if (appointmentId == null || appointmentId.length() != 36) {
             throw new InvalidInputException("Appointment ID must be a valid 36-character string.");
         }
 
-        Appointment appointment = appointmentRepository.findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
+        Appointment appointment = appointmentRepository
+                .findAppointmentByAppointmentIdentifier_AppointmentId(appointmentId);
         if (appointment == null) {
             throw new NotFoundException("Appointment not found for " + appointmentId);
         }
@@ -276,7 +277,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException, MessagingException {
+    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId,
+            AppointmentRequestModel appointmentRequestModel) throws MessagingException, MessagingException {
         Customer customerAccount = customerRepository.findByCustomerIdentifier_CustomerId(customerId).orElse(null);
 
         if (customerAccount == null) {
@@ -286,8 +288,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         // ✅ Debug: Log the services being sent
         log.info("📢 Services received: {}", appointmentRequestModel.getServices());
-
-
 
         // ✅ Fix: Save the first and last name correctly
         Appointment appointment = new Appointment();
@@ -307,17 +307,29 @@ public class AppointmentServiceImpl implements AppointmentService {
         parameters.put("services", savedAppointment.getServices());
         parameters.put("comments", savedAppointment.getComments());
 
-        emailService.sendEmail(customerAccount.getEmail(),"Appointment Scheduled - ACMS","appointment.html",parameters);
+        emailService.sendEmail(customerAccount.getEmail(), "Appointment Scheduled - ACMS", "appointment.html",
+                parameters);
 
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }
 
     @Override
-    public Page<AppointmentResponseModel> getAllAppointmentsPagination (Pageable pageable) {
+    public Page<AppointmentResponseModel> getAllAppointmentsPagination(Pageable pageable) {
         Page<Appointment> appointmentPage = appointmentRepository.findAll(pageable);
         return appointmentPage.map(appointmentResponseMapper::entityToResponseModel);
 
     }
 
-
+    @Override
+    public List<AppointmentResponseModel> getAppointmentsByCustomerEmail(String email) {
+        // Find the customer by email first
+        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
+        if (customer == null) {
+            throw new NotFoundException("Customer not found for email: " + email);
+        }
+    
+        // Fetch appointments using the retrieved customerId
+        List<Appointment> appointments = appointmentRepository.findAllByCustomerId(customer.getCustomerId());
+        return appointmentResponseMapper.entityToResponseModelList(appointments);
+    }
 }

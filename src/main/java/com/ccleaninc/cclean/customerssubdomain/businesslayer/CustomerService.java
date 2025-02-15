@@ -21,5 +21,5 @@ public interface CustomerService {
 
     CustomerResponseModel getOrCreateCustomerByEmail(String email);
 
-
+    CustomerResponseModel getCustomerByEmail(String email);
 }

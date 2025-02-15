@@ -1,175 +1,87 @@
-import React, { useState } from 'react';
-import axiosInstance from '../api/axios';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import './Appointments.css';
+import { useEffect, useState } from "react";
+import axiosInstance from "../api/axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import { extractEmailFromToken } from "../api/authUtils";
+import "./MyAppointments.css"; 
 
 interface Appointment {
   appointmentId: string;
-  customerId: string;
-  customerFirstName?: string;
-  customerLastName?: string;
   appointmentDate: string;
-  services: string;      // e.g. "id1,id2" or "Some Service"
-  serviceTitles?: string; // We'll store the final display string here
+  services: string;
   status: string;
   comments?: string;
 }
 
-// We'll treat "pending" or "confirmed" as "upcoming".
-function isUpcoming(status: string | undefined) {
-  return status === 'pending' || status === 'confirmed';
-}
-
-// Check if a string is a valid 36-char UUID
-function isUuidFormat(str: string): boolean {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-}
-
-const MyAppointments: React.FC = () => {
-  const [customerIdInput, setCustomerIdInput] = useState('');
+const MyAppointments = () => {
+  const { getAccessTokenSilently } = useAuth0();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
-  const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Helper to transform "services" -> "serviceTitles"
-  const transformAppointments = async (rawAppointments: Appointment[]): Promise<Appointment[]> => {
-    const transformed = await Promise.all(
-      rawAppointments.map(async (apt) => {
-        if (!apt.services) {
-          return { ...apt, serviceTitles: '' };
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        const email = extractEmailFromToken(token);
+        if (!email) {
+          setError("User email not found in token.");
+          return;
         }
 
-        const tokens = apt.services.split(',').map(t => t.trim());
-        const titles: string[] = [];
+        setUserEmail(email);
 
-        for (const token of tokens) {
-          if (isUuidFormat(token)) {
-            // It's a valid UUID, fetch the service name
-            try {
-              const serviceRes = await axiosInstance.get(`/services/${token}`);
-              titles.push(serviceRes.data.title || 'Unknown Service');
-            } catch {
-              titles.push('Unknown Service');
-            }
-          } else {
-            // Not a UUID, treat as plain text
-            titles.push(token);
-          }
-        }
+        const response = await axiosInstance.get("/appointments/my-appointments", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        return { ...apt, serviceTitles: titles.join(', ') };
-      })
-    );
-    return transformed;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setAppointments([]);
-    setHasSearched(true);
-
-    if (!customerIdInput.trim()) {
-      setError('Customer ID is required');
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.get<Appointment[]>(
-        `/appointments/by-customer/${customerIdInput.trim()}`
-      );
-      // Transform the services into display titles
-      const updated = await transformAppointments(response.data);
-      setAppointments(updated);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Failed to load appointments. Please try again.');
+        setAppointments(response.data);
+      } catch (error) {
+        console.error("❌ Failed to load appointments:", error);
+        setError("Failed to load appointments. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    }
-  };
+    };
 
-  // Cancel an upcoming appointment
-  const handleCancel = async (appointmentId: string) => {
-    const confirm = window.confirm('Are you sure you want to cancel this appointment?');
-    if (!confirm) return;
-
-    try {
-      // We'll do a PUT to /appointments/customer/:id with { status: 'cancelled' }
-      // or if you're okay with the same endpoint as admin for status changes, that's fine:
-      await axiosInstance.put(`/appointments/customer/${appointmentId}`, { status: 'cancelled' });
-      // Update in local state
-      const updated = appointments.map((apt) =>
-        apt.appointmentId === appointmentId ? { ...apt, status: 'cancelled' } : apt
-      );
-      setAppointments(updated);
-      toast.success('Appointment cancelled successfully.');
-    } catch (err) {
-      console.error('Error canceling appointment:', err);
-      toast.error('Failed to cancel appointment.');
-    }
-  };
-
-  // Reschedule an upcoming appointment (customer path)
-  const handleReschedule = (appointmentId: string) => {
-    // This goes to your new "CustomerEdit" route, e.g.:
-    navigate(`/my-appointments/edit/${appointmentId}`);
-  };
+    fetchAppointments();
+  }, [getAccessTokenSilently]);
 
   return (
     <div className="my-appointments-container">
-      <h1 className="my-appointments-title">My Appointments</h1>
+      <div className="my-appointments-card">
+        <h2 className="my-appointments-title">My Appointments</h2>
 
-      <form onSubmit={handleSubmit} className="my-appointments-form">
-        <label>Enter Customer ID: </label>
-        <input
-          type="text"
-          value={customerIdInput}
-          onChange={(e) => setCustomerIdInput(e.target.value)}
-        />
-        <button type="submit">View Appointments</button>
-      </form>
+        {loading ? (
+          <div className="loader"></div>
+        ) : error ? (
+          <p className="my-appointments-error">{error}</p>
+        ) : (
+          <>
+            {userEmail && (
+              <p className="my-appointments-email">
+                Showing appointments for: <strong>{userEmail}</strong>
+              </p>
+            )}
 
-      {error && <p className="my-appointments-error">{error}</p>}
-
-      {hasSearched && !error && appointments.length === 0 && (
-        <p className="my-appointments-no-results">No appointments found for that customer ID.</p>
-      )}
-
-      {appointments.length > 0 && (
-        <table className="my-appointments-table">
-          <thead>
-            <tr>
-              <th>Appointment ID</th>
-              <th>Date/Time</th>
-              <th>Services</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map((apt) => (
-              <tr key={apt.appointmentId}>
-                <td>{apt.appointmentId}</td>
-                <td>{apt.appointmentDate}</td>
-                <td>{apt.serviceTitles || apt.services}</td>
-                <td>{apt.status}</td>
-                <td>
-                  {isUpcoming(apt.status) && (
-                    <>
-                      <button onClick={() => handleCancel(apt.appointmentId)}>Cancel</button>
-                      <button onClick={() => handleReschedule(apt.appointmentId)}>Reschedule</button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            {appointments.length > 0 ? (
+              <div>
+                {appointments.map((apt) => (
+                  <div key={apt.appointmentId} className="appointment-item">
+                    <p className="appointment-service">{apt.services}</p>
+                    <p className="appointment-date">{new Date(apt.appointmentDate).toLocaleString()}</p>
+                    <p className={`appointment-status ${apt.status === 'pending' ? 'status-pending' : 'status-confirmed'}`}>
+                      {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-appointments">No appointments found.</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

@@ -14,13 +14,14 @@ import com.ccleaninc.cclean.customerssubdomain.datamapperlayer.CustomerResponseM
 import com.ccleaninc.cclean.customerssubdomain.presentationlayer.*;;
 
 @Service
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerResponseMapper customerResponseMapper;
     private final CustomerRequestMapper customerRequestMapper;
 
-        public CustomerServiceImpl(CustomerRepository customerRepository, CustomerResponseMapper customerResponseMapper, CustomerRequestMapper customerRequestMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerResponseMapper customerResponseMapper,
+            CustomerRequestMapper customerRequestMapper) {
         this.customerRepository = customerRepository;
         this.customerResponseMapper = customerResponseMapper;
         this.customerRequestMapper = customerRequestMapper;
@@ -34,16 +35,14 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public List<CustomerResponseModel> searchCustomers(String searchTerm) {
         return customerResponseMapper.entityToResponseModelList(
-            customerRepository.searchByNameOrCompany(searchTerm)
-        );
+                customerRepository.searchByNameOrCompany(searchTerm));
     }
 
     @Override
     public CustomerResponseModel getCustomerByCustomerId(String customerId) {
         return customerResponseMapper.entityToResponseModel(
-            customerRepository.findByCustomerIdentifier_CustomerId(customerId)
-                .orElseThrow(() -> new NotFoundException("Customer not found"))
-        );
+                customerRepository.findByCustomerIdentifier_CustomerId(customerId)
+                        .orElseThrow(() -> new NotFoundException("Customer not found")));
     }
 
     @Override
@@ -54,24 +53,26 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     // @Override
-    // public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
-    //     Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
-    //     return customerResponseMapper.entityToResponseModel(customerRepository.save(customer));
+    // public CustomerResponseModel addCustomer(CustomerRequestModel
+    // customerRequestModel) {
+    // Customer customer =
+    // customerRequestMapper.customerModelToEntity(customerRequestModel);
+    // return
+    // customerResponseMapper.entityToResponseModel(customerRepository.save(customer));
     // }
 
     @Override
     public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
-    Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
+        Customer customer = customerRequestMapper.customerModelToEntity(customerRequestModel);
 
-    // Explicitly initialize the CustomerIdentifier
-    customer.setCustomerIdentifier(new CustomerIdentifier());
+        // Explicitly initialize the CustomerIdentifier
+        customer.setCustomerIdentifier(new CustomerIdentifier());
 
-    Customer savedCustomer = customerRepository.save(customer);
+        Customer savedCustomer = customerRepository.save(customer);
 
-    // Map the saved entity back to the response model
-    return customerResponseMapper.entityToResponseModel(savedCustomer);
-}
-
+        // Map the saved entity back to the response model
+        return customerResponseMapper.entityToResponseModel(savedCustomer);
+    }
 
     @Override
     public CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel) {
@@ -104,5 +105,21 @@ public class CustomerServiceImpl implements CustomerService{
         Customer saved = customerRepository.save(newCustomer);
         return customerResponseMapper.entityToResponseModel(saved);
     }
+
+    @Override
+    public CustomerResponseModel getCustomerByEmail(String email) {
+        Customer customer = customerRepository.findOptionalByEmail(email)
+            .orElseThrow(() -> new NotFoundException("Customer not found for email: " + email));
+    
+        return CustomerResponseModel.builder()
+            .customerId(customer.getCustomerIdentifier().getCustomerId()) // Ensure this exists
+            .firstName(customer.getFirstName())
+            .lastName(customer.getLastName())
+            .companyName(customer.getCompanyName())
+            .email(customer.getEmail())
+            .phoneNumber(customer.getPhoneNumber())
+            .address(customer.getAddress()) 
+            .build();
+    }    
 
 }
