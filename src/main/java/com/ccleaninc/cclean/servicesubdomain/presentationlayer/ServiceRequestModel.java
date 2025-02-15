@@ -15,4 +15,5 @@ public class ServiceRequestModel {
     private BigDecimal pricing;
     private String category;
     private Integer durationMinutes;
+    private String image;
 }

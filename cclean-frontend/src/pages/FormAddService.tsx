@@ -1,56 +1,35 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axios';
-import './FormAddService.css';
-import { toast } from 'react-toastify';
+import { useState, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import axiosInstance from "../api/axios";
+import "./FormAddService.css";
 
-const FormEditService = () => {
-  const { serviceId } = useParams<{ serviceId: string }>();
+const AddService = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true); // Track loading state
+
+  // Initialize empty form fields
   const [serviceData, setServiceData] = useState({
-    title: '',
-    description: '',
-    pricing: '',
-    category: '',
-    durationMinutes: '',
+    title: "",
+    description: "",
+    pricing: "",
+    category: "",
+    durationMinutes: "",
+    // For image
+    image: "",
   });
 
-  // Fetch service details when component mounts
-  useEffect(() => {
-    const fetchServiceDetails = async () => {
-      if (!serviceId) return;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-      try {
-        const response = await axiosInstance.get(`/services/${serviceId}`);
-        const { title, description, pricing, category, durationMinutes } = response.data;
-
-        setServiceData({
-          title,
-          description,
-          pricing: pricing.toString(), // Ensure it's a string for input
-          category,
-          durationMinutes: durationMinutes.toString(),
-        });
-        setLoading(false);
-      } catch (error) {
-        toast.error('Failed to fetch service details.');
-        console.error("Error fetching service:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchServiceDetails();
-  }, [serviceId]);
-
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Handle text/number input changes
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
 
     // Prevent negative pricing
     if (name === "pricing") {
       const numericValue = parseFloat(value);
-      if (numericValue < 0 || isNaN(numericValue)) {
+      if (numericValue < 0) {
         toast.error("Price cannot be negative.");
         return;
       }
@@ -59,8 +38,30 @@ const FormEditService = () => {
     setServiceData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle file input (image)
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional: double-check MIME type
+    if (!(file.type === "image/jpeg" || file.type === "image/png")) {
+      toast.error("Only JPEG or PNG files are allowed.");
+      return;
+    }
+
+    // Convert to Base64 and store
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      setServiceData((prev) => ({ ...prev, image: base64String }));
+      setImagePreview(base64String);
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Handle form submission
   const handleSubmit = async () => {
+    // Basic validation
     if (
       !serviceData.title.trim() ||
       !serviceData.description.trim() ||
@@ -68,11 +69,11 @@ const FormEditService = () => {
       !serviceData.category.trim() ||
       !serviceData.durationMinutes.trim()
     ) {
-      toast.error('All fields must be filled to submit the form.');
+      toast.error("All fields must be filled to submit the form.");
       return;
     }
 
-    // Final validation to prevent negative values
+    // Convert pricing/duration to numeric
     const pricingValue = parseFloat(serviceData.pricing);
     if (pricingValue < 0) {
       toast.error("Price cannot be negative.");
@@ -80,79 +81,102 @@ const FormEditService = () => {
     }
 
     try {
-      await axiosInstance.put(`/services/${serviceId}`, {
-        title: serviceData.title,
-        description: serviceData.description,
+      // Call POST /services
+      await axiosInstance.post("/services", {
+        ...serviceData,
         pricing: pricingValue,
-        category: serviceData.category,
         durationMinutes: parseInt(serviceData.durationMinutes, 10),
       });
 
-      toast.success('Service updated successfully!');
-      navigate('/services');
-    } catch {
-      toast.error('Failed to update service. Please try again.');
+      toast.success("Service created successfully!");
+      navigate("/services"); // Go back to the main services page
+    } catch (error) {
+      toast.error("Failed to create service. Please try again.");
+      console.error("Error creating service:", error);
     }
   };
 
   return (
     <div className="form-add-service">
-      <h2>Edit Service</h2>
+      <h2>Add Service</h2>
 
-      {loading ? (
-        <p>Loading service details...</p>
-      ) : (
-        <>
-          <div>
-            <label>Title:</label>
-            <input
-              type="text"
-              name="title"
-              value={serviceData.title}
-              onChange={handleInputChange}
+      {/* Title */}
+      <div>
+        <label>Title:</label>
+        <input
+          type="text"
+          name="title"
+          value={serviceData.title}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Description */}
+      <div>
+        <label>Description:</label>
+        <textarea
+          name="description"
+          value={serviceData.description}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Pricing */}
+      <div>
+        <label>Pricing:</label>
+        <input
+          type="number"
+          name="pricing"
+          value={serviceData.pricing}
+          onChange={handleInputChange}
+          min="0"
+        />
+      </div>
+
+      {/* Category */}
+      <div>
+        <label>Category:</label>
+        <input
+          type="text"
+          name="category"
+          value={serviceData.category}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      {/* Duration */}
+      <div>
+        <label>Duration (Minutes):</label>
+        <input
+          type="number"
+          name="durationMinutes"
+          value={serviceData.durationMinutes}
+          onChange={handleInputChange}
+          min="1"
+        />
+      </div>
+
+      {/* Image Upload */}
+      <div style={{ marginTop: "20px" }}>
+        <label>Service Image:</label>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+        {imagePreview && (
+          <div style={{ marginTop: "10px" }}>
+            <img
+              src={imagePreview}
+              alt="Service Preview"
+              style={{ maxWidth: "300px", maxHeight: "300px" }}
             />
           </div>
-          <div>
-            <label>Description:</label>
-            <textarea
-              name="description"
-              value={serviceData.description}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Pricing:</label>
-            <input
-              type="number"
-              name="pricing"
-              value={serviceData.pricing}
-              onChange={handleInputChange}
-              min="0" // Prevent negative values at the UI level
-            />
-          </div>
-          <div>
-            <label>Category:</label>
-            <input
-              type="text"
-              name="category"
-              value={serviceData.category}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <label>Duration (Minutes):</label>
-            <input
-              type="number"
-              name="durationMinutes"
-              value={serviceData.durationMinutes}
-              onChange={handleInputChange}
-            />
-          </div>
-          <button onClick={handleSubmit}>Submit</button>
-        </>
-      )}
+        )}
+      </div>
+
+      {/* Submit button */}
+      <button style={{ marginTop: "20px" }} onClick={handleSubmit}>
+        Create Service
+      </button>
     </div>
   );
 };
 
-export default FormEditService;
+export default AddService;

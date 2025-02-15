@@ -10,5 +10,6 @@ public interface ServiceRequestMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "serviceIdentifier", ignore = true)
+    @Mapping(target = "isAvailable", ignore = true)
     Service serviceModelToEntity(ServiceRequestModel serviceRequestModel);
 }

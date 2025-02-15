@@ -3,6 +3,7 @@ package com.ccleaninc.cclean.servicesubdomain.businesslayer;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.Service;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceIdentifier;
 import com.ccleaninc.cclean.servicesubdomain.datalayer.ServiceRepository;
+import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceRequestMapper;
 import com.ccleaninc.cclean.servicesubdomain.datamapperlayer.ServiceResponseMapper;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceRequestModel;
 import com.ccleaninc.cclean.servicesubdomain.presentationlayer.ServiceResponseModel;
@@ -32,6 +33,9 @@ public class ServiceServiceUnitTest {
 
     @Mock
     private ServiceResponseMapper serviceResponseMapper;
+
+    @Mock
+    private ServiceRequestMapper serviceRequestMapper;
 
     @InjectMocks
     private ServiceServiceImpl serviceService;
@@ -190,18 +194,51 @@ public class ServiceServiceUnitTest {
                 .durationMinutes(30)
                 .build();
 
-        Service expectedService = Service.builder()
+        // This is what we want the mapper to produce from the request model
+        Service mappedServiceEntity = Service.builder()
                 .title("Test Service")
                 .description("Test Description")
                 .pricing(BigDecimal.valueOf(100.00))
                 .category("Test Category")
                 .durationMinutes(30)
-                .isAvailable(true) // Match the default value
+                .isAvailable(true)
                 .serviceIdentifier(new ServiceIdentifier())
                 .build();
 
-        when(serviceRepository.save(any(Service.class))).thenReturn(expectedService);
-        when(serviceResponseMapper.entityToResponseModel(expectedService)).thenReturn(serviceResponseModel);
+        // This is what the repository returns after save
+        Service savedServiceEntity = Service.builder()
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .category("Test Category")
+                .durationMinutes(30)
+                .isAvailable(true)
+                .serviceIdentifier(new ServiceIdentifier())
+                .build();
+
+        // This is the final response model returned by the response mapper
+        ServiceResponseModel serviceResponseModel = ServiceResponseModel.builder()
+                .id(1)
+                .serviceId("1234-5678-...")
+                .title("Test Service")
+                .description("Test Description")
+                .pricing(BigDecimal.valueOf(100.00))
+                .isAvailable(true)
+                .category("Test Category")
+                .durationMinutes(30)
+                // .image(...) if applicable
+                .build();
+
+        // 1) The request mapper call
+        when(serviceRequestMapper.serviceModelToEntity(serviceRequestModel))
+                .thenReturn(mappedServiceEntity);
+
+        // 2) The repository save call
+        when(serviceRepository.save(mappedServiceEntity)).thenReturn(savedServiceEntity);
+
+        // 3) The response mapper call
+        when(serviceResponseMapper.entityToResponseModel(savedServiceEntity))
+                .thenReturn(serviceResponseModel);
 
         // Act
         ServiceResponseModel response = serviceService.addService(serviceRequestModel);
@@ -215,6 +252,7 @@ public class ServiceServiceUnitTest {
         assertEquals(serviceResponseModel.getDurationMinutes(), response.getDurationMinutes());
         assertTrue(response.getIsAvailable());
     }
+
 
 
     @Test
