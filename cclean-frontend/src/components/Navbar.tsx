@@ -13,10 +13,11 @@ import {
   FaPhone,
   FaCalendarCheck,
   FaClock,
+  FaUserCircle, // ✅ Profile Icon
 } from "react-icons/fa";
+
 import LoginButton from "./buttons/LoginButton";
 import LogoutButton from "./buttons/LogoutButton";
-
 import { useAuth0 } from "@auth0/auth0-react";
 import { jwtDecode } from "jwt-decode";
 
@@ -61,13 +62,16 @@ const Navbar = ({ children }: NavbarProps) => {
   const isEmployee = permissions.includes("employee");
   const isCustomer = permissions.includes("customer");
 
-  const handleLanguageSwitch = () => {
-    toggleLanguage();
-    toast.info(
-      language === "en"
-        ? "Langue changée en Français (FR)"
-        : "Switched language to English (EN)"
-    );
+  // Handle Language Switch
+  const handleLanguageSwitch = (newLanguage: string) => {
+    if (newLanguage !== language) {
+      toggleLanguage();
+      toast.info(
+        newLanguage === "en"
+          ? "Switched language to English (EN)"
+          : "Langue changée en Français (FR)"
+      );
+    }
   };
 
   return (
@@ -128,8 +132,7 @@ const Navbar = ({ children }: NavbarProps) => {
               {(isAdmin || isEmployee) && (
                 <Link to="/my-availabilities" className="navbar-link">
                   <FaClock style={{ marginRight: "4px" }} />
-                  {translations.navbar?.my_availabilities ||
-                    "My Availabilities"}
+                  {translations.navbar?.my_availabilities || "My Availabilities"}
                 </Link>
               )}
 
@@ -144,16 +147,23 @@ const Navbar = ({ children }: NavbarProps) => {
         </div>
 
         <div className="navbar-actions">
-          <button className="navbar-button" onClick={handleLanguageSwitch}>
-            {language === "en" ? "FR" : "EN"}
-          </button>
+          {/* ✅ Language Selector Dropdown */}
+          <select
+            className="language-selector"
+            onChange={(e) => handleLanguageSwitch(e.target.value)}
+            value={language}
+          >
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+          </select>
 
-          {/* Show Login button only if the user is anonymous */}
+          {/* ✅ Show Login button only if the user is anonymous */}
           {isAnonymous ? <LoginButton /> : <LogoutButton />}
 
+          {/* ✅ Profile Icon (visible if authenticated) */}
           {!isAnonymous && (
-            <Link to="/profile" className="navbar-link">
-              {translations.navbar?.profile || "Profile"}
+            <Link to="/profile" className="navbar-link profile-icon">
+              <FaUserCircle size={24} />
             </Link>
           )}
         </div>

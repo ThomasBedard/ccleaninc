@@ -10,6 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,8 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AppointmentControllerUnitTest {
@@ -375,6 +378,47 @@ public class AppointmentControllerUnitTest {
                 // Assert
                 assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
                 assertNull(response.getBody());
+        }
+
+        @Test
+        void getAllAppointmentsPagination_ShouldReturnPaginatedAppointments() {
+                // Arrange
+                int page = 0;
+                int size = 7;
+                Pageable pageable = PageRequest.of(page, size);
+                List<AppointmentResponseModel> responseList = List.of(appointmentResponseModel);
+                Page<AppointmentResponseModel> appointmentPage = new PageImpl<>(responseList, pageable, responseList.size());
+
+                when(appointmentService.getAllAppointmentsPagination(pageable)).thenReturn(appointmentPage);
+
+                // Act
+                ResponseEntity<Page<AppointmentResponseModel>> response = appointmentController.getAllAppointmentsPagination(page, size);
+
+                // Assert
+                assertNotNull(response.getBody());
+                assertEquals(1, response.getBody().getTotalElements());
+                assertEquals(appointmentResponseModel, response.getBody().getContent().get(0));
+                assertEquals(200, response.getStatusCodeValue());
+                verify(appointmentService).getAllAppointmentsPagination(pageable);
+        }
+
+        @Test
+        void getAllAppointmentsPagination_ShouldReturnEmptyPage_WhenNoAppointmentsExist() {
+                // Arrange
+                int page = 0;
+                int size = 7;
+                Pageable pageable = PageRequest.of(page, size);
+                Page<AppointmentResponseModel> emptyPage = Page.empty();
+
+                when(appointmentService.getAllAppointmentsPagination(pageable)).thenReturn(emptyPage);
+
+                // Act
+                ResponseEntity<Page<AppointmentResponseModel>> response = appointmentController.getAllAppointmentsPagination(page, size);
+
+                // Assert
+                assertTrue(response.getBody().isEmpty());
+                assertEquals(200, response.getStatusCodeValue());
+                verify(appointmentService).getAllAppointmentsPagination(pageable);
         }
 
 }
