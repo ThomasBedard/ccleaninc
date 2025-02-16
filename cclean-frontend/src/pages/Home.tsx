@@ -99,7 +99,7 @@ const Home = () => {
           </h1>
           <p className="home-description">
             {translations.home?.description ||
-              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad."}
+              "C CLEAN INC. is a professional cleaning company committed to delivering top-quality services for both residential and commercial spaces. With a dedicated team and eco-friendly cleaning solutions, we ensure a spotless and healthy environment for our clients. Your satisfaction is our priority."}
           </p>
           <button
             onClick={() => navigate("/about-us")}

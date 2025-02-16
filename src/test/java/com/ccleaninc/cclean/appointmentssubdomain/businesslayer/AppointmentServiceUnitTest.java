@@ -19,6 +19,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -515,5 +517,44 @@ public class AppointmentServiceUnitTest {
 
         assertEquals("Customer ID cannot be null or empty.", ex.getMessage());
     }
+
+    @Test
+    void getAllAppointmentsPagination_ShouldReturnPaginatedAppointments() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 7, Sort.by("id").ascending());
+        List<Appointment> appointmentList = List.of(appointment);
+        Page<Appointment> appointmentPage = new PageImpl<>(appointmentList, pageable, appointmentList.size());
+
+        when(appointmentRepository.findAll(pageable)).thenReturn(appointmentPage);
+        when(appointmentResponseMapper.entityToResponseModel(any(Appointment.class)))
+                .thenReturn(appointmentResponseModel);
+
+        // Act
+        Page<AppointmentResponseModel> result = appointmentService.getAllAppointmentsPagination(pageable);
+
+        // Assert
+        assertEquals(1, result.getTotalElements());
+        assertEquals(appointmentResponseModel, result.getContent().get(0));
+        verify(appointmentRepository).findAll(pageable);
+        verify(appointmentResponseMapper).entityToResponseModel(any(Appointment.class));
+    }
+
+    @Test
+    void getAllAppointmentsPagination_ShouldReturnEmptyPage_WhenNoAppointmentsExist() {
+        // Arrange
+        Pageable pageable = PageRequest.of(0, 7);
+        Page<Appointment> emptyPage = Page.empty();
+
+        when(appointmentRepository.findAll(pageable)).thenReturn(emptyPage);
+
+        // Act
+        Page<AppointmentResponseModel> result = appointmentService.getAllAppointmentsPagination(pageable);
+
+        // Assert
+        assertTrue(result.isEmpty());
+        verify(appointmentRepository).findAll(pageable);
+    }
+
+
 
 }

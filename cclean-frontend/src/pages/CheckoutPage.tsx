@@ -89,27 +89,26 @@ const CheckoutPage: React.FC = () => {
     setSuccessMessage("");
     setErrorMessage("");
     setLoading(true);
-
+  
     if (!customerFirstName.trim() || !customerLastName.trim()) {
-      setErrorMessage(translations.checkout?.error?.invalid_fields || "Please enter valid details.");
+      setErrorMessage("Please enter valid details.");
       setLoading(false);
       return;
     }
-
+  
     if (!appointmentDate) {
-      setErrorMessage(translations.checkout?.error?.no_date || "No appointment date selected.");
+      setErrorMessage("No appointment date selected.");
       setLoading(false);
       return;
     }
-
+  
     try {
       // Combine all selected services into a single comma-separated string
       const servicesString = services.map((service) => service.title).join(", ");
       const formattedDate = appointmentDate.includes("T")
         ? appointmentDate
         : `${appointmentDate}T12:00`;
-
-      // 3) Include the actual customerId in the payload
+  
       const payload = {
         customerId,
         customerFirstName: customerFirstName.trim(),
@@ -119,19 +118,18 @@ const CheckoutPage: React.FC = () => {
         comments,
         status: "pending",
       };
-
-      // 4) Call the endpoint that expects `customerId` in the body
-      //    (Typically /appointments/with-customerid if that's what your backend uses)
-      const response = await axiosInstance.post("/appointments/with-customerid", payload, {
+  
+      console.log("📧 Sending appointment request to backend:", payload);
+  
+      const response = await axiosInstance.post(`/appointments/customers/${customerId}`, payload, {
         headers: { "Content-Type": "application/json" },
       });
-
+  
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage(
-          translations.checkout?.success?.appointment_created || "Appointment created successfully!"
-        );
-
-        // 5) Redirect to My Appointments and pass the new appointment in state
+        // ✅ Show an alert before redirecting
+        alert("Your appointment has been booked! You will receive a confirmation email shortly.");
+        
+        // ✅ Redirect to My Appointments page
         navigate("/my-appointments", {
           state: {
             newAppointment: response.data,
@@ -140,15 +138,13 @@ const CheckoutPage: React.FC = () => {
         });
       }
     } catch (error) {
-      console.error("Error creating appointment:", error);
-      setErrorMessage(
-        translations.checkout?.error?.appointment_creation || "Error creating appointment."
-      );
+      console.error("❌ Error creating appointment:", error);
+      setErrorMessage("Error creating appointment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   // Just a convenience to sum up the service prices
   const totalPrice = services.reduce((sum, service) => sum + service.pricing, 0);
 
