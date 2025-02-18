@@ -110,6 +110,8 @@ export interface Translations {
     select_time?: string;
     error?: string;
     next_button?: string;
+    invalid_date?: string;
+    invalid_time?: string;
   };
   checkout?: {  
     title?: string;
@@ -134,6 +136,38 @@ export interface Translations {
     };
     confirm_button?: string;
     confirming?: string;
+    total?: string;
+  };
+  profile?: {
+    title?: string;
+    loading?: string;
+    loading_profile?: string;
+    not_logged_in?: string;
+    prompt?: string;
+    yes?: string;
+    no?: string;
+    opt_out?: string;
+    create_profile_anyway?: string;
+    edit_profile?: string;
+    save_profile?: string;
+    cancel?: string;
+    customer_id?: string;
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    company?: string;
+    address?: string;
+    success?: {
+      update_success?: string;
+    };
+    error?: {
+      first_name_required?: string;
+      last_name_required?: string;
+      address_required?: string;
+      invalid_address?: string;
+      invalid_phone?: string;
+      update_failed?: string;
+    };
   };
 }
 

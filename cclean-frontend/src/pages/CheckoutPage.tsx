@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAxiosWithAuth } from "../api/axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useLanguage } from "../hooks/useLanguage";
+import "./CheckoutPage.css";
 
 interface Service {
   serviceId: string;
@@ -15,11 +16,10 @@ interface Service {
 const CheckoutPage: React.FC = () => {
   const axiosInstance = useAxiosWithAuth();
   const navigate = useNavigate();
-  const { translations } = useLanguage();
+  const { translations } = useLanguage(); // ✅ Get translations dynamically
   const location = useLocation();
   const { getAccessTokenSilently, user } = useAuth0();
-  
-  // We pull these from the page that navigated us here (Booking page, etc.)
+
   const { selectedServiceIds, appointmentDate } = location.state as {
     selectedServiceIds: string[];
     appointmentDate: string;
@@ -31,34 +31,30 @@ const CheckoutPage: React.FC = () => {
   const [customerLastName, setCustomerLastName] = useState("");
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchCustomerDetails = async () => {
       try {
         const token = await getAccessTokenSilently();
-        
+
         if (!user || !user.email) {
           throw new Error("No email found in Auth0 user object.");
         }
 
-        // 1) Get the user's customer info from your backend:
-        const userEmail = user.email;
         const res = await axiosInstance.get(
-          `/customers/byEmail?email=${encodeURIComponent(userEmail)}`,
+          `/customers/byEmail?email=${encodeURIComponent(user.email)}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (res.status === 200) {
-          // 2) Store the ID so we can use it in our POST
           setCustomerId(res.data.customerId);
           setCustomerFirstName(res.data.firstName || "");
           setCustomerLastName(res.data.lastName || "");
         }
       } catch (error) {
         console.error("Error fetching customer details:", error);
-        setErrorMessage("Error fetching customer details.");
+        setErrorMessage(translations.checkout?.error?.fetch_customer || "Error fetching customer details.");
       }
     };
 
@@ -73,9 +69,7 @@ const CheckoutPage: React.FC = () => {
         }
         setServices(fetched);
       } catch {
-        setErrorMessage(
-          translations.checkout?.error?.fetch_services || "Error fetching services."
-        );
+        setErrorMessage(translations.checkout?.error?.fetch_services || "Error fetching services.");
       }
     };
 
@@ -86,29 +80,25 @@ const CheckoutPage: React.FC = () => {
   }, [getAccessTokenSilently, axiosInstance, translations, selectedServiceIds, user]);
 
   const handleSubmit = async () => {
-    setSuccessMessage("");
     setErrorMessage("");
     setLoading(true);
-  
+
     if (!customerFirstName.trim() || !customerLastName.trim()) {
-      setErrorMessage("Please enter valid details.");
+      setErrorMessage(translations.checkout?.error?.invalid_fields || "Please enter valid details.");
       setLoading(false);
       return;
     }
-  
+
     if (!appointmentDate) {
-      setErrorMessage("No appointment date selected.");
+      setErrorMessage(translations.checkout?.error?.no_date || "No appointment date selected.");
       setLoading(false);
       return;
     }
-  
+
     try {
-      // Combine all selected services into a single comma-separated string
       const servicesString = services.map((service) => service.title).join(", ");
-      const formattedDate = appointmentDate.includes("T")
-        ? appointmentDate
-        : `${appointmentDate}T12:00`;
-  
+      const formattedDate = appointmentDate.includes("T") ? appointmentDate : `${appointmentDate}T12:00`;
+
       const payload = {
         customerId,
         customerFirstName: customerFirstName.trim(),
@@ -118,18 +108,14 @@ const CheckoutPage: React.FC = () => {
         comments,
         status: "pending",
       };
-  
-      console.log("📧 Sending appointment request to backend:", payload);
-  
+
       const response = await axiosInstance.post(`/appointments/customers/${customerId}`, payload, {
         headers: { "Content-Type": "application/json" },
       });
-  
+
       if (response.status === 200 || response.status === 201) {
-        // ✅ Show an alert before redirecting
-        alert("Your appointment has been booked! You will receive a confirmation email shortly.");
+        alert(translations.checkout?.success?.appointment_created || "Your appointment has been booked! You will receive a confirmation email shortly.");
         
-        // ✅ Redirect to My Appointments page
         navigate("/my-appointments", {
           state: {
             newAppointment: response.data,
@@ -139,44 +125,29 @@ const CheckoutPage: React.FC = () => {
       }
     } catch (error) {
       console.error("❌ Error creating appointment:", error);
-      setErrorMessage("Error creating appointment. Please try again.");
+      setErrorMessage(translations.checkout?.error?.appointment_creation || "Error creating appointment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-  
-  // Just a convenience to sum up the service prices
+
   const totalPrice = services.reduce((sum, service) => sum + service.pricing, 0);
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        maxWidth: "600px",
-        margin: "0 auto",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-        borderRadius: "10px",
-        backgroundColor: "#f9f9f9",
-      }}
-    >
-      <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-        {translations.checkout?.title || "Confirm Your Appointment"}
-      </h1>
+    <div className="checkout-container">
+      <h1>{translations.checkout?.title || "Confirm Your Appointment"}</h1>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="checkout-section">
         <h2>{translations.checkout?.selected_services || "Selected Services"}</h2>
         {services.length > 0 ? (
           <>
             {services.map((svc) => (
-              <div
-                key={svc.serviceId}
-                style={{ padding: "10px 0", borderBottom: "1px solid #ddd" }}
-              >
+              <div key={svc.serviceId} className="checkout-service">
                 <strong>{svc.title}</strong> - ${svc.pricing.toFixed(2)}
               </div>
             ))}
-            <div style={{ marginTop: "10px", textAlign: "right" }}>
-              <strong>Total: ${totalPrice.toFixed(2)}</strong>
+            <div className="checkout-total">
+              <strong>{translations.checkout?.total || "Total"}: ${totalPrice.toFixed(2)}</strong>
             </div>
           </>
         ) : (
@@ -184,102 +155,34 @@ const CheckoutPage: React.FC = () => {
         )}
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="checkout-section">
         <h3>{translations.checkout?.date_time || "Date & Time"}:</h3>
         <p>{new Date(appointmentDate).toLocaleString()}</p>
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="checkout-section">
         <label>{translations.checkout?.first_name || "First Name"}:</label>
-        <input
-          type="text"
-          value={customerFirstName}
-          readOnly
-          style={{
-            width: "100%",
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            backgroundColor: "#f2f2f2",
-          }}
-        />
+        <input type="text" value={customerFirstName} readOnly className="checkout-input read-only" />
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="checkout-section">
         <label>{translations.checkout?.last_name || "Last Name"}:</label>
-        <input
-          type="text"
-          value={customerLastName}
-          readOnly
-          style={{
-            width: "100%",
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            backgroundColor: "#f2f2f2",
-          }}
-        />
+        <input type="text" value={customerLastName} readOnly className="checkout-input read-only" />
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div className="checkout-section">
         <label>{translations.checkout?.comments || "Comments"}:</label>
         <textarea
           value={comments}
           onChange={(e) => setComments(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "8px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            minHeight: "100px",
-          }}
+          className="checkout-textarea"
           placeholder={translations.checkout?.comments_placeholder || "Additional comments (optional)"}
         />
       </div>
 
-      {errorMessage && (
-        <p
-          style={{
-            color: "red",
-            textAlign: "center",
-            padding: "10px",
-            backgroundColor: "#ffe6e6",
-            borderRadius: "5px",
-          }}
-        >
-          {errorMessage}
-        </p>
-      )}
+      {errorMessage && <p className="checkout-error">{errorMessage}</p>}
 
-      {successMessage && (
-        <p
-          style={{
-            color: "green",
-            textAlign: "center",
-            padding: "10px",
-            backgroundColor: "#e6ffe6",
-            borderRadius: "5px",
-          }}
-        >
-          {successMessage}
-        </p>
-      )}
-
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        style={{
-          width: "100%",
-          padding: "12px",
-          backgroundColor: loading ? "#ccc" : "#28a745",
-          color: "#fff",
-          border: "none",
-          borderRadius: "5px",
-          cursor: loading ? "not-allowed" : "pointer",
-          fontSize: "16px",
-          transition: "background-color 0.3s ease",
-        }}
-      >
+      <button onClick={handleSubmit} disabled={loading} className="checkout-button">
         {loading
           ? translations.checkout?.confirming || "Confirming..."
           : translations.checkout?.confirm_button || "Confirm Appointment"}
