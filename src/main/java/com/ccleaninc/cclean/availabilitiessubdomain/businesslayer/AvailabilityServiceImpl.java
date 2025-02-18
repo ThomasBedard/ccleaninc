@@ -206,4 +206,61 @@ public class AvailabilityServiceImpl implements AvailabilityService {
         table.addCell(availability.getShift().toString());
         table.addCell(availability.getComments());
     }
+
+    // --- New Methods for JWT-based Operations ---
+
+    @Override
+    public AvailabilityResponseModel createAvailabilityForEmployee(String email, AvailabilityRequestModel requestModel) {
+        EmployeeResponseModel employee = employeeService.getEmployeeByEmail(email);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found for email: " + email);
+        }
+        // Build a new request model using employee details from JWT
+        AvailabilityRequestModel modifiedRequest = AvailabilityRequestModel.builder()
+                .employeeId(employee.getEmployeeId())
+                .employeeFirstName(employee.getFirstName())
+                .employeeLastName(employee.getLastName())
+                .availableDate(requestModel.getAvailableDate())
+                .shift(requestModel.getShift())
+                .comments(requestModel.getComments())
+                .build();
+        return createAvailability(modifiedRequest);
+    }
+
+    @Override
+    public AvailabilityResponseModel updateAvailabilityForEmployee(String availabilityId, String email, AvailabilityRequestModel requestModel) {
+        EmployeeResponseModel employee = employeeService.getEmployeeByEmail(email);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found for email: " + email);
+        }
+        Availability availability = availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
+        if (availability == null) {
+            throw new NotFoundException("Availability with ID " + availabilityId + " was not found.");
+        }
+        if (!availability.getEmployeeId().equals(employee.getEmployeeId())) {
+            throw new InvalidInputException("You do not have permission to update this availability.");
+        }
+        // Update allowed fields: availableDate, shift, and comments
+        availability.setAvailableDate(requestModel.getAvailableDate());
+        availability.setShift(requestModel.getShift());
+        availability.setComments(requestModel.getComments());
+        Availability savedAvailability = availabilityRepository.save(availability);
+        return availabilityResponseMapper.entityToResponseModel(savedAvailability);
+    }
+
+    @Override
+    public void deleteAvailabilityForEmployee(String availabilityId, String email) {
+        EmployeeResponseModel employee = employeeService.getEmployeeByEmail(email);
+        if (employee == null) {
+            throw new NotFoundException("Employee not found for email: " + email);
+        }
+        Availability availability = availabilityRepository.findAvailabilityByAvailabilityIdentifier_AvailabilityId(availabilityId);
+        if (availability == null) {
+            throw new NotFoundException("Availability with ID " + availabilityId + " was not found.");
+        }
+        if (!availability.getEmployeeId().equals(employee.getEmployeeId())) {
+            throw new InvalidInputException("You do not have permission to delete this availability.");
+        }
+        availabilityRepository.delete(availability);
+    }
 }
