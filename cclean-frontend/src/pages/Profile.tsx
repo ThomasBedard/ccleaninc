@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import axiosInstance from "../api/axios";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translation hook
 import "./Profile.css";
 
 interface CustomerResponse {
@@ -15,14 +16,12 @@ interface CustomerResponse {
 
 const Profile: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
+  const { translations } = useLanguage(); // ✅ Fetch translations
 
-  // If null, we haven't prompted. If true, user wants a customer profile. If false, user doesn't.
   const [wantsProfile, setWantsProfile] = useState<boolean | null>(null);
-
-  // The DB record if they do want a profile
   const [customerData, setCustomerData] = useState<CustomerResponse | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Local form fields for editing
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -31,9 +30,6 @@ const Profile: React.FC = () => {
     address: "",
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-
-  // If user wants a profile, and we haven't loaded it yet, fetch from backend
   useEffect(() => {
     if (!isLoading && isAuthenticated && user?.email && wantsProfile === true && !customerData) {
       axiosInstance
@@ -50,164 +46,152 @@ const Profile: React.FC = () => {
           });
         })
         .catch((err) => {
-          console.error("Error fetching/creating customer:", err);
+          console.error("Error fetching customer:", err);
         });
     }
   }, [isLoading, isAuthenticated, user?.email, wantsProfile, customerData]);
 
-  // Handler for all input fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    // ✅ Enforce phone number format (514-555-1234)
+    if (name === "phoneNumber") {
+      const formattedValue = value.replace(/[^\d-]/g, ""); 
+      const cleaned = formattedValue.replace(/-/g, ""); 
+      let formatted = "";
+
+      if (cleaned.length > 0) formatted = cleaned.slice(0, 3);
+      if (cleaned.length > 3) formatted += "-" + cleaned.slice(3, 6);
+      if (cleaned.length > 6) formatted += "-" + cleaned.slice(6, 10);
+
+      setForm((prev) => ({ ...prev, phoneNumber: formatted }));
+      return;
+    }
+
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Save to backend
   const handleSave = () => {
     if (!customerData) return;
 
+    // ✅ Validate required fields
+    if (!form.firstName.trim()) {
+      alert(translations.profile?.error?.first_name_required || "First Name cannot be empty.");
+      return;
+    }
+    if (!form.lastName.trim()) {
+      alert(translations.profile?.error?.last_name_required || "Last Name cannot be empty.");
+      return;
+    }
+    if (!form.phoneNumber.trim() || !/^\d{3}-\d{3}-\d{4}$/.test(form.phoneNumber)) {
+      alert(translations.profile?.error?.invalid_phone || "Phone number must be in the format 514-555-2355.");
+      return;
+    }
+    if (!form.address.trim()) {
+      alert(translations.profile?.error?.address_required || "Address cannot be empty.");
+      return;
+    }
+
+    // ✅ Validate address format (Number + Street Name)
+    const addressRegex = /^\d+\s[A-Za-z\s]+$/;
+    if (!addressRegex.test(form.address)) {
+      alert(translations.profile?.error?.invalid_address || "Address must be in the format: 123 Main Street");
+      return;
+    }
+
     const updatedCustomer = {
       ...customerData,
-      firstName: form.firstName || null,
-      lastName: form.lastName || null,
+      firstName: form.firstName,
+      lastName: form.lastName,
       companyName: form.companyName || null,
-      phoneNumber: form.phoneNumber || null,
-      address: form.address || null,
+      phoneNumber: form.phoneNumber,
+      address: form.address,
     };
 
     axiosInstance
       .put(`/customers/${customerData.customerId}`, updatedCustomer)
       .then((res) => {
-        alert("Profile updated!");
+        alert(translations.profile?.success?.update_success || "Profile updated successfully!");
         setCustomerData(res.data);
-        setForm({
-          firstName: res.data.firstName || "",
-          lastName: res.data.lastName || "",
-          phoneNumber: res.data.phoneNumber || "",
-          companyName: res.data.companyName || "",
-          address: res.data.address || "",
-        });
         setIsEditing(false);
       })
       .catch((err) => {
         console.error("Error updating profile:", err);
-        alert("Error updating profile");
+        alert(translations.profile?.error?.update_failed || "Error updating profile.");
       });
   };
 
   if (isLoading) {
-    return <div className="profile-loading">Loading ...</div>;
+    return <div className="profile-loading">{translations.profile?.loading || "Loading..."}</div>;
   }
 
   if (!isAuthenticated || !user) {
-    return <div>Please log in to see your profile.</div>;
+    return <div>{translations.profile?.not_logged_in || "Please log in to see your profile."}</div>;
   }
 
-  // If user hasn't decided if they want a profile or not, show the prompt
   if (wantsProfile === null) {
     return (
       <div className="profile-container">
-        <div className="profile-image-wrapper">
-          <img className="profile-image" src={user.picture} alt={user.name} />
-        </div>
-        <h2 className="profile-name">{user.name}</h2>
-        <p className="profile-email">{user.email}</p>
-        <p>Would you like to set up a Customer Profile?</p>
-        <button onClick={() => setWantsProfile(true)}>Yes</button>
-        <button onClick={() => setWantsProfile(false)}>No</button>
+        <h2>{user.name}</h2>
+        <p>{user.email}</p>
+        <p>{translations.profile?.prompt || "Would you like to set up a Customer Profile?"}</p>
+        <button onClick={() => setWantsProfile(true)}>{translations.profile?.yes || "Yes"}</button>
+        <button onClick={() => setWantsProfile(false)}>{translations.profile?.no || "No"}</button>
       </div>
     );
   }
 
-  // If user said "No," we show just their basic Auth0 data
   if (wantsProfile === false) {
     return (
       <div className="profile-container">
-        <div className="profile-image-wrapper">
-          <img className="profile-image" src={user.picture} alt={user.name} />
-        </div>
-        <h2 className="profile-name">{user.name}</h2>
-        <p className="profile-email">{user.email}</p>
-        <p>You have opted out of creating a customer profile.</p>
-        <button onClick={() => setWantsProfile(true)}>Create Profile Anyway</button>
+        <h2>{user.name}</h2>
+        <p>{user.email}</p>
+        <p>{translations.profile?.opt_out || "You have opted out of creating a customer profile."}</p>
+        <button onClick={() => setWantsProfile(true)}>
+          {translations.profile?.create_profile_anyway || "Create Profile Anyway"}
+        </button>
       </div>
     );
   }
 
-  // If user said "Yes," but we haven't fetched or created a record yet, wait
   if (wantsProfile === true && !customerData) {
-    return <div>Loading your customer profile...</div>;
+    return <div>{translations.profile?.loading_profile || "Loading your customer profile..."}</div>;
   }
 
-  // Otherwise, user said "Yes" and we have a record
   return (
     <div className="profile-container">
-      <div className="profile-image-wrapper">
-        <img className="profile-image" src={user.picture} alt={user.name} />
-      </div>
-      <h2 className="profile-name">{user.name}</h2>
-      <p className="profile-email">{user.email}</p>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
 
-      {/* Show read‐only fields if not editing */}
-      {!isEditing && (
+      {!isEditing ? (
         <>
-          <p><strong>Customer ID:</strong> {customerData?.customerId}</p>
-          <p><strong>First Name:</strong> {customerData?.firstName || ""}</p>
-          <p><strong>Last Name:</strong> {customerData?.lastName || ""}</p>
-          <p><strong>Phone:</strong> {customerData?.phoneNumber || ""}</p>
-          <p><strong>Company:</strong> {customerData?.companyName || ""}</p>
-          <p><strong>Address:</strong> {customerData?.address || ""}</p>
-          <button onClick={() => setIsEditing(true)}>Edit Profile</button>
+          <p><strong>{translations.profile?.customer_id || "Customer ID"}:</strong> {customerData?.customerId}</p>
+          <p><strong>{translations.profile?.first_name || "First Name"}:</strong> {customerData?.firstName || ""}</p>
+          <p><strong>{translations.profile?.last_name || "Last Name"}:</strong> {customerData?.lastName || ""}</p>
+          <p><strong>{translations.profile?.phone || "Phone"}:</strong> {customerData?.phoneNumber || ""}</p>
+          <p><strong>{translations.profile?.company || "Company"}:</strong> {customerData?.companyName || ""}</p>
+          <p><strong>{translations.profile?.address || "Address"}:</strong> {customerData?.address || ""}</p>
+          <button onClick={() => setIsEditing(true)}>{translations.profile?.edit_profile || "Edit Profile"}</button>
         </>
-      )}
-
-      {/* Show input fields if editing */}
-      {isEditing && (
+      ) : (
         <>
-          <div style={{ margin: "0.5rem 0" }}>
-            <label>First Name: </label>
-            <input
-              name="firstName"
-              value={form.firstName}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ margin: "0.5rem 0" }}>
-            <label>Last Name: </label>
-            <input
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ margin: "0.5rem 0" }}>
-            <label>Phone: </label>
-            <input
-              name="phoneNumber"
-              value={form.phoneNumber}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ margin: "0.5rem 0" }}>
-            <label>Company: </label>
-            <input
-              name="companyName"
-              value={form.companyName}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ margin: "0.5rem 0" }}>
-            <label>Address: </label>
-            <input
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-            />
-          </div>
+          <label>{translations.profile?.first_name || "First Name"}:</label>
+          <input name="firstName" value={form.firstName} onChange={handleChange} />
 
-          <button onClick={handleSave} style={{ marginRight: "1rem" }}>
-            Save Profile
-          </button>
-          <button onClick={() => setIsEditing(false)}>Cancel</button>
+          <label>{translations.profile?.last_name || "Last Name"}:</label>
+          <input name="lastName" value={form.lastName} onChange={handleChange} />
+
+          <label>{translations.profile?.phone || "Phone"}:</label>
+          <input name="phoneNumber" value={form.phoneNumber} onChange={handleChange} />
+
+          <label>{translations.profile?.company || "Company"}:</label>
+          <input name="companyName" value={form.companyName} onChange={handleChange} />
+
+          <label>{translations.profile?.address || "Address"}:</label>
+          <input name="address" value={form.address} onChange={handleChange} />
+
+          <button onClick={handleSave}>{translations.profile?.save_profile || "Save Profile"}</button>
+          <button onClick={() => setIsEditing(false)}>{translations.profile?.cancel || "Cancel"}</button>
         </>
       )}
     </div>

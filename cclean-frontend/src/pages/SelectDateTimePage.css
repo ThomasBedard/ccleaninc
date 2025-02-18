@@ -1,0 +1,117 @@
+/* General container */
+.select-datetime-container {
+    text-align: center;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Header */
+  .header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Layout container */
+  .datetime-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  
+  /* Calendar container */
+  .calendar-container {
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+    width: 320px;
+  }
+  
+  /* Selected date text */
+  .selected-date {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Time selection container */
+  .select-datetime-time-selection {
+    width: 300px;
+    text-align: left;
+  }
+  
+  /* Time slot header */
+  .select-datetime-time-selection h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Time buttons layout */
+  .select-datetime-time-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  /* Individual time button styling */
+  .select-datetime-time-button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease, transform 0.1s ease;
+  }
+  
+  /* Hover effect */
+  .select-datetime-time-button:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+  }
+  
+  /* Selected time button */
+  .select-datetime-time-button.selected {
+    border: 2px solid #007BFF;
+    background-color: #007BFF;
+    color: white;
+    box-shadow: 0px 0px 15px rgba(0, 123, 255, 0.8);
+    transform: scale(1.1);
+    font-weight: bold;
+  }
+  
+  /* Disabled time button */
+  .select-datetime-time-button.disabled {
+    background-color: #ddd;
+    color: #999;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Next button */
+  .next-button {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+  }
+  
+  .next-button:hover {
+    background-color: #0056b3;
+  }
+  
