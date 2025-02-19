@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translations
-import axios from "axios";
 import "./Contacts.css";
+import axiosInstance from "../api/axios";
 
 const Contacts = () => {
   const { translations } = useLanguage(); // ✅ Get translations from context
@@ -19,7 +19,9 @@ const Contacts = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   // ✅ Handle input change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -30,27 +32,37 @@ const Contacts = () => {
     setIsSubmitting(true);
     setSuccessMessage("");
     setErrorMessage("");
-  
-    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      setErrorMessage(translations.contacts?.form?.error || "Please fill in all fields.");
+
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.subject ||
+      !formData.message
+    ) {
+      setErrorMessage(
+        translations.contacts?.form?.error || "Please fill in all fields."
+      );
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
-      await axios.post("http://localhost:8080/api/v1/contact/send", {
-        name: formData.name,       // ✅ Sender's name
-        email: formData.email,     // ✅ Sender's email
+      await axiosInstance.post("/api/v1/contact/send", {
+        name: formData.name, // ✅ Sender's name
+        email: formData.email, // ✅ Sender's email
         subject: formData.subject, // ✅ Email subject
         message: formData.message, // ✅ Message body
       });
-  
-      setSuccessMessage(translations.contacts?.form?.success || "Email sent successfully!");
+
+      setSuccessMessage(
+        translations.contacts?.form?.success || "Email sent successfully!"
+      );
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("Error sending email:", error); // ✅ Log the error
       setErrorMessage(
-        translations.contacts?.form?.error || "Failed to send the email. Please try again."
+        translations.contacts?.form?.error ||
+          "Failed to send the email. Please try again."
       );
     } finally {
       setIsSubmitting(false);
@@ -61,7 +73,9 @@ const Contacts = () => {
     <div className="contacts-container">
       <div className="contacts-header">
         <h1>{translations.contacts?.title || "Contact Us"}</h1>
-        <p className="subtitle">{translations.contacts?.subtitle || "Feel free to reach out!"}</p>
+        <p className="subtitle">
+          {translations.contacts?.subtitle || "Feel free to reach out!"}
+        </p>
       </div>
 
       <div className="contacts-content">
@@ -74,7 +88,9 @@ const Contacts = () => {
 
         <div className="contacts-form">
           <h2>{translations.contacts?.form?.title || "Send Us a Message"}</h2>
-          {successMessage && <p className="success-message">{successMessage}</p>}
+          {successMessage && (
+            <p className="success-message">{successMessage}</p>
+          )}
           {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <form onSubmit={handleSubmit}>
@@ -84,7 +100,9 @@ const Contacts = () => {
                 type="text"
                 name="name"
                 value={formData.name}
-                placeholder={translations.contacts?.form?.namePlaceholder || "Your Name"}
+                placeholder={
+                  translations.contacts?.form?.namePlaceholder || "Your Name"
+                }
                 onChange={handleChange}
                 required
               />
@@ -96,7 +114,9 @@ const Contacts = () => {
                 type="email"
                 name="email"
                 value={formData.email}
-                placeholder={translations.contacts?.form?.emailPlaceholder || "Your Email"}
+                placeholder={
+                  translations.contacts?.form?.emailPlaceholder || "Your Email"
+                }
                 onChange={handleChange}
                 required
               />
@@ -108,7 +128,10 @@ const Contacts = () => {
                 type="text"
                 name="subject"
                 value={formData.subject}
-                placeholder={translations.contacts?.form?.subjectPlaceholder || "Message Subject"}
+                placeholder={
+                  translations.contacts?.form?.subjectPlaceholder ||
+                  "Message Subject"
+                }
                 onChange={handleChange}
                 required
               />
@@ -119,7 +142,10 @@ const Contacts = () => {
               <textarea
                 name="message"
                 value={formData.message}
-                placeholder={translations.contacts?.form?.messagePlaceholder || "Write your message here..."}
+                placeholder={
+                  translations.contacts?.form?.messagePlaceholder ||
+                  "Write your message here..."
+                }
                 onChange={handleChange}
                 required
               />
