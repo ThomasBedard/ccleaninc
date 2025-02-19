@@ -1,21 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axios';
+import { useAuth0 } from '@auth0/auth0-react';
+import { useAxiosWithAuth } from '../api/axios';  // <-- Use the custom hook here
 import './AddAvailability.css';
 
 const shifts = ['Morning', 'Evening', 'Night'];
 
 const AddAvailability = () => {
+  const { user } = useAuth0();
+  const axiosWithAuth = useAxiosWithAuth(); // <-- Interceptor-based instance
+  const navigate = useNavigate();
+
   const [availability, setAvailability] = useState({
-    employeeId: '',
-    employeeFirstName: '',
-    employeeLastName: '',
     availableDate: '',
     shift: '',
     comments: '',
+    employeeFirstName: '',
+    employeeLastName: '',
   });
 
-  const navigate = useNavigate();
+  // Prefill employee details from the Auth0 user object (optional, for display)
+  useEffect(() => {
+    if (user) {
+      setAvailability((prev) => ({
+        ...prev,
+        employeeFirstName: user.given_name || '',
+        employeeLastName: user.family_name || '',
+      }));
+    }
+  }, [user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -29,7 +42,7 @@ const AddAvailability = () => {
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
-    const dateWithTime = `${selectedDate}T00:00`; // Append default time
+    const dateWithTime = `${selectedDate}T00:00`;
     setAvailability((prevState) => ({
       ...prevState,
       availableDate: dateWithTime,
@@ -39,16 +52,18 @@ const AddAvailability = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!availability.employeeId || !availability.employeeFirstName || !availability.employeeLastName) {
+    if (!availability.availableDate || !availability.shift) {
       alert('Please fill in all required fields.');
       return;
     }
 
     try {
-      await axiosInstance.post('/availabilities', availability);
+      // Use the JWT-based endpoint that derives employee details from the token
+      await axiosWithAuth.post('/availabilities/my-availabilities', availability);
       alert('Availability added successfully!');
-      navigate('/my-availabilities'); // Redirect to "My Availabilities" page
+      navigate('/my-availabilities');
     } catch (err) {
+      console.error('Failed to add availability:', err);
       alert(
         err instanceof Error
           ? err.message
@@ -61,41 +76,13 @@ const AddAvailability = () => {
     <div className="add-availability-container">
       <h1 className="add-availability-title">Add Availability</h1>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="employeeId">Employee ID:</label>
-        <input
-          type="text"
-          name="employeeId"
-          id="employeeId"
-          placeholder="Enter employee ID"
-          value={availability.employeeId}
-          onChange={handleChange}
-          className="add-availability-input"
-          required
-        />
-
-        <label htmlFor="employeeFirstName">Employee First Name:</label>
-        <input
-          type="text"
-          name="employeeFirstName"
-          id="employeeFirstName"
-          placeholder="Enter first name"
-          value={availability.employeeFirstName}
-          onChange={handleChange}
-          className="add-availability-input"
-          required
-        />
-
-        <label htmlFor="employeeLastName">Employee Last Name:</label>
-        <input
-          type="text"
-          name="employeeLastName"
-          id="employeeLastName"
-          placeholder="Enter last name"
-          value={availability.employeeLastName}
-          onChange={handleChange}
-          className="add-availability-input"
-          required
-        />
+        {/* Display employee name as read-only */}
+        <div className="read-only-field">
+          <label>Employee Name:</label>
+          <span>
+            {availability.employeeFirstName} {availability.employeeLastName}
+          </span>
+        </div>
 
         <label htmlFor="availableDate">Available Date:</label>
         <input
