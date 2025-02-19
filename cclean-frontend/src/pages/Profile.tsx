@@ -48,7 +48,6 @@ const Profile: React.FC = () => {
         })
         .catch((err) => {
           if (err.response?.status === 404) {
-            // No customer profile
             setCustomerData(null);
             setWantsCustomerProfile(null); // Show prompt
           } else {
@@ -69,7 +68,6 @@ const Profile: React.FC = () => {
         })
         .catch((err) => {
           if (err.response?.status === 404) {
-            // No employee profile
             setEmployeeData(null);
             setWantsEmployeeProfile(null); // Show prompt
           } else {
@@ -94,7 +92,6 @@ const Profile: React.FC = () => {
 
       {/* ----- Customer Profile Section ----- */}
       <CustomerProfileSection
-        userEmail={user.email}
         wantsProfile={wantsCustomerProfile}
         setWantsProfile={setWantsCustomerProfile}
         customerData={customerData}
@@ -105,7 +102,6 @@ const Profile: React.FC = () => {
 
       {/* ----- Employee Profile Section ----- */}
       <EmployeeProfileSection
-        userEmail={user.email}
         wantsProfile={wantsEmployeeProfile}
         setWantsProfile={setWantsEmployeeProfile}
         employeeData={employeeData}
@@ -123,7 +119,6 @@ export default Profile;
 // CUSTOMER PROFILE SECTION
 //
 interface CustomerSectionProps {
-  userEmail: string;
   wantsProfile: boolean | null;
   setWantsProfile: React.Dispatch<React.SetStateAction<boolean | null>>;
   customerData: CustomerResponse | null;
@@ -133,7 +128,6 @@ interface CustomerSectionProps {
 }
 
 const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
-  userEmail,
   wantsProfile,
   setWantsProfile,
   customerData,
@@ -141,10 +135,9 @@ const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
   showForm,
   setShowForm,
 }) => {
-  const axiosWithAuth = useAxiosWithAuth();
+  // const axiosWithAuth = useAxiosWithAuth();
   const [isEditing, setIsEditing] = useState(false);
 
-  // Prompts
   const handleYes = () => {
     setWantsProfile(true);
     setShowForm(true);
@@ -172,7 +165,6 @@ const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
     );
   }
 
-  // No profile => show "No profile" message or creation form
   if (!customerData && !showForm) {
     return (
       <div className="profile-info">
@@ -180,7 +172,7 @@ const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
       </div>
     );
   }
-  // Creating new
+
   if (!customerData && showForm) {
     return (
       <CustomerProfileForm
@@ -192,7 +184,6 @@ const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
     );
   }
 
-  // We do have a profile => show read-only or edit form
   if (customerData && !isEditing) {
     return (
       <div className="profile-info">
@@ -220,7 +211,6 @@ const CustomerProfileSection: React.FC<CustomerSectionProps> = ({
     );
   }
 
-  // If we have a profile and isEditing
   if (customerData && isEditing) {
     return (
       <CustomerProfileForm
@@ -270,7 +260,6 @@ const CustomerProfileForm: React.FC<CustomerFormProps> = ({
   const handleSave = async () => {
     try {
       if (!isEditing) {
-        // Creating new
         const response = await axiosWithAuth.post<CustomerResponse>("/customers", {
           firstName: form.firstName,
           lastName: form.lastName,
@@ -280,8 +269,6 @@ const CustomerProfileForm: React.FC<CustomerFormProps> = ({
         });
         setCustomerData(response.data);
       } else if (existingCustomer) {
-        // Editing existing
-        // For example, PUT /customers/{customerId}
         const response = await axiosWithAuth.put<CustomerResponse>(
           `/customers/${existingCustomer.customerId}`,
           {
@@ -290,7 +277,7 @@ const CustomerProfileForm: React.FC<CustomerFormProps> = ({
             companyName: form.companyName,
             phoneNumber: form.phoneNumber,
             address: form.address,
-            email: existingCustomer.email, // preserve existing email if needed
+            email: existingCustomer.email,
           }
         );
         setCustomerData(response.data);
@@ -344,7 +331,6 @@ const CustomerProfileForm: React.FC<CustomerFormProps> = ({
 // EMPLOYEE PROFILE SECTION
 //
 interface EmployeeSectionProps {
-  userEmail: string;
   wantsProfile: boolean | null;
   setWantsProfile: React.Dispatch<React.SetStateAction<boolean | null>>;
   employeeData: EmployeeResponse | null;
@@ -354,7 +340,6 @@ interface EmployeeSectionProps {
 }
 
 const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
-  userEmail,
   wantsProfile,
   setWantsProfile,
   employeeData,
@@ -366,7 +351,7 @@ const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
 
   const handleYes = () => {
     setWantsProfile(true);
-    setShowForm(true); // show the creation form
+    setShowForm(true);
   };
 
   const handleNo = () => {
@@ -392,7 +377,6 @@ const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
     );
   }
 
-  // If wantsProfile === true but no data & user hasn't opened form
   if (!employeeData && !showForm) {
     return (
       <div className="profile-info">
@@ -401,7 +385,6 @@ const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
     );
   }
 
-  // If user wants to fill out a new employee profile
   if (!employeeData && showForm) {
     return (
       <EmployeeProfileForm
@@ -413,7 +396,6 @@ const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
     );
   }
 
-  // If we do have employeeData but not editing
   if (employeeData && !isEditing) {
     return (
       <div className="employee-profile-section">
@@ -441,7 +423,6 @@ const EmployeeProfileSection: React.FC<EmployeeSectionProps> = ({
     );
   }
 
-  // If employeeData && editing
   if (employeeData && isEditing) {
     return (
       <EmployeeProfileForm
@@ -491,7 +472,6 @@ const EmployeeProfileForm: React.FC<EmployeeFormProps> = ({
   const handleSave = async () => {
     try {
       if (!isEditing) {
-        // Create new
         const response = await axiosWithAuth.post<EmployeeResponse>("/employees/profile", {
           firstName: form.firstName,
           lastName: form.lastName,
@@ -501,7 +481,6 @@ const EmployeeProfileForm: React.FC<EmployeeFormProps> = ({
         });
         setEmployeeData(response.data);
       } else if (existingEmployee) {
-        // Update existing
         const response = await axiosWithAuth.put<EmployeeResponse>("/employees/profile", {
           firstName: form.firstName,
           lastName: form.lastName,
