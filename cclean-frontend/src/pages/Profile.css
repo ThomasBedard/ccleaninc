@@ -8,7 +8,7 @@
   border-radius: 8px;
   max-width: 280px;
   margin: 2rem auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(28, 11, 11, 0.1);
   font-family: sans-serif;
   text-align: center;
 }
@@ -43,3 +43,137 @@
   margin-top: 3rem;
   font-family: sans-serif;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  margin: 2rem auto;
+  box-shadow: 0 2px 8px rgba(28, 11, 11, 0.1);
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.profile-loading {
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 3rem;
+}
+
+.profile-prompt,
+.profile-opt-out,
+.profile-info,
+.employee-profile-section {
+  margin-top: 1rem;
+}
+
+/* Headings or paragraph text in these sections */
+.profile-prompt p,
+.profile-opt-out p,
+.profile-info p {
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+/* Buttons for prompts (Yes/No) and opt-outs */
+.profile-prompt button,
+.profile-opt-out button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-prompt button:hover,
+.profile-opt-out button:hover {
+  background-color: #0056b3;
+}
+
+/* The form wrapper for creating/updating profiles */
+.profile-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.profile-form label {
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+}
+
+.profile-form input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.profile-form button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.profile-form button:hover {
+  background-color: #218838;
+}
+
+/* Employee profile display section */
+.employee-profile-section h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.employee-profile-section p {
+  color: #555;
+  margin: 0.25rem 0;
+}
+
+/* Similarly, you can style a .customer-profile-section if needed */

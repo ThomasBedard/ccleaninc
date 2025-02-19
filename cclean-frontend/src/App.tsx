@@ -38,6 +38,7 @@ import "./pages/GlobalOverride.css";
 import "./index.css";
 
 import PrivateRoute from "./pages/PrivateRoute";
+// import EmployeeProfile from "./pages/EmployeeProfile";
 
 const App = () => {
   const { isLoading } = useAuth0();
@@ -139,6 +140,8 @@ const App = () => {
                   element={<SelectDateTimePage />}
                 />
                 <Route path="/profile" element={<Profile />} />
+                  {/* New route for employee profile */}
+                {/* <Route path="/employee-profile" element={<EmployeeProfile />} /> */}
               </Route>
 
               <Route path="/calendar-test" element={<CalendarTestPage />} />
