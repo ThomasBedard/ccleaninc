@@ -6,6 +6,7 @@ import AdminFeedbackList from "./AdminFeedbackList";
 import Appointments from "../../pages/Appointments";
 import EmployeeAvailabilities from "./EmployeeAvailabilities";
 import EmployeeSchedule from "./EmployeeSchedule";
+import UserRoleManager from "./UserRoleManager";
 
 import { motion } from "framer-motion";
 import {
@@ -15,7 +16,8 @@ import {
   FaCommentDots,
   FaCalendarCheck,
   FaCalendarAlt,
-  FaClock
+  FaClock,
+  FaUserShield, // new icon for user roles
 } from "react-icons/fa";
 
 const AdminDashboard = () => {
@@ -37,6 +39,8 @@ const AdminDashboard = () => {
         return <EmployeeAvailabilities />;
       case "employeeSchedule":
         return <EmployeeSchedule />;
+      case "userRoles":
+        return <UserRoleManager />;
       default:
         return null;
     }
@@ -87,6 +91,12 @@ const AdminDashboard = () => {
           onClick={() => setActiveTab("employeeSchedule")}
         >
           <FaCalendarAlt style={{ marginRight: "6px" }} /> Employee Schedule
+        </button>
+        <button
+          className={`tab-button ${activeTab === "userRoles" ? "active" : ""}`}
+          onClick={() => setActiveTab("userRoles")}
+        >
+          <FaUserShield style={{ marginRight: "6px" }} /> User Roles
         </button>
       </div>
 
