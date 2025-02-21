@@ -33,31 +33,33 @@ const Profile: React.FC = () => {
   });
 
   useEffect(() => {
-    if (
-      !isLoading &&
-      isAuthenticated &&
-      user?.email &&
-      wantsProfile === true &&
-      !customerData
-    ) {
+    if (!isLoading && isAuthenticated && user?.email) {
+      console.log("🔄 Fetching customer data...");
       axiosInstance
         .get(`/customers/byEmail?email=${encodeURIComponent(user.email)}`)
         .then((res) => {
-          const foundCustomer = res.data as CustomerResponse;
-          setCustomerData(foundCustomer);
-          setForm({
-            firstName: foundCustomer.firstName || "",
-            lastName: foundCustomer.lastName || "",
-            phoneNumber: foundCustomer.phoneNumber || "",
-            companyName: foundCustomer.companyName || "",
-            address: foundCustomer.address || "",
-          });
+          if (res.data) {
+            console.log("✅ Customer found:", res.data);
+            setCustomerData(res.data);
+            setForm({
+              firstName: res.data.firstName || "",
+              lastName: res.data.lastName || "",
+              phoneNumber: res.data.phoneNumber || "",
+              companyName: res.data.companyName || "",
+              address: res.data.address || "",
+            });
+            setWantsProfile(true); // ✅ Ensure profile is marked as "setup"
+          } else {
+            console.log("⚠ No profile found, user needs to set up profile.");
+            setWantsProfile(null);
+          }
         })
         .catch((err) => {
-          console.error("Error fetching customer:", err);
+          console.error("❌ Error fetching customer:", err);
         });
     }
-  }, [isLoading, isAuthenticated, user?.email, wantsProfile, customerData]);
+  }, [isLoading, isAuthenticated, user?.email]);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -135,22 +137,21 @@ const Profile: React.FC = () => {
     };
 
     axiosInstance
-      .put(`/customers/${customerData.customerId}`, updatedCustomer)
-      .then((res) => {
-        alert(
-          translations.profile?.success?.update_success ||
-            "Profile updated successfully!"
-        );
-        setCustomerData(res.data);
-        setIsEditing(false);
-      })
-      .catch((err) => {
-        console.error("Error updating profile:", err);
-        alert(
-          translations.profile?.error?.update_failed ||
-            "Error updating profile."
-        );
-      });
+  .put(`/customers/${customerData.customerId}`, updatedCustomer)
+  .then((res) => {
+    alert("Profile updated successfully!");
+    setCustomerData(res.data); // ✅ Ensure customerData is updated
+    setForm({
+      firstName: res.data.firstName || "",
+      lastName: res.data.lastName || "",
+      phoneNumber: res.data.phoneNumber || "",
+      companyName: res.data.companyName || "",
+      address: res.data.address || "",
+    });
+    setIsEditing(false);
+    setWantsProfile(true); // ✅ Ensure profile stays active
+  })
+
   };
 
   if (isLoading) {

@@ -169,6 +169,63 @@ export interface Translations {
       update_failed?: string;
     };
   };
+  myAppointments?: {
+    title?: string;
+    showing_for?: string;
+    filter?: {
+      label?: string;
+      all?: string;
+      pending?: string;
+      confirmed?: string;
+      cancelled?: string;
+    };
+    status?: {
+      pending?: string;
+      confirmed?: string;
+      cancelled?: string;
+    };
+    comments?: string;
+    no_appointments?: string;
+    no_filtered_appointments?: string;
+    error?: {
+      no_email?: string;
+      fetch_failed?: string;
+    };
+  };
+  myAvailabilities?: {
+    title?: string;
+    showing_for?: string;
+    table?: {
+      availability_id?: string;
+      employee_name?: string;
+      date_time?: string;
+      shift?: string;
+      comments?: string;
+    };
+    no_availabilities?: string;
+    loading?: string;
+    error?: {
+      no_email?: string;
+      fetch_failed?: string;
+    };
+  };
+  schedule?: {
+    title?: string;
+    loading?: string;
+    error?: string;
+    table?: {
+      employee_id?: string;
+      service_id?: string;
+      customer_id?: string;
+      start_time?: string;
+      end_time?: string;
+      status?: string;
+      location?: string;
+    };
+  };
+  
+  
+  
 }
 
 // Define context properties
