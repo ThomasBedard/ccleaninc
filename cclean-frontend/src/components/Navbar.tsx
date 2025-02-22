@@ -7,7 +7,6 @@ import {
   FaHome,
   FaBuilding,
   FaCalendarAlt,
-  FaUserTie,
   FaTools,
   FaInfoCircle,
   FaPhone,
@@ -83,10 +82,13 @@ const Navbar = ({ children }: NavbarProps) => {
             <FaHome style={{ marginRight: "4px" }} />
             {translations.navbar?.home || "Home"}
           </Link>
-          <Link to="/services" className="navbar-link">
-            <FaBuilding style={{ marginRight: "4px" }} />
-            {translations.navbar?.services || "Services"}
-          </Link>
+          {" "}
+          {!isAdmin && (
+            <Link to="/services" className="navbar-link">
+              <FaBuilding style={{ marginRight: "4px" }} />
+              {translations.navbar?.services || "Services"}
+            </Link>
+          )}
           <Link to="/about-us" className="navbar-link">
             <FaInfoCircle style={{ marginRight: "4px" }} />
             {translations.navbar?.about_us || "About Us"}
@@ -95,11 +97,10 @@ const Navbar = ({ children }: NavbarProps) => {
             <FaPhone style={{ marginRight: "4px" }} />
             {translations.navbar?.contacts || "Contacts"}
           </Link>
-
           {/* Authenticated users only */}
           {!isAnonymous && (
             <>
-              {(isAdmin || isEmployee) && (
+              {isEmployee && (
                 <>
                   <Link to="/appointments" className="navbar-link">
                     <FaCalendarAlt style={{ marginRight: "4px" }} />
@@ -114,10 +115,6 @@ const Navbar = ({ children }: NavbarProps) => {
 
               {isAdmin && (
                 <>
-                  <Link to="/employees" className="navbar-link">
-                    <FaUserTie style={{ marginRight: "4px" }} />
-                    {translations.navbar?.employees || "Employees"}
-                  </Link>
                   <Link to="/admin-dashboard" className="navbar-link">
                     <FaTools style={{ marginRight: "4px" }} />
                     {translations.navbar?.admin_dashboard || "Admin Dashboard"}
@@ -125,7 +122,7 @@ const Navbar = ({ children }: NavbarProps) => {
                 </>
               )}
 
-              {(isAdmin || isEmployee) && (
+              {isEmployee && (
                 <Link to="/my-availabilities" className="navbar-link">
                   <FaClock style={{ marginRight: "4px" }} />
                   {translations.navbar?.my_availabilities ||
@@ -133,7 +130,7 @@ const Navbar = ({ children }: NavbarProps) => {
                 </Link>
               )}
 
-              {(isAdmin || isEmployee || isCustomer) && (
+              {(isEmployee || isCustomer) && (
                 <Link to="/my-appointments" className="navbar-link">
                   <FaCalendarAlt style={{ marginRight: "4px" }} />
                   {translations.navbar?.my_appointments || "My Appointments"}
