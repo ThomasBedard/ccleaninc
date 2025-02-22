@@ -38,7 +38,6 @@ public class AvailabilityController {
     }
 
     @GetMapping("/my-availabilities")
-    @PreAuthorize("hasAuthority('employee')")
     public ResponseEntity<List<AvailabilityResponseModel>> getMyAvailabilities(@AuthenticationPrincipal Jwt jwt) {
         String email = jwt.getClaim("https://ccleaninc.com/email"); // Extract email from JWT token
 

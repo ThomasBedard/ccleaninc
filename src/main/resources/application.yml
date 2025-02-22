@@ -1,0 +1,90 @@
+# Default Spring Profile
+server:
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.cclean: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Thymeleaf Configuration
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://${AUTH0_DOMAIN}/
+
+  thymeleaf:
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    cache: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+auth0:
+  mgmt:
+    domain: ${AUTH0_DOMAIN}
+    audience: ${AUTH0_AUDIENCE}
+    clientId: ${AUTH0_M2M_CLIENT_ID}
+    clientSecret: ${AUTH0_M2M_CLIENT_SECRET}
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: jdbc:mysql://database/ccleandb
+    username: user
+    password: pwd
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  sql:
+    init:
+      platform: mysql
+      mode: always
+
+server.port: 8080
+
+---
+#PROD yml
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${MYSQL_URL}  # Railway's database URL (set in Railway environment variables)
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none  # Prevents accidental schema changes in production
+
+  sql:
+    init:
+      mode: never  # Prevents SQL scripts from running on startup
+
+server:
+  port: ${PORT:8080}  # Railway dynamically assigns a port

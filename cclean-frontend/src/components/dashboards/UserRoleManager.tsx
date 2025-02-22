@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const AUTH0_DOMAIN = import.meta.env.VITE_AUTH0_DOMAIN;
-const MANAGEMENT_API_TOKEN = import.meta.env.VITE_AUTH0_API_MANAGEMENT_TOKEN;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const EMPLOYEE_ROLE_ID = "rol_rCHl1KWuvcWoyf9M";
 
 interface User {
@@ -21,47 +20,102 @@ interface Permission {
 
 const UserRoleManager = () => {
   const [users, setUsers] = useState<User[]>([]);
-  // Map to store permissions for each user on demand.
   const [userPermissions, setUserPermissions] = useState<{
     [key: string]: Permission[] | null;
   }>({});
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  /**
+   * Fetch users from YOUR BACKEND endpoint.
+   * Example: GET /auth0/users
+   */
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://${AUTH0_DOMAIN}/api/v2/users`, {
-        headers: { Authorization: `Bearer ${MANAGEMENT_API_TOKEN}` },
+      const response = await fetch(`${API_BASE_URL}/auth0/users`, {
+        method: "GET",
       });
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status ${response.status}`);
+      }
       const data: User[] = await response.json();
       setUsers(data);
     } catch (error) {
       console.error("Error fetching users:", error);
+      toast.error("Failed to load users");
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch permissions for a single user when needed.
+  /**
+   * Fetch permissions for a single user from YOUR BACKEND endpoint.
+   * Example: GET /auth0/users/{userId}/permissions
+   */
   const fetchUserPermissions = async (userId: string): Promise<void> => {
+    // encode the userId in the URL path:
+    const encodedUserId = encodeURIComponent(userId);
     try {
       const response = await fetch(
-        `https://${AUTH0_DOMAIN}/api/v2/users/${userId}/permissions`,
+        `${API_BASE_URL}/auth0/users/${encodedUserId}/permissions`,
         {
-          headers: {
-            Authorization: `Bearer ${MANAGEMENT_API_TOKEN}`,
-          },
+          method: "GET",
         }
       );
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status ${response.status}`);
+      }
       const perms: Permission[] = await response.json();
-      // Save permissions (even if empty array) to indicate they were loaded.
       setUserPermissions((prev) => ({ ...prev, [userId]: perms }));
     } catch (error) {
       console.error(`Error fetching permissions for user ${userId}:`, error);
       toast.error("Failed to fetch permissions.");
-      // Mark as loaded with empty array on error to prevent repeated attempts.
       setUserPermissions((prev) => ({ ...prev, [userId]: [] }));
+    }
+  };
+
+  const assignEmployeeRole = async (userId: string): Promise<void> => {
+    const encodedUserId = encodeURIComponent(userId);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/auth0/users/${encodedUserId}/roles`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ roleId: EMPLOYEE_ROLE_ID }),
+        }
+      );
+      if (response.ok) {
+        toast.success("Assigned Employee Role");
+        await fetchUserPermissions(userId);
+      } else {
+        throw new Error(`Assign role failed: ${response.status}`);
+      }
+    } catch (err) {
+      console.error("Error assigning role:", err);
+    }
+  };
+
+  const removeEmployeeRole = async (userId: string): Promise<void> => {
+    const encodedUserId = encodeURIComponent(userId);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/auth0/users/${encodedUserId}/roles`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ roleId: EMPLOYEE_ROLE_ID }),
+        }
+      );
+      if (response.ok) {
+        toast.success("Removed Employee Role");
+        await fetchUserPermissions(userId);
+      } else {
+        throw new Error(`Remove role failed: ${response.status}`);
+      }
+    } catch (err) {
+      console.error("Error removing role:", err);
     }
   };
 
@@ -69,60 +123,9 @@ const UserRoleManager = () => {
     fetchUsers();
   }, []);
 
-  // These functions are still using the roles endpoints.
-  interface AssignRoleParams {
-    userId: string;
-    roleId: string;
-  }
-  const assignRole = async ({
-    userId,
-    roleId,
-  }: AssignRoleParams): Promise<void> => {
-    try {
-      await fetch(`https://${AUTH0_DOMAIN}/api/v2/users/${userId}/roles`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${MANAGEMENT_API_TOKEN}`,
-        },
-        body: JSON.stringify({ roles: [roleId] }),
-      });
-      toast.success("Employee role assigned successfully!");
-      fetchUsers(); // Optionally, refresh the user list.
-    } catch (error) {
-      console.error("Error assigning role:", error);
-      toast.error("Failed to assign role.");
-    }
-  };
-
-  interface RemoveRoleParams {
-    userId: string;
-    roleId: string;
-  }
-  const removeRole = async ({
-    userId,
-    roleId,
-  }: RemoveRoleParams): Promise<void> => {
-    try {
-      await fetch(`https://${AUTH0_DOMAIN}/api/v2/users/${userId}/roles`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${MANAGEMENT_API_TOKEN}`,
-        },
-        body: JSON.stringify({ roles: [roleId] }),
-      });
-      toast.info("Employee role removed successfully!");
-      fetchUsers();
-    } catch (error) {
-      console.error("Error removing role:", error);
-      toast.error("Failed to remove role.");
-    }
-  };
-
   // Filter users based on the search term (case-insensitive)
   const filteredUsers = users.filter((user) =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -170,24 +173,10 @@ const UserRoleManager = () => {
                   <td>{user.email}</td>
                   <td>{permsContent}</td>
                   <td style={{ display: "flex", gap: "0.5rem" }}>
-                    <button
-                      onClick={() =>
-                        assignRole({
-                          userId: user.user_id,
-                          roleId: EMPLOYEE_ROLE_ID,
-                        })
-                      }
-                    >
+                    <button onClick={() => assignEmployeeRole(user.user_id)}>
                       Assign Employee Permission
                     </button>
-                    <button
-                      onClick={() =>
-                        removeRole({
-                          userId: user.user_id,
-                          roleId: EMPLOYEE_ROLE_ID,
-                        })
-                      }
-                    >
+                    <button onClick={() => removeEmployeeRole(user.user_id)}>
                       Remove Employee Permission
                     </button>
                   </td>
