@@ -27,7 +27,7 @@ const MyAppointments = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  
+
   const location = useLocation();
   const { newAppointment, timestamp } = (location.state as LocationState) || {};
 
@@ -36,7 +36,7 @@ const MyAppointments = () => {
       setLoading(true);
       const token = await getAccessTokenSilently();
       const email = extractEmailFromToken(token);
-      
+
       if (!email) {
         setError("User email not found in token.");
         return;
@@ -44,20 +44,24 @@ const MyAppointments = () => {
 
       setUserEmail(email);
 
-      const response = await axiosInstance.get("/appointments/my-appointments", {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        },
-      });
+      const response = await axiosInstance.get(
+        "/appointments/my-appointments",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+          },
+        }
+      );
 
       let appointmentList = response.data;
 
       // If we have a new appointment and this is the initial load after redirect
       if (newAppointment && timestamp && Date.now() - timestamp < 1000) {
         const appointmentExists = appointmentList.some(
-          (apt: Appointment) => apt.appointmentId === newAppointment.appointmentId
+          (apt: Appointment) =>
+            apt.appointmentId === newAppointment.appointmentId
         );
 
         if (!appointmentExists) {
@@ -66,8 +70,10 @@ const MyAppointments = () => {
       }
 
       // Sort appointments by date (most recent first)
-      appointmentList.sort((a: Appointment, b: Appointment) => 
-        new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime()
+      appointmentList.sort(
+        (a: Appointment, b: Appointment) =>
+          new Date(b.appointmentDate).getTime() -
+          new Date(a.appointmentDate).getTime()
       );
 
       setAppointments(appointmentList);
@@ -79,30 +85,59 @@ const MyAppointments = () => {
     }
   };
 
+  // ✅ 1) Define a "deleteAppointment" handler
+  const deleteAppointment = async (appointmentId: string) => {
+    if (!appointmentId) {
+      return; // or show some error
+    }
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to cancel this appointment?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = await getAccessTokenSilently();
+      await axiosInstance.delete(`/appointments/${appointmentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Remove the deleted appointment from the local state
+      setAppointments((prev) =>
+        prev.filter((apt) => apt.appointmentId !== appointmentId)
+      );
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      setError("Failed to delete appointment. Please try again.");
+    }
+  };
+
   useEffect(() => {
     fetchAppointments();
-    
+
     // Refresh appointments every 30 seconds
     const intervalId = setInterval(fetchAppointments, 30000);
-    
+
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, [getAccessTokenSilently, timestamp]); // Add timestamp to dependencies
 
-  const filteredAppointments = appointments.filter(apt => 
-    filterStatus === "all" || apt.status === filterStatus
+  const filteredAppointments = appointments.filter(
+    (apt) => filterStatus === "all" || apt.status === filterStatus
   );
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'confirmed':
-        return 'status-confirmed';
-      case 'pending':
-        return 'status-pending';
-      case 'cancelled':
-        return 'status-cancelled';
+      case "confirmed":
+        return "status-confirmed";
+      case "pending":
+        return "status-pending";
+      case "cancelled":
+        return "status-cancelled";
       default:
-        return 'status-default';
+        return "status-default";
     }
   };
 
@@ -125,7 +160,7 @@ const MyAppointments = () => {
 
             <div className="filter-section">
               <label htmlFor="status-filter">Filter by status: </label>
-              <select 
+              <select
                 id="status-filter"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
@@ -146,28 +181,40 @@ const MyAppointments = () => {
                       <p className="appointment-name">
                         {apt.customerFirstName} {apt.customerLastName}
                       </p>
-                      <span className={`appointment-status ${getStatusColor(apt.status)}`}>
-                        {apt.status.charAt(0).toUpperCase() + apt.status.slice(1)}
+                      <span
+                        className={`appointment-status ${getStatusColor(
+                          apt.status
+                        )}`}
+                      >
+                        {apt.status.charAt(0).toUpperCase() +
+                          apt.status.slice(1)}
                       </span>
                     </div>
-                    
+
                     <p className="appointment-service">{apt.services}</p>
                     <p className="appointment-date">
                       {new Date(apt.appointmentDate).toLocaleString()}
                     </p>
-                    
+
                     {apt.comments && (
                       <p className="appointment-comments">
                         <strong>Comments:</strong> {apt.comments}
                       </p>
                     )}
+
+                    <button
+                      className="delete-appointment-button"
+                      onClick={() => deleteAppointment(apt.appointmentId)}
+                    >
+                      Cancel Appointment
+                    </button>
                   </div>
                 ))}
               </div>
             ) : (
               <p className="no-appointments">
-                {filterStatus === "all" 
-                  ? "No appointments found." 
+                {filterStatus === "all"
+                  ? "No appointments found."
                   : `No ${filterStatus} appointments found.`}
               </p>
             )}

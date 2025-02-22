@@ -123,3 +123,32 @@
       font-size: 0.9rem;
   }
 }
+/* Ensure the cancel appointment button is red */
+.my-appointments-card .appointment-item .delete-appointment-button {
+  background-color: #d9534f !important; /* Red color */
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.my-appointments-card .appointment-item .delete-appointment-button:hover {
+  background-color: #c9302c !important; /* Darker red on hover */
+}
+
+/* If you need to make it smaller */
+@media (max-width: 480px) {
+  .my-appointments-card .appointment-item .delete-appointment-button {
+    font-size: 13px;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
