@@ -47,7 +47,7 @@ const Contacts = () => {
     }
 
     try {
-      await axiosInstance.post("/api/v1/contact/send", {
+      await axiosInstance.post("contact/send", {
         name: formData.name, // ✅ Sender's name
         email: formData.email, // ✅ Sender's email
         subject: formData.subject, // ✅ Email subject

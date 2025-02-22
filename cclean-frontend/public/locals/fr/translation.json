@@ -159,5 +159,63 @@
       "invalid_phone": "Le numéro de téléphone doit être au format 514-555-2355.",
       "update_failed": "Erreur lors de la mise à jour du profil."
     }
+  },
+  "myAppointments": {
+  "title": "Mes Rendez-vous",
+  "showing_for": "Affichage des rendez-vous pour :",
+  "filter": {
+    "label": "Filtrer par statut :",
+    "all": "Tous",
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "cancelled": "Annulé"
+  },
+  "status": {
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "cancelled": "Annulé"
+  },
+  "comments": "Commentaires",
+  "no_appointments": "Aucun rendez-vous trouvé.",
+  "no_filtered_appointments": "Aucun rendez-vous {status} trouvé.",
+  "error": {
+    "no_email": "Email utilisateur non trouvé.",
+    "fetch_failed": "Impossible de charger les rendez-vous. Veuillez réessayer."
   }
+},
+"myAvailabilities": {
+  "title": "Mes Disponibilités",
+  "showing_for": "Affichage des disponibilités pour :",
+  "table": {
+    "availability_id": "ID de disponibilité",
+    "employee_name": "Nom de l'employé",
+    "date_time": "Date/Heure",
+    "shift": "Quart",
+    "comments": "Commentaires"
+  },
+  "no_availabilities": "Aucune disponibilité trouvée.",
+  "loading": "Chargement...",
+  "error": {
+    "no_email": "Email utilisateur non trouvé.",
+    "fetch_failed": "Impossible de charger les disponibilités. Veuillez réessayer."
+  }
+},
+"schedule": {
+  "title": "Horaires des employés",
+  "loading": "Chargement des horaires...",
+  "error": "Échec du chargement des horaires.",
+  "table": {
+    "employee_id": "ID de l'employé",
+    "service_id": "ID du service",
+    "customer_id": "ID du client",
+    "start_time": "Heure de début",
+    "end_time": "Heure de fin",
+    "status": "Statut",
+    "location": "Emplacement"
+  }
+}
+
+
+
+  
 }
