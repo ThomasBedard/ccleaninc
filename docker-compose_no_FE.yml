@@ -24,7 +24,7 @@ services:
       dockerfile: ./Dockerfile
     container_name: cclean_backend
     env_file:
-      - ./.env
+      - .env
     ports:
       - "8080:8080"
     environment:

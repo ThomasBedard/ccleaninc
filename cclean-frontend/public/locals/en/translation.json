@@ -90,13 +90,22 @@
   },
   "home": {
     "title": "C CLEAN inc.",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad.",
+    "description": "C CLEAN INC. is a professional cleaning company committed to delivering top-quality services for both residential and commercial spaces. With a dedicated team and eco-friendly cleaning solutions, we ensure a spotless and healthy environment for our clients. Your satisfaction is our priority.",
     "learnMore": "Learn More",
     "customerFeedbacks": "Customer Feedbacks",
     "submitFeedback": "Submit Feedback",
     "loadingFeedbacks": "Loading feedbacks...",
     "noFeedback": "No feedback available at the moment.",
     "customer": "Customer"
+  },
+  "select_date_time": {
+    "title": "Select Date & Time",
+    "selected_date": "Selected Date: {date}",
+    "select_time": "Select Time",
+    "error": "Please select a valid date and a valid time.",
+    "next_button": "Next",
+    "invalid_date": "You cannot select a past date.",
+    "invalid_time": "You cannot select a past time."
   },
   "checkout": {
     "title": "Confirm Your Appointment",
@@ -119,6 +128,94 @@
       "appointment_created": "✅ Appointment created successfully! Redirecting..."
     },
     "confirm_button": "Confirm Appointment",
-    "confirming": "Confirming..."
+    "confirming": "Confirming...",
+    "total": "total"
+  },
+  "profile": {
+    "title": "My Profile",
+    "loading": "Loading...",
+    "loading_profile": "Loading your customer profile...",
+    "not_logged_in": "Please log in to see your profile.",
+    "prompt": "Would you like to set up a Customer Profile?",
+    "yes": "Yes",
+    "no": "No",
+    "opt_out": "You have opted out of creating a customer profile.",
+    "create_profile_anyway": "Create Profile Anyway",
+    "edit_profile": "Edit Profile",
+    "save_profile": "Save Profile",
+    "cancel": "Cancel",
+    "customer_id": "Customer ID",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "phone": "Phone",
+    "company": "Company",
+    "address": "Address",
+    "success": {
+      "update_success": "Profile updated successfully!"
+    },
+    "error": {
+      "first_name_required": "First Name cannot be empty.",
+      "last_name_required": "Last Name cannot be empty.",
+      "address_required": "Address cannot be empty.",
+      "invalid_phone": "Phone number must be in the format 514-555-2355.",
+      "update_failed": "Error updating profile."
+    }
+  },
+  "myAppointments": {
+  "title": "My Appointments",
+  "showing_for": "Showing appointments for:",
+  "filter": {
+    "label": "Filter by status:",
+    "all": "All",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled"
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled"
+  },
+  "comments": "Comments",
+  "no_appointments": "No appointments found.",
+  "no_filtered_appointments": "No {status} appointments found.",
+  "error": {
+    "no_email": "User email not found in token.",
+    "fetch_failed": "Failed to load appointments. Please try again."
   }
+},
+"myAvailabilities": {
+  "title": "My Availabilities",
+  "showing_for": "Showing availabilities for:",
+  "table": {
+    "availability_id": "Availability ID",
+    "employee_name": "Employee Name",
+    "date_time": "Date/Time",
+    "shift": "Shift",
+    "comments": "Comments"
+  },
+  "no_availabilities": "No availabilities found.",
+  "loading": "Loading...",
+  "error": {
+    "no_email": "User email not found in token.",
+    "fetch_failed": "Failed to load availabilities. Please try again."
+  }
+},
+"schedule": {
+  "title": "Employee Schedules",
+  "loading": "Loading schedules...",
+  "error": "Failed to fetch schedules.",
+  "table": {
+    "employee_id": "Employee ID",
+    "service_id": "Service ID",
+    "customer_id": "Customer ID",
+    "start_time": "Start Time",
+    "end_time": "End Time",
+    "status": "Status",
+    "location": "Location"
+  }
+}
+
+
+
 }

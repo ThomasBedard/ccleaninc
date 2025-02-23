@@ -1,96 +1,138 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Calendar } from 'rsuite';
-import { useLanguage } from '../hooks/useLanguage'; // ✅ Import translations
-import 'rsuite/dist/rsuite.min.css';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Calendar } from "rsuite";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translation hook
+import { toast } from "react-toastify";
+import "rsuite/dist/rsuite.min.css";
+import "./SelectDateTimePage.css";
 
 const times = [
-  '09:00', '09:30', '10:00', '10:30', 
-  '11:00', '11:30', '12:00', '12:30',
-  '13:00', '13:30', '14:00', '14:30',
-  '15:00', '15:30', '16:00', '16:30',
-  '17:00', '17:30', '18:00', '18:30',
-  '19:00', '19:30', '20:00', '20:30'
+  "09:00", "10:00", "11:00", "12:00",
+  "13:00", "14:00", "15:00", "16:00",
+  "17:00", "18:00", "19:00", "20:00"
 ];
 
 const SelectDateTimePage: React.FC = () => {
-  const { translations } = useLanguage(); // ✅ Get translations from context
+  const { translations } = useLanguage(); // ✅ Get translations dynamically
   const location = useLocation();
   const navigate = useNavigate();
   const { selectedServiceIds } = location.state as { selectedServiceIds: string[] };
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string>('');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  const handleDateChange = (date: Date) => setSelectedDate(date);
-  const handleTimeSelect = (time: string) => setSelectedTime(time);
+  // ✅ Ensure selectedDate is set when the page loads
+  const [selectedDate, setSelectedDate] = useState<Date | null>(today);
+  const [selectedTime, setSelectedTime] = useState<string>("");
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setSelectedDate(today); // ✅ Ensure the time slots always show on load
+    }
+  }, [selectedDate]);
+
+  const handleDateChange = (date: Date) => {
+    if (date < today) {
+      toast.error(
+        translations.select_date_time?.invalid_date || 
+        "You cannot select a past date."
+      );
+      return;
+    }
+    setSelectedDate(date);
+    setSelectedTime(""); // Reset selected time when date changes
+  };
+
+  const handleTimeSelect = (time: string) => {
+    if (isTimeInPast(time)) {
+      toast.error(
+        translations.select_date_time?.invalid_time || 
+        "You cannot select a past time."
+      );
+      return;
+    }
+    setSelectedTime(time);
+  };
 
   const handleNext = () => {
     if (!selectedDate || !selectedTime) {
-      toast.error(translations.select_date_time?.error || 'Please select both a date and a time.');
+      toast.error(
+        translations.select_date_time?.error || 
+        "Please select a valid date and a valid time."
+      );
       return;
     }
 
     const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${day}T${selectedTime}`;
 
-    navigate('/checkout', {
+    navigate("/checkout", {
       state: { selectedServiceIds, appointmentDate: dateString }
     });
   };
 
+  const isTimeInPast = (time: string) => {
+    if (!selectedDate) return false;
+    const now = new Date();
+    const selectedDateTime = new Date(selectedDate);
+    const [hours, minutes] = time.split(":").map(Number);
+    selectedDateTime.setHours(hours, minutes, 0, 0);
+    return selectedDateTime < now;
+  };
+
   return (
-    <div style={{ textAlign: 'center', marginTop: '20px' }}>
-      <h1>{translations.select_date_time?.title || 'Select Date & Time'}</h1>
-      <div style={{ display: 'inline-block', padding: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderRadius: '8px' }}>
-        <Calendar onSelect={handleDateChange} bordered style={{ width: '300px' }} />
-        {selectedDate && (
-          <div style={{ marginTop: '10px' }}>
-            {translations.select_date_time?.selected_date?.replace('{date}', selectedDate.toLocaleDateString()) || `Selected Date: ${selectedDate.toLocaleDateString()}`}
-          </div>
-        )}
+    <div className="select-datetime-container">
+      <div className="header">
+        <h1>{translations.select_date_time?.title || "Select Date & Time"}</h1>
       </div>
 
-      <div style={{ marginTop: '20px' }}>
-        <h2>{translations.select_date_time?.select_time || 'Select Time'}</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-          {times.map((time) => (
-            <button
-              key={time}
-              onClick={() => handleTimeSelect(time)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '5px',
-                border: '1px solid #ccc',
-                backgroundColor: selectedTime === time ? '#007BFF' : '#fff',
-                color: selectedTime === time ? '#fff' : '#000',
-                cursor: 'pointer',
-                minWidth: '60px'
-              }}
-            >
-              {time}
-            </button>
-          ))}
+      <div className="datetime-content">
+        {/* Calendar Section */}
+        <div className="calendar-container">
+          <Calendar 
+            onSelect={handleDateChange} 
+            bordered
+            compact
+            style={{ width: "100%" }} 
+          />
+          {selectedDate && (
+            <div className="selected-date">
+              {translations.select_date_time?.selected_date
+                ?.replace("{date}", selectedDate.toLocaleDateString()) || 
+                `Selected Date: ${selectedDate.toLocaleDateString()}`
+              }
+            </div>
+          )}
+        </div>
+
+        {/* Time Slots Section */}
+        <div className="select-datetime-time-selection">
+          <h2>{translations.select_date_time?.select_time || "Select Time"}</h2>
+          <div className="select-datetime-time-buttons">
+            {times.map((time) => {
+              const isDisabled = isTimeInPast(time);
+              return (
+                <button
+                  key={time}
+                  onClick={() => handleTimeSelect(time)}
+                  className={`select-datetime-time-button 
+                    ${selectedTime === time ? "selected" : ""} 
+                    ${isDisabled ? "disabled" : ""}`}
+                  disabled={isDisabled}
+                >
+                  {time}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      <button
-        onClick={handleNext}
-        style={{
-          marginTop: '20px',
-          padding: '10px 20px',
-          backgroundColor: '#28a745',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px'
-        }}
-      >
-        {translations.select_date_time?.next_button || 'Next'}
+      {/* Next Button */}
+      <button onClick={handleNext} className="next-button">
+        {translations.select_date_time?.next_button || "Next"}
       </button>
     </div>
   );

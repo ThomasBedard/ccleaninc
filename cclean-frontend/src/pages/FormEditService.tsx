@@ -68,16 +68,18 @@ const FormEditService = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    // Quick check for negative pricing
-    if (name === "pricing") {
-      const numericValue = parseFloat(value);
-      if (numericValue < 0) {
-        toast.error("Price cannot be negative.");
+  
+    // Ensure input contains only positive numbers
+    if (name === "pricing" || name === "durationMinutes") {
+      if (!/^\d*$/.test(value)) { // Only allow numbers (no letters, no negative values)
+        return;
+      }
+      if (value.length > 0 && parseInt(value, 10) < 1) {
+        toast.error(`${name === "pricing" ? "Price" : "Duration"} must be a positive number.`);
         return;
       }
     }
-
+  
     setServiceData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -174,11 +176,11 @@ const FormEditService = () => {
           <div>
             <label>Pricing:</label>
             <input
-              type="number"
+              type="text" // Changed from "number" to "text" to allow better validation
               name="pricing"
               value={serviceData.pricing}
               onChange={handleInputChange}
-              min="0"
+              placeholder="Enter price (e.g. 50)"
             />
           </div>
 
@@ -197,11 +199,11 @@ const FormEditService = () => {
           <div>
             <label>Duration (Minutes):</label>
             <input
-              type="number"
+              type="text" // Changed from "number" to "text" to allow better validation
               name="durationMinutes"
               value={serviceData.durationMinutes}
               onChange={handleInputChange}
-              min="1"
+              placeholder="Enter duration (e.g. 30)"
             />
           </div>
 

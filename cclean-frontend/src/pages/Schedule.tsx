@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translation hook
 
 type Schedule = {
   id: string;
@@ -13,6 +14,7 @@ type Schedule = {
 };
 
 const Schedule = () => {
+  const { translations } = useLanguage(); // ✅ Fetch translations
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,7 +25,7 @@ const Schedule = () => {
         const response = await axios.get("http://localhost:8080/api/schedules");
         setSchedules(response.data);
       } catch {
-        setError("Failed to fetch schedules");
+        setError(translations.schedule?.error || "Failed to fetch schedules.");
       } finally {
         setLoading(false);
       }
@@ -31,24 +33,38 @@ const Schedule = () => {
     fetchSchedules();
   }, []);
 
-  if (loading) return <div>Loading schedules...</div>;
+  if (loading) return <div>{translations.schedule?.loading || "Loading schedules..."}</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="py-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        Employee Schedules
+        {translations.schedule?.title || "Employee Schedules"}
       </h1>
       <table className="w-full border-collapse border border-gray-200">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border border-gray-300 px-4 py-2">Employee ID</th>
-            <th className="border border-gray-300 px-4 py-2">Service ID</th>
-            <th className="border border-gray-300 px-4 py-2">Customer ID</th>
-            <th className="border border-gray-300 px-4 py-2">Start Time</th>
-            <th className="border border-gray-300 px-4 py-2">End Time</th>
-            <th className="border border-gray-300 px-4 py-2">Status</th>
-            <th className="border border-gray-300 px-4 py-2">Location</th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.employee_id || "Employee ID"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.service_id || "Service ID"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.customer_id || "Customer ID"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.start_time || "Start Time"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.end_time || "End Time"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.status || "Status"}
+            </th>
+            <th className="border border-gray-300 px-4 py-2">
+              {translations.schedule?.table?.location || "Location"}
+            </th>
           </tr>
         </thead>
         <tbody>

@@ -276,39 +276,88 @@ public class AppointmentServiceImpl implements AppointmentService {
         table.addCell(appointment.getComments());
     }
 
-    @Override
-    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId,
-            AppointmentRequestModel appointmentRequestModel) throws MessagingException, MessagingException {
-        Customer customerAccount = customerRepository.findByCustomerIdentifier_CustomerId(customerId).orElse(null);
+//    @Override
+//    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId,
+//            AppointmentRequestModel appointmentRequestModel) throws MessagingException, MessagingException {
+//        Customer customerAccount = customerRepository.findByCustomerIdentifier_CustomerId(customerId).orElse(null);
+//
+//        if (customerAccount == null) {
+//            log.error("❌ Customer account not found for customer ID: {}", customerId);
+//            throw new RuntimeException("Customer not found with ID: " + customerId);
+//        }
+//
+//        // ✅ Debug: Log the services being sent
+//        log.info("📢 Services received: {}", appointmentRequestModel.getServices());
+//
+//        // ✅ Fix: Save the first and last name correctly
+//        Appointment appointment = new Appointment();
+//        appointment.setAppointmentIdentifier(new AppointmentIdentifier());
+//        appointment.setCustomerId(appointmentRequestModel.getCustomerId());
+//        appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
+//        appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
+//        appointment.setAppointmentDate(appointmentRequestModel.getAppointmentDate());
+//        appointment.setServices(appointmentRequestModel.getServices());
+//        appointment.setComments(appointmentRequestModel.getComments());
+//        appointment.setStatus(appointmentRequestModel.getStatus());
+//
+//        Appointment savedAppointment = appointmentRepository.save(appointment);
+//
+//        Map<String, String> parameters = new HashMap<>();
+//        parameters.put("appointmentDate", savedAppointment.getAppointmentDate().toString());
+//        parameters.put("services", savedAppointment.getServices());
+//        parameters.put("comments", savedAppointment.getComments());
+//
+//        emailService.sendEmail(customerAccount.getEmail(), "Appointment Scheduled - ACMS", "appointment.html",
+//                parameters);
+//
+//        return appointmentResponseMapper.entityToResponseModel(savedAppointment);
+//    }
 
-        if (customerAccount == null) {
-            log.error("❌ Customer account not found for customer ID: {}", customerId);
-            throw new RuntimeException("Customer not found with ID: " + customerId);
+    @Override
+    public AppointmentResponseModel addAppointmentToCustomerAccount(String customerId, AppointmentRequestModel appointmentRequestModel) throws MessagingException {
+        log.info("📅 Creating appointment for customer ID: {}", customerId);
+
+        // 1️⃣ Check if the customer exists
+        Customer customerAccount = customerRepository.findByCustomerIdentifier_CustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException("Customer not found with ID: " + customerId));
+
+        String customerEmail = customerAccount.getEmail();
+        if (customerEmail == null || customerEmail.isBlank()) {
+            log.error("❌ Customer email is missing for customer ID: {}", customerId);
+            throw new InvalidInputException("Customer email is required for sending confirmation.");
         }
 
-        // ✅ Debug: Log the services being sent
-        log.info("📢 Services received: {}", appointmentRequestModel.getServices());
+        log.info("📧 Customer email found: {}", customerEmail);
 
-        // ✅ Fix: Save the first and last name correctly
-        Appointment appointment = new Appointment();
-        appointment.setAppointmentIdentifier(new AppointmentIdentifier());
-        appointment.setCustomerId(appointmentRequestModel.getCustomerId());
-        appointment.setCustomerFirstName(appointmentRequestModel.getCustomerFirstName());
-        appointment.setCustomerLastName(appointmentRequestModel.getCustomerLastName());
-        appointment.setAppointmentDate(appointmentRequestModel.getAppointmentDate());
-        appointment.setServices(appointmentRequestModel.getServices());
-        appointment.setComments(appointmentRequestModel.getComments());
-        appointment.setStatus(appointmentRequestModel.getStatus());
+        // 2️⃣ Create Appointment
+        Appointment appointment = Appointment.builder()
+                .appointmentIdentifier(new AppointmentIdentifier())
+                .customerId(customerId)
+                .customerFirstName(customerAccount.getFirstName())
+                .customerLastName(customerAccount.getLastName())
+                .appointmentDate(appointmentRequestModel.getAppointmentDate())
+                .services(appointmentRequestModel.getServices())
+                .comments(appointmentRequestModel.getComments())
+                .status(appointmentRequestModel.getStatus() == null ? Status.pending : appointmentRequestModel.getStatus())
+                .build();
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
+        log.info("✅ Appointment created successfully: {}", savedAppointment.getAppointmentIdentifier().getAppointmentId());
 
+        // 3️⃣ Prepare Email Parameters
         Map<String, String> parameters = new HashMap<>();
         parameters.put("appointmentDate", savedAppointment.getAppointmentDate().toString());
         parameters.put("services", savedAppointment.getServices());
         parameters.put("comments", savedAppointment.getComments());
 
-        emailService.sendEmail(customerAccount.getEmail(), "Appointment Scheduled - ACMS", "appointment.html",
-                parameters);
+        // 4️⃣ Send Confirmation Email
+        try {
+            log.info("📧 Sending appointment confirmation email to: {}", customerEmail);
+            emailService.sendEmail(customerEmail, "Appointment Confirmation - CCLEAN INC.", "appointment.html", parameters);
+            log.info("✅ Email successfully sent to {}", customerEmail);
+        } catch (MessagingException e) {
+            log.error("❌ Failed to send email: {}", e.getMessage());
+        }
 
         return appointmentResponseMapper.entityToResponseModel(savedAppointment);
     }

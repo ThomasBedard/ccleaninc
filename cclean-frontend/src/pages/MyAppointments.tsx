@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axiosInstance from "../api/axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import { extractEmailFromToken } from "../api/authUtils";
+import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translation hook
 import "./MyAppointments.css";
 
 interface Appointment {
@@ -22,6 +23,7 @@ interface LocationState {
 
 const MyAppointments = () => {
   const { getAccessTokenSilently } = useAuth0();
+  const { translations } = useLanguage(); // ✅ Fetch translations
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -38,38 +40,36 @@ const MyAppointments = () => {
       const email = extractEmailFromToken(token);
 
       if (!email) {
-        setError("User email not found in token.");
+        setError(
+          translations.myAppointments?.error?.no_email ||
+            "User email not found in token."
+        );
         return;
       }
 
       setUserEmail(email);
 
-      const response = await axiosInstance.get(
-        "/appointments/my-appointments",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Cache-Control": "no-cache",
-            Pragma: "no-cache",
-          },
-        }
-      );
+      const response = await axiosInstance.get("/appointments/my-appointments", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
 
       let appointmentList = response.data;
 
-      // If we have a new appointment and this is the initial load after redirect
+      // ✅ Add new appointment to the list if it doesn't exist
       if (newAppointment && timestamp && Date.now() - timestamp < 1000) {
         const appointmentExists = appointmentList.some(
-          (apt: Appointment) =>
-            apt.appointmentId === newAppointment.appointmentId
+          (apt: Appointment) => apt.appointmentId === newAppointment.appointmentId
         );
-
         if (!appointmentExists) {
           appointmentList = [newAppointment, ...appointmentList];
         }
       }
 
-      // Sort appointments by date (most recent first)
+      // ✅ Sort appointments by date (most recent first)
       appointmentList.sort(
         (a: Appointment, b: Appointment) =>
           new Date(b.appointmentDate).getTime() -
@@ -79,13 +79,16 @@ const MyAppointments = () => {
       setAppointments(appointmentList);
     } catch (error) {
       console.error("❌ Failed to load appointments:", error);
-      setError("Failed to load appointments. Please try again.");
+      setError(
+        translations.myAppointments?.error?.fetch_failed ||
+          "Failed to load appointments. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ 1) Define a "deleteAppointment" handler
+  // ✅ Define a "deleteAppointment" handler
   const deleteAppointment = async (appointmentId: string) => {
     if (!appointmentId) {
       return; // or show some error
@@ -117,12 +120,12 @@ const MyAppointments = () => {
   useEffect(() => {
     fetchAppointments();
 
-    // Refresh appointments every 30 seconds
+    // ✅ Refresh appointments every 30 seconds
     const intervalId = setInterval(fetchAppointments, 30000);
 
-    // Cleanup interval on component unmount
+    // ✅ Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, [getAccessTokenSilently, timestamp]); // Add timestamp to dependencies
+  }, [getAccessTokenSilently, timestamp]);
 
   const filteredAppointments = appointments.filter(
     (apt) => filterStatus === "all" || apt.status === filterStatus
@@ -144,7 +147,9 @@ const MyAppointments = () => {
   return (
     <div className="my-appointments-container">
       <div className="my-appointments-card">
-        <h2 className="my-appointments-title">My Appointments</h2>
+        <h2 className="my-appointments-title">
+          {translations.myAppointments?.title || "My Appointments"}
+        </h2>
 
         {loading ? (
           <div className="loader"></div>
@@ -154,22 +159,37 @@ const MyAppointments = () => {
           <>
             {userEmail && (
               <p className="my-appointments-email">
-                Showing appointments for: <strong>{userEmail}</strong>
+                {translations.myAppointments?.showing_for ||
+                  "Showing appointments for:"}{" "}
+                <strong>{userEmail}</strong>
               </p>
             )}
 
             <div className="filter-section">
-              <label htmlFor="status-filter">Filter by status: </label>
+              <label htmlFor="status-filter">
+                {translations.myAppointments?.filter?.label ||
+                  "Filter by status:"}
+              </label>
               <select
                 id="status-filter"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
                 className="status-filter"
               >
-                <option value="all">All</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="all">
+                  {translations.myAppointments?.filter?.all || "All"}
+                </option>
+                <option value="pending">
+                  {translations.myAppointments?.filter?.pending || "Pending"}
+                </option>
+                <option value="confirmed">
+                  {translations.myAppointments?.filter?.confirmed ||
+                    "Confirmed"}
+                </option>
+                <option value="cancelled">
+                  {translations.myAppointments?.filter?.cancelled ||
+                    "Cancelled"}
+                </option>
               </select>
             </div>
 
@@ -181,13 +201,12 @@ const MyAppointments = () => {
                       <p className="appointment-name">
                         {apt.customerFirstName} {apt.customerLastName}
                       </p>
-                      <span
-                        className={`appointment-status ${getStatusColor(
-                          apt.status
-                        )}`}
-                      >
-                        {apt.status.charAt(0).toUpperCase() +
-                          apt.status.slice(1)}
+                      <span className={`appointment-status ${getStatusColor(apt.status)}`}>
+                        {translations.myAppointments?.status?.[
+                          apt.status as keyof typeof translations.myAppointments.status
+                        ] ||
+                          apt.status.charAt(0).toUpperCase() +
+                            apt.status.slice(1)}
                       </span>
                     </div>
 
@@ -198,7 +217,10 @@ const MyAppointments = () => {
 
                     {apt.comments && (
                       <p className="appointment-comments">
-                        <strong>Comments:</strong> {apt.comments}
+                        <strong>
+                          {translations.myAppointments?.comments || "Comments"}:
+                        </strong>{" "}
+                        {apt.comments}
                       </p>
                     )}
 
@@ -206,7 +228,8 @@ const MyAppointments = () => {
                       className="delete-appointment-button"
                       onClick={() => deleteAppointment(apt.appointmentId)}
                     >
-                      Cancel Appointment
+                      {translations.myAppointments?.cancel_button ||
+                        "Cancel Appointment"}
                     </button>
                   </div>
                 ))}
@@ -214,8 +237,13 @@ const MyAppointments = () => {
             ) : (
               <p className="no-appointments">
                 {filterStatus === "all"
-                  ? "No appointments found."
-                  : `No ${filterStatus} appointments found.`}
+                  ? translations.myAppointments?.no_appointments ||
+                    "No appointments found."
+                  : translations.myAppointments?.no_filtered_appointments?.replace(
+                      "{status}",
+                      filterStatus
+                    ) ||
+                    `No ${filterStatus} appointments found.`}
               </p>
             )}
           </>

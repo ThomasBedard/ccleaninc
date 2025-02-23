@@ -174,7 +174,6 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments/my-appointments")
-    @PreAuthorize("hasAuthority('customer')")
     public ResponseEntity<List<AppointmentResponseModel>> getMyAppointments(@AuthenticationPrincipal Jwt jwt) {
         String email = jwt.getClaim("https://ccleaninc.com/email"); // Extract email from JWT token
 
