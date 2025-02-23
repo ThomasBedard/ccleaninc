@@ -179,6 +179,7 @@
   "comments": "Comments",
   "no_appointments": "No appointments found.",
   "no_filtered_appointments": "No {status} appointments found.",
+  "cancel_button": "Cancel Appointment",
   "error": {
     "no_email": "User email not found in token.",
     "fetch_failed": "Failed to load appointments. Please try again."

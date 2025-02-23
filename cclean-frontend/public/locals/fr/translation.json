@@ -178,6 +178,7 @@
   "comments": "Commentaires",
   "no_appointments": "Aucun rendez-vous trouvé.",
   "no_filtered_appointments": "Aucun rendez-vous {status} trouvé.",
+  "cancel_button": "Annuler le rendez-vous",
   "error": {
     "no_email": "Email utilisateur non trouvé.",
     "fetch_failed": "Impossible de charger les rendez-vous. Veuillez réessayer."

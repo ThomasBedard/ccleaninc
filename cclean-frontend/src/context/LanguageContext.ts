@@ -187,6 +187,7 @@ export interface Translations {
     comments?: string;
     no_appointments?: string;
     no_filtered_appointments?: string;
+    cancel_button?: string;
     error?: {
       no_email?: string;
       fetch_failed?: string;
