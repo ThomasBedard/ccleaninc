@@ -8,7 +8,8 @@ import java.util.List;
 public interface FeedbackService {
     List<FeedbackResponseModel> getAllFeedback(String feedbackId, String customerid, String status);
     FeedbackResponseModel getFeedbackByFeedbackId(String feedbackId);
-    FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel);
+    // FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel);
     FeedbackResponseModel updateFeedbackState(String status, String feedbackId);
     void removeFeedback(String feedbackId);
+    FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel, String userEmail);
 }

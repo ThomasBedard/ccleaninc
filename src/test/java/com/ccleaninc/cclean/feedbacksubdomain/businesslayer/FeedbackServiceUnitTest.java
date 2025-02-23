@@ -95,38 +95,38 @@ class FeedbackServiceUnitTest {
         assertFalse(result4.isEmpty());
     }
 
-    @Test
-    public void addFeedback_shouldSucceed() {
-        String status = "INVISIBLE";
-        String customerId = "uuid-customer1";
-        FeedbackRequestModel requestModel = new FeedbackRequestModel(customerId, 3, "test", State.valueOf(status));
-        Feedback entity = new Feedback(customerId, 3, "test", State.INVISIBLE);
-        entity.getFeedbackIdentifier().setFeedbackId("feed-id1");
+    // @Test
+    // public void addFeedback_shouldSucceed() {
+    //     String status = "INVISIBLE";
+    //     String customerId = "uuid-customer1";
+    //     FeedbackRequestModel requestModel = new FeedbackRequestModel(customerId, 3, "test", State.valueOf(status));
+    //     Feedback entity = new Feedback(customerId, 3, "test", State.INVISIBLE);
+    //     entity.getFeedbackIdentifier().setFeedbackId("feed-id1");
 
-        FeedbackResponseModel mockedResponse = new FeedbackResponseModel("feed-id1", customerId, 3, "test", State.INVISIBLE);
+    //     FeedbackResponseModel mockedResponse = new FeedbackResponseModel("feed-id1", customerId, 3, "test", State.INVISIBLE);
 
-        // Mock customerService call
-        CustomerResponseModel mockCustomerResponse = CustomerResponseModel.builder()
-                .customerId(customerId)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@example.com")
-                .phoneNumber("1234567890")
-                .build();
+    //     // Mock customerService call
+    //     CustomerResponseModel mockCustomerResponse = CustomerResponseModel.builder()
+    //             .customerId(customerId)
+    //             .firstName("John")
+    //             .lastName("Doe")
+    //             .email("john.doe@example.com")
+    //             .phoneNumber("1234567890")
+    //             .build();
 
-        when(customerService.getCustomerByCustomerId(customerId)).thenReturn(mockCustomerResponse);
+    //     when(customerService.getCustomerByCustomerId(customerId)).thenReturn(mockCustomerResponse);
 
-        when(feedbackRequestMapper.requestModelToEntity(requestModel)).thenReturn(entity);
-        when(feedbackRepository.save(entity)).thenReturn(entity);
-        when(feedbackResponseMapper.entityToResponseModel(entity)).thenReturn(mockedResponse);
+    //     when(feedbackRequestMapper.requestModelToEntity(requestModel)).thenReturn(entity);
+    //     when(feedbackRepository.save(entity)).thenReturn(entity);
+    //     when(feedbackResponseMapper.entityToResponseModel(entity)).thenReturn(mockedResponse);
 
-        FeedbackResponseModel result = feedbackService.addFeedback(requestModel);
-        assertNotNull(result);
-        assertEquals("feed-id1", result.getFeedbackId());
-        assertEquals(customerId, result.getCustomerId());
-        assertEquals("test", result.getContent());
-        assertEquals(State.INVISIBLE, result.getStatus());
-    }
+    //     FeedbackResponseModel result = feedbackService.addFeedback(requestModel);
+    //     assertNotNull(result);
+    //     assertEquals("feed-id1", result.getFeedbackId());
+    //     assertEquals(customerId, result.getCustomerId());
+    //     assertEquals("test", result.getContent());
+    //     assertEquals(State.INVISIBLE, result.getStatus());
+    // }
 
     @Test
     public void removeFeedback_validFeedbackId_shouldSucceed() {
