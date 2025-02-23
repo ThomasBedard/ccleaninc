@@ -13,23 +13,29 @@ public interface AvailabilityService {
 
         // Create a new availability record
         AvailabilityResponseModel createAvailability(AvailabilityRequestModel requestModel);
-    
+
         // Retrieve a specific availability by its unique identifier
         AvailabilityResponseModel getAvailabilityByAvailabilityId(String availabilityId);
-    
+
         // Update an availability record by its unique identifier
         AvailabilityResponseModel updateAvailability(String availabilityId, AvailabilityRequestModel requestModel);
-    
+
         // Delete an availability record by its unique identifier
         void deleteAvailabilityByAvailabilityId(String availabilityId);
-    
+
         // Retrieve all availabilities for a specific employee
         List<AvailabilityResponseModel> getAvailabilitiesByEmployeeId(String employeeId);
-    
+
         // Export all availability records to a PDF
         ByteArrayOutputStream generateAvailabilitiesPdf();
 
         List<AvailabilityResponseModel> getAvailabilitiesByEmployeeEmail(String email);
 
-    
+        // --- New methods for JWT-based operations ---
+        AvailabilityResponseModel createAvailabilityForEmployee(String email, AvailabilityRequestModel requestModel);
+
+        AvailabilityResponseModel updateAvailabilityForEmployee(String availabilityId, String email,
+                        AvailabilityRequestModel requestModel);
+
+        void deleteAvailabilityForEmployee(String availabilityId, String email);
 }

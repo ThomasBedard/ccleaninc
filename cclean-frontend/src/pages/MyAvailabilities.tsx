@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import axiosInstance from "../api/axios";
 import { extractEmailFromToken } from "../api/authUtils";
-import { useLanguage } from "../hooks/useLanguage"; // ✅ Import translation hook
+import { useLanguage } from "../hooks/useLanguage";
+import { useAxiosWithAuth } from "../api/axios";
+import "./MyAvailabilities.css";
 
 interface Availability {
   id: number;
@@ -10,114 +12,124 @@ interface Availability {
   employeeFirstName: string;
   employeeLastName: string;
   employeeId: string;
-  availableDate: string;  
+  availableDate: string;
   shift: string;
   comments?: string;
 }
 
 const MyAvailabilities: React.FC = () => {
   const { getAccessTokenSilently } = useAuth0();
-  const { translations } = useLanguage(); // ✅ Fetch translations
+  const { translations } = useLanguage();
+  const navigate = useNavigate();
+  const axiosWithAuth = useAxiosWithAuth();
+
   const [availabilities, setAvailabilities] = useState<Availability[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchAvailabilities = async () => {
-      try {
-        setError(null);
-        setLoading(true);
-
-        // ✅ Get token from Auth0
-        const token = await getAccessTokenSilently();
-
-        // ✅ Decode the user’s email from custom claim
-        const email = extractEmailFromToken(token);
-        if (!email) {
-          setError(translations.myAvailabilities?.error?.no_email || "User email not found in token.");
-          return;
-        }
-        setUserEmail(email);
-
-        // ✅ Call the backend endpoint
-        const response = await axiosInstance.get<Availability[]>(
-          "/availabilities/my-availabilities",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        setAvailabilities(response.data);
-      } catch (err) {
-        console.error("❌ Failed to load availabilities:", err);
-        setError(translations.myAvailabilities?.error?.fetch_failed || "Failed to load availabilities. Please try again.");
-      } finally {
-        setLoading(false);
+  const fetchAvailabilities = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      // Get token and extract user's email
+      const token = await getAccessTokenSilently();
+      const email = extractEmailFromToken(token);
+      if (!email) {
+        setError(translations.myAvailabilities?.error?.no_email || "User email not found in token.");
+        return;
       }
-    };
+      setUserEmail(email);
 
+      // Fetch availabilities using the interceptor-based axios instance
+      const response = await axiosWithAuth.get<Availability[]>("/availabilities/my-availabilities");
+      setAvailabilities(response.data);
+    } catch (err) {
+      console.error("❌ Failed to load availabilities:", err);
+      setError(translations.myAvailabilities?.error?.fetch_failed || "Failed to load availabilities. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAvailabilities();
   }, [getAccessTokenSilently]);
 
+  // Handler for deleting an availability
+  const handleDelete = async (availabilityId: string) => {
+    try {
+      await axiosWithAuth.delete(`/availabilities/my-availabilities/${availabilityId}`);
+      // Remove the deleted item from local state
+      setAvailabilities((prev) => prev.filter((avail) => avail.availabilityId !== availabilityId));
+      alert("Availability deleted successfully.");
+    } catch (err) {
+      console.error("Failed to delete availability:", err);
+      alert("Failed to delete availability.");
+    }
+  };
+
   return (
-    <div style={{ padding: "1rem" }}>
+    <div className="my-availabilities-container">
       <h2>{translations.myAvailabilities?.title || "My Availabilities"}</h2>
 
-      {/* Show the user’s email if available */}
+      {/* Show user's email if available */}
       {userEmail && (
         <p>
-          {translations.myAvailabilities?.showing_for || "Showing availabilities for:"}{" "}
-          {userEmail}
+          {translations.myAvailabilities?.showing_for || "Showing availabilities for:"} {userEmail}
         </p>
       )}
 
-      {/* Show loading indicator */}
+      {/* Loading indicator */}
       {loading && <p>{translations.myAvailabilities?.loading || "Loading..."}</p>}
 
-      {/* Show error if there is one */}
+      {/* Error message */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {/* If no error and we have availabilities, display them */}
+      {/* Availabilities table */}
       {!loading && !error && availabilities.length > 0 && (
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <table className="my-availabilities-table">
           <thead>
             <tr>
-              <th style={cellStyle}>{translations.myAvailabilities?.table?.availability_id || "Availability ID"}</th>
-              <th style={cellStyle}>{translations.myAvailabilities?.table?.employee_name || "Employee Name"}</th>
-              <th style={cellStyle}>{translations.myAvailabilities?.table?.date_time || "Date/Time"}</th>
-              <th style={cellStyle}>{translations.myAvailabilities?.table?.shift || "Shift"}</th>
-              <th style={cellStyle}>{translations.myAvailabilities?.table?.comments || "Comments"}</th>
+              <th>{translations.myAvailabilities?.table?.availability_id || "Availability ID"}</th>
+              <th>{translations.myAvailabilities?.table?.employee_name || "Employee Name"}</th>
+              <th>{translations.myAvailabilities?.table?.date_time || "Date/Time"}</th>
+              <th>{translations.myAvailabilities?.table?.shift || "Shift"}</th>
+              <th>{translations.myAvailabilities?.table?.comments || "Comments"}</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {availabilities.map((avail) => (
               <tr key={avail.availabilityId}>
-                <td style={cellStyle}>{avail.availabilityId}</td>
-                <td style={cellStyle}>
+                <td>{avail.availabilityId}</td>
+                <td>
                   {avail.employeeFirstName} {avail.employeeLastName}
                 </td>
-                <td style={cellStyle}>{avail.availableDate}</td>
-                <td style={cellStyle}>{avail.shift}</td>
-                <td style={cellStyle}>{avail.comments || "N/A"}</td>
+                <td>{avail.availableDate}</td>
+                <td>{avail.shift}</td>
+                <td>{avail.comments || "N/A"}</td>
+                <td>
+                  <button onClick={() => navigate(`/my-availabilities/edit/${avail.availabilityId}`)}>
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(avail.availabilityId)}>Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
 
-      {/* If no availabilities found */}
+      {/* Message when no availabilities are found */}
       {!loading && !error && availabilities.length === 0 && (
         <p>{translations.myAvailabilities?.no_availabilities || "No availabilities found."}</p>
       )}
+
+      {/* Add Availability button */}
+      <button onClick={() => navigate("/add-availability")}>Add Availability</button>
     </div>
   );
-};
-
-// Optional inline cell style for quick table formatting
-const cellStyle: React.CSSProperties = {
-  border: "1px solid #ccc",
-  padding: "8px",
 };
 
 export default MyAvailabilities;
