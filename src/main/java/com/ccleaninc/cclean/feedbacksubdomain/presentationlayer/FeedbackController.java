@@ -6,10 +6,14 @@ import com.ccleaninc.cclean.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import java.util.List;
+
 @RestController
 @RequestMapping("api/v1")
 @CrossOrigin(origins = {
@@ -25,8 +29,8 @@ public class FeedbackController {
 
     @GetMapping("/feedbacks")
     public List<FeedbackResponseModel> getAllFeedbackThreads(@RequestParam(required = false) String feedbackId,
-                                                             @RequestParam(required = false) String customerId,
-                                                             @RequestParam(required = false) String status) {
+            @RequestParam(required = false) String customerId,
+            @RequestParam(required = false) String status) {
         return feedbackService.getAllFeedback(feedbackId, customerId, status);
     }
 
@@ -40,18 +44,17 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/feedbacks")
-    public ResponseEntity<FeedbackResponseModel> addFeedback(@RequestBody FeedbackRequestModel feedbackRequestModel) {
-        try {
-            FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (InvalidInputException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
+    // @PostMapping("/feedbacks")
+    // public ResponseEntity<FeedbackResponseModel> addFeedback(@RequestBody FeedbackRequestModel feedbackRequestModel) {
+    //     try {
+    //         FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel);
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    //     } catch (InvalidInputException e) {
+    //         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    //     } catch (NotFoundException e) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    //     }
+    // }
 
     @DeleteMapping("/feedbacks/{feedbackId}")
     public ResponseEntity<Void> deleteFeedbackById(@PathVariable String feedbackId) {
@@ -60,7 +63,8 @@ public class FeedbackController {
     }
 
     @PatchMapping("/feedbacks/{feedbackId}/publish")
-    public ResponseEntity<FeedbackResponseModel> updateFeedbackState(@PathVariable String feedbackId, @RequestBody String status) {
+    public ResponseEntity<FeedbackResponseModel> updateFeedbackState(@PathVariable String feedbackId,
+            @RequestBody String status) {
         try {
             FeedbackResponseModel updatedFeedback = feedbackService.updateFeedbackState(feedbackId, status);
             return ResponseEntity.ok(updatedFeedback);
@@ -70,6 +74,24 @@ public class FeedbackController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/feedbacks")
+    public ResponseEntity<FeedbackResponseModel> addFeedback(
+            @RequestBody FeedbackRequestModel feedbackRequestModel,
+            @AuthenticationPrincipal Jwt jwt) {
+        try {
+            // Extract user’s email from JWT
+            String email = jwt.getClaim("https://ccleaninc.com/email");
+
+            // Or "email" depending on how your JWT is set up
+            FeedbackResponseModel response = feedbackService.addFeedback(feedbackRequestModel, email);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (InvalidInputException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 }
-
-

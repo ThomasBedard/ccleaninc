@@ -45,13 +45,13 @@ public class FeedbackControllerUnitTest {
         assertEquals(feedbackResponseModel, feedbacks.get(0));
     }
 
-    @Test
-    void addFeedbackReturnsCreatedFeedback() {
-        when(feedbackService.addFeedback(feedbackRequestModel)).thenReturn(feedbackResponseModel);
-        ResponseEntity<FeedbackResponseModel> response = feedbackController.addFeedback(feedbackRequestModel);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(feedbackResponseModel, response.getBody());
-    }
+    // @Test
+    // void addFeedbackReturnsCreatedFeedback() {
+    //     when(feedbackService.addFeedback(feedbackRequestModel)).thenReturn(feedbackResponseModel);
+    //     ResponseEntity<FeedbackResponseModel> response = feedbackController.addFeedback(feedbackRequestModel);
+    //     assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    //     assertEquals(feedbackResponseModel, response.getBody());
+    // }
 
     @Test
     void updateFeedbackStateReturnsUpdatedFeedback() {

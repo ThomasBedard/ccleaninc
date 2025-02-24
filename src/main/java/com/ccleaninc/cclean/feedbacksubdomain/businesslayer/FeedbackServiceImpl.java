@@ -2,6 +2,7 @@ package com.ccleaninc.cclean.feedbacksubdomain.businesslayer;
 
 
 import com.ccleaninc.cclean.customerssubdomain.businesslayer.CustomerService;
+import com.ccleaninc.cclean.customerssubdomain.presentationlayer.CustomerResponseModel;
 import com.ccleaninc.cclean.feedbacksubdomain.datalayer.Feedback;
 import com.ccleaninc.cclean.feedbacksubdomain.datalayer.FeedbackRepository;
 import com.ccleaninc.cclean.feedbacksubdomain.datamapperlayer.FeedbackRequestMapper;
@@ -61,17 +62,17 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackResponseMapper.entityToResponseModel(feedback);
     }
 
-    @Override
-    public FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel) {
-        // Validate customerId as a valid customer ID
-        customerService.getCustomerByCustomerId(feedbackRequestModel.getCustomerId());
+    // @Override
+    // public FeedbackResponseModel addFeedback(FeedbackRequestModel feedbackRequestModel) {
+    //     // Validate customerId as a valid customer ID
+    //     customerService.getCustomerByCustomerId(feedbackRequestModel.getCustomerId());
 
-        Feedback feedback = feedbackRequestMapper.requestModelToEntity(feedbackRequestModel);
-        feedback.setStatus(State.INVISIBLE);
-        Feedback savedFeedback = feedbackRepository.save(feedback);
+    //     Feedback feedback = feedbackRequestMapper.requestModelToEntity(feedbackRequestModel);
+    //     feedback.setStatus(State.INVISIBLE);
+    //     Feedback savedFeedback = feedbackRepository.save(feedback);
 
-        return feedbackResponseMapper.entityToResponseModel(savedFeedback);
-    }
+    //     return feedbackResponseMapper.entityToResponseModel(savedFeedback);
+    // }
 
     @Override
     public FeedbackResponseModel updateFeedbackState(String feedbackId, String status) {
@@ -92,5 +93,26 @@ public class FeedbackServiceImpl implements FeedbackService {
             return;
         }
         feedbackRepository.delete(existingFeedback);
+    }
+
+    @Override
+    public FeedbackResponseModel addFeedback(FeedbackRequestModel requestModel, String userEmail) {
+        // 1) Lookup the customer by email -> returns a CustomerResponseModel
+        CustomerResponseModel customerResponse = customerService.getCustomerByEmail(userEmail);
+        if (customerResponse == null) {
+            throw new NotFoundException("No customer found for email: " + userEmail);
+        }
+
+        // 2) Convert the request model to a Feedback entity
+        Feedback feedbackEntity = feedbackRequestMapper.requestModelToEntity(requestModel);
+
+        // 3) Overwrite the entity’s customerId with the real one from the DB
+        feedbackEntity.setCustomerId(customerResponse.getCustomerId());
+
+        // 4) Save the new feedback
+        Feedback savedEntity = feedbackRepository.save(feedbackEntity);
+
+        // 5) Convert entity -> response model
+        return feedbackResponseMapper.entityToResponseModel(savedEntity);
     }
 }

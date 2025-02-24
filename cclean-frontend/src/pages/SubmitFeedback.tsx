@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import axios, { AxiosError } from "axios";
-import axiosInstance from "../api/axios";
+import { useAxiosWithAuth } from "../api/axios"; // Use the custom hook
 import { useNavigate } from "react-router-dom";
 import "./SubmitFeedback.css";
-
-// Added from feat/CCICC-78-UI_Overhaul
 import { toast } from "react-toastify";
+import axios, { AxiosError } from "axios";
 
 const SubmitFeedback: React.FC = () => {
-  const [customerId, setCustomerId] = useState("");
+  const axiosAuth = useAxiosWithAuth(); // Get the axios instance with the auth token attached
   const [stars, setStars] = useState<number>(0);
   const [content, setContent] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -17,11 +15,6 @@ const SubmitFeedback: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    if (!customerId.trim()) {
-      setError("Customer ID is required.");
-      return;
-    }
 
     if (stars < 1 || stars > 5) {
       setError("Stars must be between 1 and 5.");
@@ -34,28 +27,24 @@ const SubmitFeedback: React.FC = () => {
     }
 
     try {
-      await axiosInstance.post("/feedbacks", {
-        customerId: customerId, // changed from userId to customerId
+      // Using the axios instance from useAxiosWithAuth so that the token is attached
+      await axiosAuth.post("/feedbacks", {
         stars: stars,
         content: content,
       });
 
-      // From feat/CCICC-78-UI_Overhaul:
       toast.success(
         "Feedback submitted successfully! It will be visible once an admin publishes it."
       );
-
-      // From main:
       alert(
         "Feedback submitted successfully! It will be visible once an admin publishes it."
       );
-
       navigate("/");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const error = err as AxiosError;
         if (error.response && error.response.status === 400) {
-          setError("Invalid customer ID. Please ensure this customer exists.");
+          setError("Invalid input. Please try again.");
         } else {
           setError("Failed to submit feedback. Please try again later.");
         }
@@ -70,15 +59,6 @@ const SubmitFeedback: React.FC = () => {
       <h1>Submit Feedback</h1>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>
-          Customer ID:
-          <input
-            type="text"
-            value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            required
-          />
-        </label>
         <label>
           Stars (1-5):
           <input
