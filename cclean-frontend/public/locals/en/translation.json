@@ -162,60 +162,58 @@
     }
   },
   "myAppointments": {
-  "title": "My Appointments",
-  "showing_for": "Showing appointments for:",
-  "filter": {
-    "label": "Filter by status:",
-    "all": "All",
-    "pending": "Pending",
-    "confirmed": "Confirmed",
-    "cancelled": "Cancelled"
+    "title": "My Appointments",
+    "showing_for": "Showing appointments for:",
+    "filter": {
+      "label": "Filter by status:",
+      "all": "All",
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled"
+    },
+    "comments": "Comments",
+    "no_appointments": "No appointments found.",
+    "no_filtered_appointments": "No {status} appointments found.",
+    "cancel_button": "Cancel Appointment",
+    "error": {
+      "no_email": "User email not found in token.",
+      "fetch_failed": "Failed to load appointments. Please try again."
+    }
   },
-  "status": {
-    "pending": "Pending",
-    "confirmed": "Confirmed",
-    "cancelled": "Cancelled"
+  "myAvailabilities": {
+    "title": "My Availabilities",
+    "showing_for": "Showing availabilities for:",
+    "table": {
+      "availability_id": "Availability ID",
+      "employee_name": "Employee Name",
+      "date_time": "Date/Time",
+      "shift": "Shift",
+      "comments": "Comments"
+    },
+    "no_availabilities": "No availabilities found.",
+    "loading": "Loading...",
+    "error": {
+      "no_email": "User email not found in token.",
+      "fetch_failed": "Failed to load availabilities. Please try again."
+    }
   },
-  "comments": "Comments",
-  "no_appointments": "No appointments found.",
-  "no_filtered_appointments": "No {status} appointments found.",
-  "error": {
-    "no_email": "User email not found in token.",
-    "fetch_failed": "Failed to load appointments. Please try again."
+  "schedule": {
+    "title": "Employee Schedules",
+    "loading": "Loading schedules...",
+    "error": "Failed to fetch schedules.",
+    "table": {
+      "employee_id": "Employee ID",
+      "service_id": "Service ID",
+      "customer_id": "Customer ID",
+      "start_time": "Start Time",
+      "end_time": "End Time",
+      "status": "Status",
+      "location": "Location"
+    }
   }
-},
-"myAvailabilities": {
-  "title": "My Availabilities",
-  "showing_for": "Showing availabilities for:",
-  "table": {
-    "availability_id": "Availability ID",
-    "employee_name": "Employee Name",
-    "date_time": "Date/Time",
-    "shift": "Shift",
-    "comments": "Comments"
-  },
-  "no_availabilities": "No availabilities found.",
-  "loading": "Loading...",
-  "error": {
-    "no_email": "User email not found in token.",
-    "fetch_failed": "Failed to load availabilities. Please try again."
-  }
-},
-"schedule": {
-  "title": "Employee Schedules",
-  "loading": "Loading schedules...",
-  "error": "Failed to fetch schedules.",
-  "table": {
-    "employee_id": "Employee ID",
-    "service_id": "Service ID",
-    "customer_id": "Customer ID",
-    "start_time": "Start Time",
-    "end_time": "End Time",
-    "status": "Status",
-    "location": "Location"
-  }
-}
-
-
-
 }

@@ -107,30 +107,30 @@
     "invalid_date": "Vous ne pouvez pas sélectionner une date passée.",
     "invalid_time": "Vous ne pouvez pas sélectionner une heure passée."
   },
-    "checkout": {
-      "title": "Confirmez votre rendez-vous",
-      "selected_services": "Services sélectionnés",
-      "no_services": "Aucun détail de service disponible.",
-      "date_time": "Date et heure",
-      "first_name": "Prénom",
-      "last_name": "Nom de famille",
-      "comments": "Commentaires",
-      "comments_placeholder": "Commentaires supplémentaires (optionnel)",
-      "error": {
-        "invalid_fields": "Veuillez entrer des informations valides.",
-        "no_date": "Aucune date de rendez-vous sélectionnée.",
-        "fetch_customer": "Erreur lors de la récupération des informations du client.",
-        "fetch_services": "Erreur lors de la récupération des services.",
-        "appointment_creation": "Erreur lors de la création du rendez-vous. Veuillez réessayer."
-      },
-      "success": {
-        "appointment_created": "Votre rendez-vous a été réservé ! Vous recevrez un e-mail de confirmation sous peu."
-      },
-      "confirm_button": "Confirmer le rendez-vous",
-      "confirming": "Confirmation en cours...",
-      "total": "total"
+  "checkout": {
+    "title": "Confirmez votre rendez-vous",
+    "selected_services": "Services sélectionnés",
+    "no_services": "Aucun détail de service disponible.",
+    "date_time": "Date et heure",
+    "first_name": "Prénom",
+    "last_name": "Nom de famille",
+    "comments": "Commentaires",
+    "comments_placeholder": "Commentaires supplémentaires (optionnel)",
+    "error": {
+      "invalid_fields": "Veuillez entrer des informations valides.",
+      "no_date": "Aucune date de rendez-vous sélectionnée.",
+      "fetch_customer": "Erreur lors de la récupération des informations du client.",
+      "fetch_services": "Erreur lors de la récupération des services.",
+      "appointment_creation": "Erreur lors de la création du rendez-vous. Veuillez réessayer."
     },
-    "profile": {
+    "success": {
+      "appointment_created": "Votre rendez-vous a été réservé ! Vous recevrez un e-mail de confirmation sous peu."
+    },
+    "confirm_button": "Confirmer le rendez-vous",
+    "confirming": "Confirmation en cours...",
+    "total": "total"
+  },
+  "profile": {
     "title": "Mon Profil",
     "loading": "Chargement...",
     "loading_profile": "Chargement de votre profil client...",
@@ -161,61 +161,58 @@
     }
   },
   "myAppointments": {
-  "title": "Mes Rendez-vous",
-  "showing_for": "Affichage des rendez-vous pour :",
-  "filter": {
-    "label": "Filtrer par statut :",
-    "all": "Tous",
-    "pending": "En attente",
-    "confirmed": "Confirmé",
-    "cancelled": "Annulé"
+    "title": "Mes Rendez-vous",
+    "showing_for": "Affichage des rendez-vous pour :",
+    "filter": {
+      "label": "Filtrer par statut :",
+      "all": "Tous",
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "cancelled": "Annulé"
+    },
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "cancelled": "Annulé"
+    },
+    "comments": "Commentaires",
+    "no_appointments": "Aucun rendez-vous trouvé.",
+    "no_filtered_appointments": "Aucun rendez-vous {status} trouvé.",
+    "cancel_button": "Annuler le rendez-vous",
+    "error": {
+      "no_email": "Email utilisateur non trouvé.",
+      "fetch_failed": "Impossible de charger les rendez-vous. Veuillez réessayer."
+    }
   },
-  "status": {
-    "pending": "En attente",
-    "confirmed": "Confirmé",
-    "cancelled": "Annulé"
+  "myAvailabilities": {
+    "title": "Mes Disponibilités",
+    "showing_for": "Affichage des disponibilités pour :",
+    "table": {
+      "availability_id": "ID de disponibilité",
+      "employee_name": "Nom de l'employé",
+      "date_time": "Date/Heure",
+      "shift": "Quart",
+      "comments": "Commentaires"
+    },
+    "no_availabilities": "Aucune disponibilité trouvée.",
+    "loading": "Chargement...",
+    "error": {
+      "no_email": "Email utilisateur non trouvé.",
+      "fetch_failed": "Impossible de charger les disponibilités. Veuillez réessayer."
+    }
   },
-  "comments": "Commentaires",
-  "no_appointments": "Aucun rendez-vous trouvé.",
-  "no_filtered_appointments": "Aucun rendez-vous {status} trouvé.",
-  "error": {
-    "no_email": "Email utilisateur non trouvé.",
-    "fetch_failed": "Impossible de charger les rendez-vous. Veuillez réessayer."
+  "schedule": {
+    "title": "Horaires des employés",
+    "loading": "Chargement des horaires...",
+    "error": "Échec du chargement des horaires.",
+    "table": {
+      "employee_id": "ID de l'employé",
+      "service_id": "ID du service",
+      "customer_id": "ID du client",
+      "start_time": "Heure de début",
+      "end_time": "Heure de fin",
+      "status": "Statut",
+      "location": "Emplacement"
+    }
   }
-},
-"myAvailabilities": {
-  "title": "Mes Disponibilités",
-  "showing_for": "Affichage des disponibilités pour :",
-  "table": {
-    "availability_id": "ID de disponibilité",
-    "employee_name": "Nom de l'employé",
-    "date_time": "Date/Heure",
-    "shift": "Quart",
-    "comments": "Commentaires"
-  },
-  "no_availabilities": "Aucune disponibilité trouvée.",
-  "loading": "Chargement...",
-  "error": {
-    "no_email": "Email utilisateur non trouvé.",
-    "fetch_failed": "Impossible de charger les disponibilités. Veuillez réessayer."
-  }
-},
-"schedule": {
-  "title": "Horaires des employés",
-  "loading": "Chargement des horaires...",
-  "error": "Échec du chargement des horaires.",
-  "table": {
-    "employee_id": "ID de l'employé",
-    "service_id": "ID du service",
-    "customer_id": "ID du client",
-    "start_time": "Heure de début",
-    "end_time": "Heure de fin",
-    "status": "Statut",
-    "location": "Emplacement"
-  }
-}
-
-
-
-  
 }

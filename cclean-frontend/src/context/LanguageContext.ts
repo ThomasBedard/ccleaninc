@@ -55,7 +55,8 @@ export interface Translations {
     address?: string;
     phone?: string;
     email?: string;
-    form?: {  // ✅ Fix: Added missing 'form' definition
+    form?: {
+      // ✅ Fix: Added missing 'form' definition
       title?: string;
       name?: string;
       namePlaceholder?: string;
@@ -104,7 +105,7 @@ export interface Translations {
       pdf_download_error?: string;
     };
   };
-  select_date_time?: {  
+  select_date_time?: {
     title?: string;
     selected_date?: string;
     select_time?: string;
@@ -113,7 +114,7 @@ export interface Translations {
     invalid_date?: string;
     invalid_time?: string;
   };
-  checkout?: {  
+  checkout?: {
     title?: string;
     selected_services?: string;
     no_services?: string;
@@ -187,6 +188,7 @@ export interface Translations {
     comments?: string;
     no_appointments?: string;
     no_filtered_appointments?: string;
+    cancel_button?: string;
     error?: {
       no_email?: string;
       fetch_failed?: string;
@@ -223,9 +225,6 @@ export interface Translations {
       location?: string;
     };
   };
-  
-  
-  
 }
 
 // Define context properties
@@ -236,4 +235,6 @@ export interface LanguageContextProps {
 }
 
 // ✅ Create the context (only export, no default value)
-export const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
+export const LanguageContext = createContext<LanguageContextProps | undefined>(
+  undefined
+);

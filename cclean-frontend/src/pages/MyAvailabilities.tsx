@@ -36,17 +36,25 @@ const MyAvailabilities: React.FC = () => {
       const token = await getAccessTokenSilently();
       const email = extractEmailFromToken(token);
       if (!email) {
-        setError(translations.myAvailabilities?.error?.no_email || "User email not found in token.");
+        setError(
+          translations.myAvailabilities?.error?.no_email ||
+            "User email not found in token."
+        );
         return;
       }
       setUserEmail(email);
 
       // Fetch availabilities using the interceptor-based axios instance
-      const response = await axiosWithAuth.get<Availability[]>("/availabilities/my-availabilities");
+      const response = await axiosWithAuth.get<Availability[]>(
+        "/availabilities/my-availabilities"
+      );
       setAvailabilities(response.data);
     } catch (err) {
       console.error("❌ Failed to load availabilities:", err);
-      setError(translations.myAvailabilities?.error?.fetch_failed || "Failed to load availabilities. Please try again.");
+      setError(
+        translations.myAvailabilities?.error?.fetch_failed ||
+          "Failed to load availabilities. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -59,9 +67,13 @@ const MyAvailabilities: React.FC = () => {
   // Handler for deleting an availability
   const handleDelete = async (availabilityId: string) => {
     try {
-      await axiosWithAuth.delete(`/availabilities/my-availabilities/${availabilityId}`);
+      await axiosWithAuth.delete(
+        `/availabilities/my-availabilities/${availabilityId}`
+      );
       // Remove the deleted item from local state
-      setAvailabilities((prev) => prev.filter((avail) => avail.availabilityId !== availabilityId));
+      setAvailabilities((prev) =>
+        prev.filter((avail) => avail.availabilityId !== availabilityId)
+      );
       alert("Availability deleted successfully.");
     } catch (err) {
       console.error("Failed to delete availability:", err);
@@ -76,12 +88,16 @@ const MyAvailabilities: React.FC = () => {
       {/* Show user's email if available */}
       {userEmail && (
         <p>
-          {translations.myAvailabilities?.showing_for || "Showing availabilities for:"} {userEmail}
+          {translations.myAvailabilities?.showing_for ||
+            "Showing availabilities for:"}{" "}
+          {userEmail}
         </p>
       )}
 
       {/* Loading indicator */}
-      {loading && <p>{translations.myAvailabilities?.loading || "Loading..."}</p>}
+      {loading && (
+        <p>{translations.myAvailabilities?.loading || "Loading..."}</p>
+      )}
 
       {/* Error message */}
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -91,11 +107,21 @@ const MyAvailabilities: React.FC = () => {
         <table className="my-availabilities-table">
           <thead>
             <tr>
-              <th>{translations.myAvailabilities?.table?.availability_id || "Availability ID"}</th>
-              <th>{translations.myAvailabilities?.table?.employee_name || "Employee Name"}</th>
-              <th>{translations.myAvailabilities?.table?.date_time || "Date/Time"}</th>
+              <th>
+                {translations.myAvailabilities?.table?.availability_id ||
+                  "Availability ID"}
+              </th>
+              <th>
+                {translations.myAvailabilities?.table?.employee_name ||
+                  "Employee Name"}
+              </th>
+              <th>
+                {translations.myAvailabilities?.table?.date_time || "Date/Time"}
+              </th>
               <th>{translations.myAvailabilities?.table?.shift || "Shift"}</th>
-              <th>{translations.myAvailabilities?.table?.comments || "Comments"}</th>
+              <th>
+                {translations.myAvailabilities?.table?.comments || "Comments"}
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -110,10 +136,18 @@ const MyAvailabilities: React.FC = () => {
                 <td>{avail.shift}</td>
                 <td>{avail.comments || "N/A"}</td>
                 <td>
-                  <button onClick={() => navigate(`/my-availabilities/edit/${avail.availabilityId}`)}>
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/my-availabilities/edit/${avail.availabilityId}`
+                      )
+                    }
+                  >
                     Edit
                   </button>
-                  <button onClick={() => handleDelete(avail.availabilityId)}>Delete</button>
+                  <button onClick={() => handleDelete(avail.availabilityId)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -123,11 +157,16 @@ const MyAvailabilities: React.FC = () => {
 
       {/* Message when no availabilities are found */}
       {!loading && !error && availabilities.length === 0 && (
-        <p>{translations.myAvailabilities?.no_availabilities || "No availabilities found."}</p>
+        <p>
+          {translations.myAvailabilities?.no_availabilities ||
+            "No availabilities found."}
+        </p>
       )}
 
       {/* Add Availability button */}
-      <button onClick={() => navigate("/add-availability")}>Add Availability</button>
+      <button onClick={() => navigate("/add-availability")}>
+        Add Availability
+      </button>
     </div>
   );
 };
